@@ -1,10 +1,10 @@
-import WhyChooseUs from "@/components/WhyChooseUs";
+import GymFlowBanner from "@/components/GymFlowBanner/GymFlowBanner";
 
 export function Home() {
   return (
-    <div>
-      <h1>GymFlow</h1>
-      <WhyChooseUs />
+    <div className="bg-[#1E1E1E]">
+      <GymFlowBanner />
+      <h1 className="text-white">GymFlow</h1>
     </div>
   );
 }
