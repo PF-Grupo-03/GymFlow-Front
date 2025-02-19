@@ -9,9 +9,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        'grey-prim': '#333333',
-        'whit-sec': '#F5F5F5',
-        'org-tert': '#FF7700',
+        primary: '#333333',
+        secondary: '#F5F5F5',
+        tertiary: '#FF7700',
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },
