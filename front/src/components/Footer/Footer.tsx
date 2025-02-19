@@ -6,6 +6,7 @@ import {
   FooterLinks,
   FooterLinksItem,
 } from "@/app/data/FooterItems";
+import Image from "next/image";
 import Link from "next/link";
 
 const Footer = () => {
@@ -48,9 +49,11 @@ const Footer = () => {
                 key={FooterIcon.id}
                 className="flex justify-center items-center"
               >
-                <img
+                <Image
                   src={FooterIcon.direccion}
                   alt="Logo"
+                  width={40}
+                  height={40}
                   className="w-10 h-10 mr-2"
                 />
               </div>
