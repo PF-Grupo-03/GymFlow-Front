@@ -1,5 +1,4 @@
-'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import CarouselItem from './CarouselItem';
 import { ICarouselProps } from '@/interfaces/SelectYourActivitiyInterface';
 import { ArrowBigLeft, ArrowBigRight } from 'lucide-react';
@@ -7,20 +6,18 @@ import { ArrowBigLeft, ArrowBigRight } from 'lucide-react';
 const Carousel: React.FC<ICarouselProps> = ({ items }) => {
   const [current, setCurrent] = useState(0);
 
-  const prevSlide = () =>
+  const prevSlide = useCallback(() => {
     setCurrent((prev) => (prev === 0 ? items.length - 1 : prev - 1));
+  }, [items.length]);
 
-  const nextSlide = () =>
+  const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev === items.length - 1 ? 0 : prev + 1));
+  }, [items.length]);
 
-  // Efecto para el cambio automático de imágenes cada 3 segundos
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 3000);
-
-    return () => clearInterval(interval); // Limpia el intervalo al desmontar
-  }, [current]); // Se ejecuta cuando cambia la imagen actual
+    const interval = setInterval(nextSlide, 3000);
+    return () => clearInterval(interval);
+  }, [nextSlide]);
 
   return (
     <div className="relative w-full max-w-[800px] mx-auto overflow-hidden mt-0 p-0 rounded-lg">
