@@ -11,6 +11,11 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        
+      },
+      fontFamily: {
+        odor: ['Odor Mean Chey Regular', 'sans-serif'], 
+        ibm: ["IBM Plex Sans", "sans-serif"],
       },
     },
   },

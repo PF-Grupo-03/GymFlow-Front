@@ -1,3 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+@font-face {
+  font-family: "Odor Mean Chey Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Odor Mean Chey Regular"),
+    url("../../public/fonts/OdorMeanChey-Regular.woff") format("woff");
+}
+
+
+body {
+  background-color: #333333;
+}
