@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react"; // Íconos de hamburguesa y cierre
+import { Menu, X } from "lucide-react";
 import NavItems, { NavItem } from "@/data/NavItems";
 
 const NavBar = () => {
@@ -10,14 +10,12 @@ const NavBar = () => {
 
   return (
     <>
-      {/* Navbar fijo */}
       <header
         className={`bg-tertiary w-full fixed top-0 left-0 z-50 transition-all duration-300 ${
           isOpen ? "rounded-b-none" : "rounded-b-[10px]"
         }`}
       >
         <nav className="flex justify-between items-center px-5 h-20 font-odor">
-          {/* Botón de menú hamburguesa para móviles */}
           <button
             className="lg:hidden text-secondary"
             onClick={() => setIsOpen(!isOpen)}
@@ -25,7 +23,6 @@ const NavBar = () => {
             {isOpen ? <X size={30} /> : <Menu size={30} />}
           </button>
 
-          {/* Lista de navegación con alineación a la derecha en pantallas grandes */}
           <ul
             className={`absolute lg:static top-20 left-0 w-full lg:w-auto bg-tertiary lg:bg-transparent flex flex-col lg:flex-row gap-5 p-5 lg:p-0 transition-all duration-300 ${
               isOpen
@@ -43,7 +40,6 @@ const NavBar = () => {
               </li>
             ))}
 
-            {/* Botón de registro dentro del menú hamburguesa */}
             <li className="lg:hidden">
               <button className="text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300 w-full">
                 Registrate
@@ -51,14 +47,12 @@ const NavBar = () => {
             </li>
           </ul>
 
-          {/* Botón de registro en pantallas grandes */}
           <button className="hidden lg:block text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300">
             Registrate
           </button>
         </nav>
       </header>
 
-      {/* Ajuste para que el contenido no quede tapado por el navbar */}
       <div className="mt-20"></div>
     </>
   );
