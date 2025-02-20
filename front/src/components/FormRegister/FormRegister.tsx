@@ -1,6 +1,7 @@
 'use client';
 import RegisterValidates from '@/helpers/RegisterValidates';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Toast } from '../Toast/Toast';
 
 const FormRegister = () => {
   return (
@@ -24,7 +25,13 @@ const FormRegister = () => {
           validationSchema={RegisterValidates}
           onSubmit={(values, { resetForm }) => {
             console.log('Formulario enviado:', values);
-            alert('Registro exitoso!');
+
+            Toast.fire({
+              icon: 'success',
+              title: 'Registro exitoso',
+              text: `Bienvenido, ${values.fullName}!`,
+            });
+
             resetForm();
           }}
         >
