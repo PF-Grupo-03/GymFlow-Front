@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import NavItems, { NavItem } from "@/data/NavItems";
+import Image from "next/image";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +24,7 @@ const NavBar = () => {
             {isOpen ? <X size={30} /> : <Menu size={30} />}
           </button>
 
+          <Image src="/images/logo.png" alt="logo" width={80} height={80} />
           <ul
             className={`absolute lg:static top-20 left-0 w-full lg:w-auto bg-tertiary lg:bg-transparent flex flex-col lg:flex-row gap-5 p-5 lg:p-0 transition-all duration-300 ${
               isOpen
