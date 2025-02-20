@@ -20,27 +20,20 @@ body {
 }
 
 .custom-calendar {
-  border-radius: 12px;
-  border: 2px solid #333333; /* Color primary */
-  background-color: #F5F5F5; 
-  padding: 10px;
-  width: 100%; /* Para hacerlo más grande */
-  max-width: 400px;
+  font-family: 'IBM Plex Sans', sans-serif !important;
 }
 
-.custom-calendar .react-calendar__tile {
-  border-radius: 8px;
-  transition: background 0.3s;
+.custom-calendar .react-calendar__tile,
+.custom-calendar .react-calendar__month-view__days__day,
+.custom-calendar .react-calendar__month-view__weekdays__weekday {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.custom-calendar .react-calendar__tile:hover {
-  background-color: #FF7700; /* Color tertiary */
-  color: white;
-}
-
-.custom-calendar .react-calendar__tile--active {
-  background-color: #FF7700 !important;
-  color: white;
+.custom-calendar .react-calendar__navigation button {
+  font-family: 'Holtwood One SC', serif !important; /* Para los botones de navegación */
+  font-size: 20px;
 }
 
 .booking-bg {

@@ -24,7 +24,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
         Seleccioná un día
       </h2>
 
-      {/* Contenedor del calendario con estilos personalizados */}
       <div className="p-2 bg-white rounded-xl shadow-lg">
         <Calendar
           onChange={(date) => handleDateChange(date as Date)}
@@ -32,7 +31,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({
           minDate={today}
           maxDate={maxDate}
           locale="es-ES"
-          className="custom-calendar"
+          className="custom-calendar font-ibm"
         />
       </div>
     </div>
