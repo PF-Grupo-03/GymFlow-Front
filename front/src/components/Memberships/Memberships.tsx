@@ -5,14 +5,13 @@ import { memberships } from '@/data/Memberships';
 export default function Memberships() {
   return (
     <div className="text-center py-12 bg-primary -mt-5">
-      {' '}
-      {/* Fondo oscuro */}
       {/* Título con fondo y sombra */}
       <div className="inline-block bg-tertiary px-8 py-3 rounded-lg shadow-md">
         <h2 className="text-3xl font-bold font-holtwood text-primary tracking-wider">
           NUESTRAS MEMBRESÍAS
         </h2>
       </div>
+
       {/* Contenedor de tarjetas */}
       <div className="flex justify-center gap-10 mt-10">
         {memberships.map((membership, index) => (
@@ -50,3 +49,4 @@ export default function Memberships() {
     </div>
   );
 }
+
