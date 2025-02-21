@@ -4,11 +4,11 @@ import { memberships } from '@/data/Memberships';
 
 export default function Memberships() {
   return (
-    <div className="text-center py-12">
+    <div className="text-center py-12 bg-secondary">
       <h2 className="text-3xl font-holtwood text-primary mb-8">
         NUESTRAS MEMBRESÍAS
       </h2>
-      <div className="flex justify-center gap-8 p-6 rounded-lg relative bg-white shadow-lg">
+      <div className="flex justify-center gap-8 p-6 rounded-lg relative bg-secondary shadow-lg">
         <div
           className="absolute bottom-0 left-0 w-full h-full rounded-[25%] border-b-[8px] border-l-[8px] border-transparent"
           style={{
