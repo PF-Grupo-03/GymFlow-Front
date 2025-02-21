@@ -12,6 +12,7 @@ export interface FooterLinksItem {
 export interface FooterIconsItem {
   id: number;
   direccion: string;
+  link: string;
 }
 
 export const FooterItems: FooterInfoItem[] = [
@@ -47,21 +48,24 @@ export const FooterLinks: FooterLinksItem[] = [
   {
     id: 3,
     texto: 'Sobre Nosotros',
-    link: '/about-us',
+    link: '/About',
   },
 ];
 
 export const FooterIcons: FooterIconsItem[] = [
   {
     id: 0,
-    direccion: '/images/facebook.svg',
+    direccion: '/assets/facebook.svg',
+    link: 'https://www.facebook.com',
   },
   {
     id: 1,
-    direccion: '/images/instagram.svg',
+    direccion: '/assets/instagram.svg',
+    link: 'https://www.instagram.com',
   },
   {
     id: 2,
-    direccion: '/images/linkedin.svg',
+    direccion: '/assets/linkedin.svg',
+    link: 'https://www.linkedin.com',
   },
 ];
