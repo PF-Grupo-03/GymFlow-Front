@@ -13,7 +13,7 @@ export default function GymFlowBanner() {
         src="/gymFlowBanner/fitnessportada.png"
         alt="Gym Flow Background"
         fill
-        className="absolute inset-0 object-cover w-full h-full opacity-30"
+        className="absolute inset-0 object-cover w-full h-full opacity-60"
       />
 
       {/* Texto de bienvenida */}

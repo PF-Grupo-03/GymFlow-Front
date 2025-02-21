@@ -3,7 +3,7 @@ import Carousel from './Carousel';
 
 const SelectYourActivitie: React.FC = () => {
   return (
-    <div className="bg-primary min-h-screen flex flex-col items-center justify-center space-y-6 mb-8">
+    <div className="bg-primary min-h-screen flex flex-col items-center justify-center space-y-6">
       <h2 className="font-holtwood text-4xl text-tertiary mt-2 mb-2">
         ¡Elegí tu actividad!
       </h2>
@@ -22,7 +22,7 @@ const SelectYourActivitie: React.FC = () => {
       <h3 className="font-holtwood text-3xl text-secondary">Funcionales</h3>
       <Carousel items={activities2} />
 
-      <p className="font-ibm text-secondary text-[20px] leading-[1.15] text-justify max-w-[65%] mx-auto mb-4">
+      <p className="font-ibm text-secondary text-[20px] leading-[1.15] text-justify max-w-[65%] mx-auto pb-4">
         Si querés mejorar tu resistencia, agilidad y flexibilidad, el
         entrenamiento funcional es ideal. Movimientos dinámicos que mejoran tu
         condición física general, perfectos para un cuerpo más fuerte y
