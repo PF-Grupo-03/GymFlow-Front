@@ -1,11 +1,18 @@
 'use client';
+import { useState } from 'react';
 import RegisterValidates from '@/helpers/RegisterValidates';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Toast } from '../Toast/Toast';
+import Link from 'next/link';
+import { Eye, EyeOff } from 'lucide-react';
 
 const FormRegister = () => {
+  // Estados para controlar la visibilidad de las contraseñas
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
-    <div className="relative flex justify-center items-center min-h-screen mb-8">
+    <div className="relative flex justify-center items-center min-h-screen pb-8">
       <div className="absolute inset-0 bg-[url('/assets/Register.jpg')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
       <div className="relative bg-secondary p-8 rounded-2xl shadow-lg w-full max-w-xl">
@@ -71,16 +78,26 @@ const FormRegister = () => {
                 </div>
               </div>
 
+              {/* Contraseña */}
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="relative">
                   <label className="text-primary font-holtwood text-sm">
                     Contraseña:
                   </label>
-                  <Field
-                    type="password"
-                    name="password"
-                    className="w-full border-2 border-tertiary p-2 rounded-md"
-                  />
+                  <div className="relative">
+                    <Field
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      className="w-full border-2 border-tertiary p-2 rounded-md pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                   <ErrorMessage
                     name="password"
                     component="div"
@@ -88,15 +105,31 @@ const FormRegister = () => {
                   />
                 </div>
 
-                <div>
+                {/* Repetir contraseña */}
+                <div className="relative">
                   <label className="text-primary font-holtwood text-sm">
                     Repetir Contraseña:
                   </label>
-                  <Field
-                    type="password"
-                    name="confirmPassword"
-                    className="w-full border-2 border-tertiary p-2 rounded-md"
-                  />
+                  <div className="relative">
+                    <Field
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      name="confirmPassword"
+                      className="w-full border-2 border-tertiary p-2 rounded-md pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={20} />
+                      ) : (
+                        <Eye size={20} />
+                      )}
+                    </button>
+                  </div>
                   <ErrorMessage
                     name="confirmPassword"
                     component="div"
@@ -149,9 +182,9 @@ const FormRegister = () => {
 
               <p className="text-center text-sm text-primary font-ibm">
                 ¿Ya tienes una cuenta?{' '}
-                <span className="text-orange-500 cursor-pointer">
-                  Inicia Sesión
-                </span>
+                <Link href="/Login" className="text-orange-500 cursor-pointer">
+                  Inicia sesión
+                </Link>
               </p>
             </Form>
           )}
