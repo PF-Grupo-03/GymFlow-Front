@@ -24,7 +24,7 @@ const BookingView = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen">
+    <div className="relative flex justify-center items-center min-h-screen -mt-5">
       <div className="absolute inset-0 booking-bg before:absolute before:inset-0 before:bg-black/60"></div>
 
       <div className="relative z-10 p-8 rounded-2xl shadow-lg w-full max-w-xl">

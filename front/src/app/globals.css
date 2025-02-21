@@ -30,8 +30,25 @@
     src: local('Odor Mean Chey Regular'), url('../../public/fonts/OdorMeanChey-Regular.woff') format('woff');
 }
 
-    .booking-bg {
-        background-image: url('/assets/Booking.jpg');
-        background-size: cover;
-        background-position: center;
+  .booking-bg {
+    background-image: url('/assets/Booking.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #333333;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF7700;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff3d00;
 }
