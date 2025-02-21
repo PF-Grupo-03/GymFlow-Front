@@ -4,13 +4,13 @@ import { memberships } from '@/data/Memberships';
 
 export default function Memberships() {
   return (
-    <div className="text-center py-12 bg-secondary">
-      <h2 className="text-3xl font-holtwood text-primary mb-8">
+    <div className="text-center py-12 bg-primary">
+      <h2 className="text-3xl font-holtwood text-tertiary mb-8">
         NUESTRAS MEMBRESÍAS
       </h2>
       <div className="flex justify-center gap-8 p-6 rounded-lg relative bg-secondary shadow-lg">
         <div
-          className="absolute bottom-0 left-0 w-full h-full rounded-[25%] border-b-[8px] border-l-[8px] border-transparent"
+          className="absolute bg-primary bottom-0 left-0 w-full h-full rounded-lg"
           style={{
             borderImage:
               'linear-gradient(to top right, rgba(209,208,208,0.8), rgba(171,171,171,0.6), rgba(138,138,138,0.5)) 1',
