@@ -48,14 +48,15 @@ const Footer = () => {
         </span>
         <div className="flex justify-center gap-3 md:gap-5">
           {FooterIcons.map((FooterIcon: FooterIconsItem) => (
+            <Link key={FooterIcon.id} href={FooterIcon.link} >
             <Image
-              key={FooterIcon.id}
               src={FooterIcon.direccion}
               alt="Logo"
               width={40}
               height={40}
               className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 transition-all duration-300"
             />
+            </Link>
           ))}
         </div>
       </div>
