@@ -5,3 +5,33 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-calendar {
+    font-family: 'IBM Plex Sans', sans-serif !important;
+  }
+  
+  .custom-calendar .react-calendar__tile,
+  .custom-calendar .react-calendar__month-view__days__day,
+  .custom-calendar .react-calendar__month-view__weekdays__weekday {
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .custom-calendar .react-calendar__navigation button {
+    font-family: 'Holtwood One SC', serif !important; /* Para los botones de navegación */
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  @font-face {
+    font-family: 'Odor Mean Chey Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Odor Mean Chey Regular'), url('../../public/fonts/OdorMeanChey-Regular.woff') format('woff');
+    }
+
+    .booking-bg {
+        background-image: url('/assets/Booking.jpg');
+        background-size: cover;
+        background-position: center;
+      }
