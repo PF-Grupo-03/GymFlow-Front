@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -23,7 +23,7 @@ export default function GymFlowBanner() {
 
       {/* Botón */}
       <button
-        onClick={() => router.push('/planes')}
+        onClick={() => router.push('/Plans')}
         className="absolute top-[459px] left-1/2 transform -translate-x-1/2 w-[308px] h-[68px] bg-secondary rounded-[10px] flex items-center justify-center shadow-md"
       >
         <span className="text-[40px] leading-[72.27px] font-odor font-normal text-primary">

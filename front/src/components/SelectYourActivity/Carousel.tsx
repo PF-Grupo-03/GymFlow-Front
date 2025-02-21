@@ -1,3 +1,4 @@
+'use client';
 import { useState, useEffect, useCallback } from 'react';
 import CarouselItem from './CarouselItem';
 import { ICarouselProps } from '@/interfaces/SelectYourActivitiyInterface';
