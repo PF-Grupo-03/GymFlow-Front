@@ -23,7 +23,7 @@ export default function GymFlowBanner() {
 
       <button
         onClick={() => router.push('/Plans')}
-        className="absolute top-[459px] left-1/2 transform -translate-x-1/2 w-[308px] h-[68px] bg-secondary rounded-[10px] flex items-center justify-center shadow-md"
+        className="absolute top-[459px] left-1/2 transform -translate-x-1/2 w-[308px] h-[68px] bg-secondary rounded-[10px] flex items-center justify-center shadow-md hover:bg-tertiary transition"
       >
         <span className="text-[40px] leading-[72.27px] font-odor font-normal text-primary">
           Ver Planes
