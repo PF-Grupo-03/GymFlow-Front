@@ -4,11 +4,11 @@ import Carousel from './Carousel';
 const SelectYourActivitie: React.FC = () => {
   return (
     <div className="bg-primary min-h-screen flex flex-col items-center justify-center space-y-6">
-      <h2 className="font-holtwood text-4xl text-tertiary mt-2 mb-2">
+      <h2 className="font-holtwood text-2xl text-tertiary mt-2 mb-2">
         ¡Elegí tu actividad!
       </h2>
 
-      <h3 className="font-holtwood text-3xl text-secondary mt-0 mb-0">
+      <h3 className="font-holtwood text-2xl text-secondary mt-0 mb-0">
         Musculación
       </h3>
       <Carousel items={activities1} />
@@ -19,7 +19,7 @@ const SelectYourActivitie: React.FC = () => {
         te ayudarán a lograr resultados visibles y duraderos.
       </p>
 
-      <h3 className="font-holtwood text-3xl text-secondary">Funcionales</h3>
+      <h3 className="font-holtwood text-2xl text-secondary">Funcionales</h3>
       <Carousel items={activities2} />
 
       <p className="font-ibm text-secondary text-[20px] leading-[1.15] text-justify max-w-[65%] mx-auto pb-4">

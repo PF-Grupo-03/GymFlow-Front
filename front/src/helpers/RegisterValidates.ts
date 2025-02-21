@@ -23,6 +23,14 @@ export const RegisterValidates = Yup.object().shape({
     .required('Campo requerido'),
 
   address: Yup.string().required('Campo requerido'),
+
+  birthdate: Yup.date()
+    .nullable()
+    .required('Campo requerido')
+    .max(
+      new Date(new Date().setFullYear(new Date().getFullYear() - 12)),
+      'Debes ser mayor de 12 años'
+    ),
 });
 
 export default RegisterValidates;
