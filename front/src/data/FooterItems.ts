@@ -53,15 +53,15 @@ export const FooterLinks: FooterLinksItem[] = [
 
 export const FooterIcons: FooterIconsItem[] = [
   {
-    id: 1,
+    id: 0,
     direccion: '/images/facebook.svg',
   },
   {
-    id: 2,
+    id: 1,
     direccion: '/images/instagram.svg',
   },
   {
-    id: 3,
+    id: 2,
     direccion: '/images/linkedin.svg',
   },
 ];

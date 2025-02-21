@@ -12,6 +12,7 @@ import Link from "next/link";
 const Footer = () => {
   return (
     <footer className="font-ibm bg-gradient-to-b from-primary to-tertiary relative w-full text-secondary py-3 px-4 flex flex-wrap justify-center items-center text-xs md:text-sm gap-4 md:gap-10">
+
       <div className="flex-1 w-full md:w-auto text-center">
         <span className="block font-semibold text-sm md:text-base mb-1 whitespace-nowrap">
           Información de Contacto
@@ -45,15 +46,15 @@ const Footer = () => {
         <span className="block font-semibold text-sm md:text-base mb-1">
           Redes Sociales
         </span>
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-3 md:gap-5">
           {FooterIcons.map((FooterIcon: FooterIconsItem) => (
             <Image
               key={FooterIcon.id}
               src={FooterIcon.direccion}
               alt="Logo"
-              width={30}
-              height={30}
-              className="w-8 h-8"
+              width={40}
+              height={40}
+              className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 transition-all duration-300"
             />
           ))}
         </div>

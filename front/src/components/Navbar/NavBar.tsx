@@ -5,9 +5,16 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import NavItems, { NavItem } from "@/data/NavItems";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  const onClickRegister = () => {
+    console.log("click");
+    router.push("/Register");
+  };
 
   return (
     <>
@@ -25,6 +32,7 @@ const NavBar = () => {
           </button>
 
           <Image src="/images/logo.png" alt="logo" width={80} height={80} />
+
           <ul
             className={`absolute lg:static top-20 left-0 w-full lg:w-auto bg-tertiary lg:bg-transparent flex flex-col lg:flex-row gap-5 p-5 lg:p-0 transition-all duration-300 ${
               isOpen
@@ -42,14 +50,20 @@ const NavBar = () => {
               </li>
             ))}
 
-            <li className="lg:hidden">
-              <button className="text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300 w-full">
+            <li className="lg:hidden">  
+              <button 
+                onClick={onClickRegister} 
+                className="text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300 w-full"
+              >
                 Registrate
               </button>
             </li>
           </ul>
 
-          <button className="hidden lg:block text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300">
+          <button 
+            onClick={onClickRegister} 
+            className="hidden lg:block text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300"
+          >
             Registrate
           </button>
         </nav>
