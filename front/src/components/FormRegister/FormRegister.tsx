@@ -12,10 +12,10 @@ const FormRegister = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen pb-8">
+    <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/Register.jpg')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
-      <div className="relative bg-secondary p-8 rounded-2xl shadow-lg w-full max-w-xl">
+      <div className="relative bg-secondary p-8 mt-12 rounded-2xl shadow-lg w-full max-w-xl">
         <h2 className="text-primary text-3xl font-holtwood text-center mb-6">
           REGISTRARSE
         </h2>
