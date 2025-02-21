@@ -40,7 +40,9 @@ const TimePickerComponent: React.FC<TimePickerComponentProps> = ({
           </div>
         </>
       ) : (
-        <p className="text-center text-gray-500">Selecciona un día primero</p>
+        <p className="text-center font-ibm text-gray-500">
+          Seleccioná un día primero
+        </p>
       )}
     </div>
   );

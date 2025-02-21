@@ -17,51 +17,51 @@ export interface FooterIconsItem {
 export const FooterItems: FooterInfoItem[] = [
   {
     id: 1,
-    texto: "Direccion: Calle falsa 123",
+    texto: 'Direccion: Calle falsa 123',
   },
   {
     id: 2,
-    texto: "Cuidad, Pais",
+    texto: 'Cuidad, Pais',
   },
   {
     id: 3,
-    texto: "Telefono: +54 (0) 000 000 000",
+    texto: 'Telefono: +54 (0) 000 000 000',
   },
   {
     id: 4,
-    texto: "Correo: gymflow@gmail.com",
+    texto: 'Correo: gymflow@gmail.com',
   },
 ];
 
 export const FooterLinks: FooterLinksItem[] = [
   {
     id: 1,
-    texto: "Inicio",
-    link: "/home",
+    texto: 'Inicio',
+    link: '/',
   },
   {
     id: 2,
-    texto: "Planes",
-    link: "/plans",
+    texto: 'Planes',
+    link: '/Plans',
   },
   {
     id: 3,
-    texto: "Sobre Nosotros",
-    link: "/about-us",
+    texto: 'Sobre Nosotros',
+    link: '/about-us',
   },
 ];
 
 export const FooterIcons: FooterIconsItem[] = [
   {
     id: 1,
-    direccion: "/images/facebook.svg",
+    direccion: '/images/facebook.svg',
   },
   {
     id: 2,
-    direccion: "/images/instagram.svg",
+    direccion: '/images/instagram.svg',
   },
   {
     id: 3,
-    direccion: "/images/linkedin.svg",
+    direccion: '/images/linkedin.svg',
   },
 ];
