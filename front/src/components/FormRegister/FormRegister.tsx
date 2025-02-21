@@ -23,6 +23,7 @@ const FormRegister = () => {
         <Formik
           initialValues={{
             fullName: '',
+            birthdate: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -56,6 +57,21 @@ const FormRegister = () => {
                   />
                   <ErrorMessage
                     name="fullName"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-primary font-holtwood text-sm">
+                    Fecha de Nacimiento:
+                  </label>
+                  <Field
+                    type="date"
+                    name="birthdate"
+                    className="w-full border-2 border-tertiary p-2 rounded-md"
+                  />
+                  <ErrorMessage
+                    name="birthdate"
                     component="div"
                     className="text-red-500 text-xs"
                   />
