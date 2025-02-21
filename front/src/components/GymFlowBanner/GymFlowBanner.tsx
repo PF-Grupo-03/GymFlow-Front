@@ -7,7 +7,7 @@ export default function GymFlowBanner() {
   const router = useRouter();
 
   return (
-    <div className="relative w-full h-[792px] mt-[40px] overflow-hidden">
+    <div className="relative w-full h-[792px] overflow-hidden -mt-5 rounded-b-[10px]">
       <Image
         src="/gymFlowBanner/fitnessportada.png"
         alt="Gym Flow Background"

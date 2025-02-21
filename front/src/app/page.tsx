@@ -4,7 +4,7 @@ import SelectYourActivitie from '@/components/SelectYourActivity/SelectYourActiv
 
 export function Home() {
   return (
-    <div>
+    <div className="bg-primary">
       <GymFlowBanner />
       <WhyChooseUs />
       <SelectYourActivitie />
