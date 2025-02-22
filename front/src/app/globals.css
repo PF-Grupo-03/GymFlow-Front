@@ -1,40 +1,45 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Holtwood+One+SC&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Holtwood+One+SC&display=swap");
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-.custom-calendar {
-    font-family: 'IBM Plex Sans', sans-serif !important;
-  }
-  
-  .custom-calendar .react-calendar__tile,
-  .custom-calendar .react-calendar__month-view__days__day,
-  .custom-calendar .react-calendar__month-view__weekdays__weekday {
-    font-family: 'IBM Plex Sans', sans-serif !important;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  .custom-calendar .react-calendar__navigation button {
-    font-family: 'Holtwood One SC', serif !important; /* Para los botones de navegación */
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  @font-face {
-    font-family: 'Odor Mean Chey Regular';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Odor Mean Chey Regular'), url('../../public/fonts/OdorMeanChey-Regular.woff') format('woff');
+.custom-calendar .react-calendar__tile,
+.custom-calendar .react-calendar__month-view__days__day,
+.custom-calendar .react-calendar__month-view__weekdays__weekday {
+  font-family: "IBM Plex Sans", sans-serif !important;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-  .booking-bg {
-    background-image: url('/assets/Booking.jpg');
-    background-size: cover;
-    background-position: center;
+.custom-calendar .react-calendar__navigation button {
+  font-family: "Holtwood One SC", serif !important; /* Para los botones de navegación */
+  font-size: 20px;
+  font-weight: bold;
 }
+
+@font-face {
+  font-family: "Odor Mean Chey Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Odor Mean Chey Regular"),
+    url("../../public/fonts/OdorMeanChey-Regular.woff") format("woff");
+}
+
+body {
+  background-color: #333333;
+}
+
+.booking-bg {
+  background-image: url("/assets/Booking.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.orangeShadow {
+  box-shadow: rgba(255, 119, 0, 0.4) 5px 5px, rgba(255, 119, 0, 0.3) 10px 10px,
+    rgba(255, 119, 0, 0.2) 15px 15px;
 
 ::-webkit-scrollbar {
   width: 12px;
