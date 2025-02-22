@@ -110,3 +110,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #ff3d00;
 }
+
+body {
+  background-color: #333333;
+}

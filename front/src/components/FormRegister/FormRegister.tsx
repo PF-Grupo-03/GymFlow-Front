@@ -24,6 +24,7 @@ const FormRegister = () => {
           initialValues={{
             fullName: '',
             birthdate: '',
+            nDni: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -43,7 +44,7 @@ const FormRegister = () => {
             resetForm();
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, isValid }) => (
             <Form className="flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -68,6 +69,21 @@ const FormRegister = () => {
                   <Field
                     type="date"
                     name="birthdate"
+                    className="w-full border-2 border-tertiary p-2 rounded-md"
+                  />
+                  <ErrorMessage
+                    name="birthdate"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-primary font-holtwood text-sm">
+                    N° de Documento:
+                  </label>
+                  <Field
+                    type="string"
+                    name="nDni"
                     className="w-full border-2 border-tertiary p-2 rounded-md"
                   />
                   <ErrorMessage
@@ -190,8 +206,10 @@ const FormRegister = () => {
 
               <button
                 type="submit"
-                className="bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition"
-                disabled={isSubmitting}
+                className={`bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition ${
+                  !isValid ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                disabled={!isValid || isSubmitting}
               >
                 REGISTRARSE
               </button>
