@@ -4,38 +4,44 @@ import { memberships } from '@/data/Memberships';
 
 export default function Memberships() {
   return (
-    <div className="text-center py-12 bg-secondary">
-      <h2 className="text-3xl font-holtwood text-primary mb-8">
-        NUESTRAS MEMBRESÍAS
-      </h2>
-      <div className="flex justify-center gap-8 p-6 rounded-lg relative bg-secondary shadow-lg">
-        <div
-          className="absolute bottom-0 left-0 w-full h-full rounded-[25%] border-b-[8px] border-l-[8px] border-transparent"
-          style={{
-            borderImage:
-              'linear-gradient(to top right, rgba(209,208,208,0.8), rgba(171,171,171,0.6), rgba(138,138,138,0.5)) 1',
-          }}
-        ></div>
+    <div className="text-center py-12 bg-primary -mt-5">
+      {/* Título con fondo y sombra */}
+      <div className="inline-block bg-tertiary px-8 py-3 rounded-lg shadow-md">
+        <h2 className="text-3xl font-bold font-holtwood text-primary tracking-wider">
+          NUESTRAS MEMBRESÍAS
+        </h2>
+      </div>
+
+      {/* Contenedor de tarjetas */}
+      <div className="flex justify-center gap-10 mt-10">
         {memberships.map((membership, index) => (
           <div
             key={index}
-            className="w-80 p-6 bg-secondary rounded-lg shadow-lg text-center relative z-10"
+            className="w-80 p-6 bg-secondary rounded-lg shadow-[8px_8px_0px_rgba(0,0,0,0.6)] text-center border border-gray-300"
           >
-            <h3 className="text-2xl font-holtwood text-primary">
+            {/* Título de cada membresía */}
+            <h3 className="text-2xl font-holtwood text-black uppercase">
               {membership.title}
             </h3>
-            <p className="text-xl font-holtwood text-primary mt-2">
-              {membership.price}
+
+            {/* Precio */}
+            <p className="text-2xl font-holtwood text-black mt-2">
+              ${membership.price}
+              <span className="text-sm font-light">/MES</span>
             </p>
-            <ul className="mt-4 text-left text-sm text-primary">
+
+            {/* Lista de características */}
+            <ul className="mt-4 text-left text-md text-black font-ibm">
               {membership.features.map((feature, i) => (
-                <li key={i} className="mb-2 font-ibm">
+                <li key={i} className="mb-2">
                   • {feature}
                 </li>
               ))}
             </ul>
-            <button className="mt-4 bg-tertiary text-primary font-holtwood py-2 px-4 rounded-lg hover:bg-orange-600">
-              Adquirir
+
+            {/* Botón de adquirir */}
+            <button className="mt-6 bg-tertiary text-black font-holtwood py-2 px-6 rounded-md shadow-lg hover:bg-[#E66400] transition">
+              ADQUIRIR
             </button>
           </div>
         ))}
@@ -43,3 +49,4 @@ export default function Memberships() {
     </div>
   );
 }
+
