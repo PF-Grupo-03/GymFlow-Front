@@ -5,37 +5,96 @@
 @tailwind components;
 @tailwind utilities;
 
+.orangeShadow {
+  box-shadow: rgba(255, 119, 0, 0.4) 5px 5px, rgba(255, 119, 0, 0.3) 10px 10px, rgba(255, 119, 0, 0.2) 15px 15px;
+}
+
+/* ===== Estilos personalizados del calendario ===== */
 .custom-calendar {
-    font-family: 'IBM Plex Sans', sans-serif !important;
-  }
-  
-  .custom-calendar .react-calendar__tile,
-  .custom-calendar .react-calendar__month-view__days__day,
-  .custom-calendar .react-calendar__month-view__weekdays__weekday {
-    font-family: 'IBM Plex Sans', sans-serif !important;
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  .custom-calendar .react-calendar__navigation button {
-    font-family: 'Holtwood One SC', serif !important; /* Para los botones de navegación */
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  @font-face {
-    font-family: 'Odor Mean Chey Regular';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Odor Mean Chey Regular'), url('../../public/fonts/OdorMeanChey-Regular.woff') format('woff');
+  background-color: #333333 !important;
+  color: white !important;
+  border-radius: 12px;
+  padding: 10px;
 }
 
-  .booking-bg {
-    background-image: url('/assets/Booking.jpg');
-    background-size: cover;
-    background-position: center;
+/* Estilos generales para los días */
+.custom-calendar .react-calendar__tile {
+  font-weight: bold;
+  border-radius: 6px !important;
+  padding: 10px;
 }
 
+/* 🔥 Día seleccionado se mantiene en naranja */
+.custom-calendar .react-calendar__tile--active:not(.react-calendar__tile--now) {
+  background-color: #FF7700 !important; /* Fondo naranja */
+  color: white !important; /* Texto en blanco */
+  border-radius: 8px;
+}
+
+/* ⚪ Días permitidos (minDate a maxDate) → Fondo blanco */
+.custom-calendar .react-calendar__tile:enabled {
+  background-color: white !important;
+  color: #333333 !important;
+}
+
+/* ✅ Evita que los días habilitados vuelvan al color blanco después de ser seleccionados */
+.custom-calendar .react-calendar__tile:enabled:not(.react-calendar__tile--active) {
+  background-color: white !important;
+  color: #333333 !important;
+}
+
+/* ❌ Días no permitidos (fuera de minDate o maxDate) */
+.custom-calendar .react-calendar__tile:disabled {
+  background-color: #333333 !important;
+  color: #888888 !important; 
+}
+
+/* Cambia el color de los nombres de los días de la semana */
+.custom-calendar .react-calendar__month-view__weekdays {
+  background-color: #FF7700 !important;
+}
+
+/* Estilos para los textos de los días de la semana */
+.custom-calendar .react-calendar__month-view__weekdays__weekday {
+  color: white !important;
+  font-weight: bold;
+  border-bottom: none !important; /* Elimina la línea punteada */
+}
+
+/* Oculta la línea punteada que aparece debajo de los días de la semana */
+.custom-calendar .react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+}
+
+/* 🎯 Efecto hover en los días seleccionables */
+.custom-calendar .react-calendar__tile:enabled:hover {
+  background-color: rgba(255, 119, 0, 0.7) !important;
+  border-radius: 8px;
+}
+
+/* Cambia el color de los botones de navegación */
+.custom-calendar .react-calendar__navigation button {
+  color: white !important;
+  background: transparent !important;
+  font-weight: bold;
+}
+
+/* ===== Fuentes personalizadas ===== */
+@font-face {
+  font-family: 'Odor Mean Chey Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Odor Mean Chey Regular'), url('../../public/fonts/OdorMeanChey-Regular.woff') format('woff');
+}
+
+/* ===== Fondo personalizado para Booking ===== */
+.booking-bg {
+  background-image: url('/assets/Booking.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== Personalización de la barra de scroll ===== */
 ::-webkit-scrollbar {
   width: 12px;
 }
