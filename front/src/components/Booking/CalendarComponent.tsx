@@ -7,7 +7,7 @@ import 'react-calendar/dist/Calendar.css';
 const CalendarComponent: React.FC<CalendarComponentProps> = ({
   onSelectDate,
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // Inicializa con la fecha actual
 
   const today = new Date();
   const maxDate = new Date();
