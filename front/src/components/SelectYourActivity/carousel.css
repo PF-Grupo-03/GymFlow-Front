@@ -1,0 +1,41 @@
+.carousel-container {
+    perspective: 1000px;
+  }
+  
+  .carousel-track {
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .carousel-item {
+    backface-visibility: hidden;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .carousel-item.active {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+  }
+  
+  .carousel-item.hidden {
+    opacity: 0;
+    transform: scale(0.8) translateZ(-200px);
+  }
+  
+  .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .nav-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+  }
+  
