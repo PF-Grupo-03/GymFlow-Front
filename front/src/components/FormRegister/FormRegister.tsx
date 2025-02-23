@@ -5,6 +5,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Toast } from '../Toast/Toast';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
+import { IRegister } from '@/interfaces/IRegister';
+import { Register } from '@/helpers/auth.helper';
 
 const FormRegister = () => {
   // Estados para controlar la visibilidad de las contraseñas
@@ -22,9 +24,9 @@ const FormRegister = () => {
 
         <Formik
           initialValues={{
-            fullName: '',
+            nameAndLastName: '',
             birthdate: '',
-            nDni: '',
+            // nDni: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -32,16 +34,31 @@ const FormRegister = () => {
             address: '',
           }}
           validationSchema={RegisterValidates}
-          onSubmit={(values, { resetForm }) => {
-            console.log('Formulario enviado:', values);
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              const userData: IRegister = {
+                nameAndLastName: values.nameAndLastName,
+                bDate: values.birthdate,
+                email: values.email,
+                password: values.password,
+                phone: values.phone,
+                confirmPassword: values.confirmPassword,
+                address: values.address,
+                role: 'user',
+              };
 
-            Toast.fire({
-              icon: 'success',
-              title: 'Registro exitoso',
-              text: `Bienvenido, ${values.fullName}!`,
-            });
+              await Register(userData);
 
-            resetForm();
+              Toast.fire({
+                icon: 'success',
+                title: 'Registro exitoso',
+                text: `Bienvenido, ${values.nameAndLastName}!`,
+              });
+
+              resetForm();
+            } catch (error) {
+              console.error('Error en el registro:', error);
+            }
           }}
         >
           {({ isSubmitting, isValid }) => (
@@ -53,11 +70,11 @@ const FormRegister = () => {
                   </label>
                   <Field
                     type="text"
-                    name="fullName"
+                    name="nameAndLastName"
                     className="w-full border-2 border-tertiary p-2 rounded-md"
                   />
                   <ErrorMessage
-                    name="fullName"
+                    name="nameAndLastName"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -77,7 +94,7 @@ const FormRegister = () => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="text-primary font-holtwood text-sm">
                     N° de Documento:
                   </label>
@@ -91,7 +108,7 @@ const FormRegister = () => {
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <label className="text-primary font-holtwood text-sm">
