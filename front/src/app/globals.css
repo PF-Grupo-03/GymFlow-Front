@@ -79,8 +79,14 @@ body {
 
 /* 🔥 Sombras personalizadas */
 .orangeShadow {
-  box-shadow: rgba(255, 119, 0, 0.4) 5px 5px, rgba(255, 119, 0, 0.3) 10px 10px, rgba(255, 119, 0, 0.2) 15px 15px;
+  box-shadow: rgba(255, 119, 0, 0.4) 5px 5px, rgba(255, 119, 0, 0.3) 10px 10px,
+    rgba(255, 119, 0, 0.2) 15px 15px;
 }
+
+.whiteShadow {
+    box-shadow: #f5f5f58a 5px 5px, #f5f5f54b 10px 10px,
+    #f5f5f52d 15px 15px;
+  }
 
 /* ===== Fuentes personalizadas ===== */
 @font-face {

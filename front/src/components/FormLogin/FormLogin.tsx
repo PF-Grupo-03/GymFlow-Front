@@ -18,7 +18,7 @@ const FormLogin = () => {
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/image_login.png')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
-      <div className="relative bg-secondary p-12 w-[420px] h-[450px] rounded-2xl shadow-lg mt-12">
+      <div className="relative bg-secondary p-12 w-[420px] h-[450px] rounded-2xl whiteShadow mt-12">
         <h2 className="text-primary text-3xl font-holtwood text-center mb-12">
           INICIAR SESIÓN
         </h2>
