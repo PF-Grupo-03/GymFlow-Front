@@ -2,21 +2,15 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Toast } from '../Toast/Toast';
 import Link from 'next/link';
-import * as Yup from 'yup';
 import { Eye, EyeOff } from 'lucide-react';
-
-const loginValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Email no válido')
-    .required('El email es obligatorio'),
-  password: Yup.string()
-    .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .required('La contraseña es obligatoria'),
-});
+import loginValidationSchema from '@/helpers/LoginValidates';
+import { Login } from '@/helpers/auth.helper';
+import Cookies from 'js-cookie';
+import { useAuth } from '@/context/AuthContext';
 
 const FormLogin = () => {
+  const { setUserData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -32,16 +26,27 @@ const FormLogin = () => {
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={loginValidationSchema}
-          onSubmit={(values, { resetForm }) => {
-            console.log('Inicio de sesión:', values);
-
-            Toast.fire({
-              icon: 'success',
-              title: 'Inicio de sesión exitoso',
-            });
-
-            resetForm();
-            router.push('/');
+          onSubmit={async (values, { setSubmitting }) => {
+            setSubmitting(true);
+            try {
+              const response = await Login(values);
+              setUserData({
+                token: response.data.token,
+                user: response.data.user,
+              });
+              Cookies.set(
+                'userData',
+                JSON.stringify({
+                  token: response.data.token,
+                  user: response.data.user,
+                })
+              );
+              router.push('/');
+            } catch (error) {
+              console.error('Login failed:', error);
+            } finally {
+              setSubmitting(false);
+            }
           }}
         >
           {({ isSubmitting }) => (

@@ -5,6 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #333333 !important;
+}
+
 /* 🔥 Estilos del calendario actualizados */
 .custom-calendar {
   background-color: #333333 !important;
