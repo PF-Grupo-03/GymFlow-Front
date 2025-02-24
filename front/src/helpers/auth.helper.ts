@@ -6,9 +6,10 @@ import axios from 'axios';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function Register(userData: IRegister) {
+
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
-
+    console.log( response);
     if (response.status === 201) {
       Toast.fire({
         icon: 'success',
@@ -17,6 +18,7 @@ export async function Register(userData: IRegister) {
       return response;
     }
   } catch (error: any) {
+    console.log(`${API_URL}/auth/signup`)
     console.log(error);
     Toast.fire({
       icon: 'error',

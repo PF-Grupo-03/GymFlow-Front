@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import loginValidationSchema from '@/helpers/LoginValidates';
 import { Login } from '@/helpers/auth.helper';
-import Cookies from 'js-cookie';
 import { useAuth } from '@/context/AuthContext';
+import Cookies from 'js-cookie';
+import axios from 'axios'; // Asegúrate de tener axios para la petición
+import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
 
 const FormLogin = () => {
   const { setUserData } = useAuth();
@@ -18,7 +20,7 @@ const FormLogin = () => {
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/image_login.png')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
-      <div className="relative bg-secondary p-12 w-[420px] h-[450px] rounded-2xl whiteShadow mt-12">
+      <div className="relative bg-secondary p-12 w-[420px] h-[450px] rounded-2xl shadow-lg mt-12">
         <h2 className="text-primary text-3xl font-holtwood text-center mb-12">
           INICIAR SESIÓN
         </h2>
@@ -29,18 +31,31 @@ const FormLogin = () => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
+              // Paso 1: Realizar el login para obtener el token
               const response = await Login(values);
-              setUserData({
-                token: response.data.token,
-                user: response.data.user,
-              });
-              Cookies.set(
-                'userData',
-                JSON.stringify({
-                  token: response.data.token,
-                  user: response.data.user,
-                })
+
+              // Paso 2: Guardamos el token y hacemos la petición para obtener los datos del usuario
+              const token = response.data.token;
+              const email = values.email;
+
+              // Hacemos la petición al endpoint para obtener los datos del usuario
+              const userResponse = await axios.get(
+                `${NEXT_PUBLIC_API_URL}/users/email/${email}`, 
+                { headers: { Authorization: `Bearer ${token}` } }
               );
+
+              // Paso 3: Guardamos los datos de sesión y del usuario
+              const sessionData = {
+                token: token,
+                user: userResponse.data, // Aquí guardas la información completa del usuario
+              };
+
+              // Actualizamos el contexto, localStorage y las cookies
+              setUserData(sessionData); // Actualiza el contexto
+              localStorage.setItem('userSession', JSON.stringify(sessionData)); // Guarda en localStorage
+              Cookies.set('authToken', sessionData.token, { expires: 7 }); // Guarda el token en cookies
+
+              // Redirigimos al usuario a la página principal
               router.push('/');
             } catch (error) {
               console.error('Login failed:', error);
