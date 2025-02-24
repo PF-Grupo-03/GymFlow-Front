@@ -10,8 +10,7 @@ export const LogoutButton: React.FC = () => {
   const handleLogout = () => {
     setUserData(null);
     Cookies.remove('userData');
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem('userSession');
     router.push('/Login');
     Toast.fire({
       icon: 'success',
