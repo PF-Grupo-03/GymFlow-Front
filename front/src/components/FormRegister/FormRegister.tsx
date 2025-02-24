@@ -44,7 +44,7 @@ const FormRegister = () => {
                 phone: values.phone,
                 confirmPassword: values.confirmPassword,
                 address: values.address,
-                role: 'user',
+                role: 'USER_MEMBER',
               };
 
               await Register(userData);
