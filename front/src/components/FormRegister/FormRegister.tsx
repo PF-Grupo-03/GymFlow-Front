@@ -5,6 +5,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Toast } from '../Toast/Toast';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
+import { IRegister } from '@/interfaces/IRegister';
+import { Register } from '@/helpers/auth.helper';
 
 const FormRegister = () => {
   // Estados para controlar la visibilidad de las contraseñas
@@ -15,15 +17,16 @@ const FormRegister = () => {
     <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/Register.jpg')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
-      <div className="relative bg-secondary p-8 mt-12 rounded-2xl shadow-lg w-full max-w-xl">
+      <div className="relative bg-secondary p-8 mt-12 rounded-2xl whiteShadow w-full max-w-xl ">
         <h2 className="text-primary text-3xl font-holtwood text-center mb-6">
           REGISTRARSE
         </h2>
 
         <Formik
           initialValues={{
-            fullName: '',
+            nameAndLastName: '',
             birthdate: '',
+            // nDni: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -31,19 +34,34 @@ const FormRegister = () => {
             address: '',
           }}
           validationSchema={RegisterValidates}
-          onSubmit={(values, { resetForm }) => {
-            console.log('Formulario enviado:', values);
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              const userData: IRegister = {
+                nameAndLastName: values.nameAndLastName,
+                bDate: values.birthdate,
+                email: values.email,
+                password: values.password,
+                phone: values.phone,
+                confirmPassword: values.confirmPassword,
+                address: values.address,
+                role: 'USER_MEMBER',
+              };
 
-            Toast.fire({
-              icon: 'success',
-              title: 'Registro exitoso',
-              text: `Bienvenido, ${values.fullName}!`,
-            });
+              await Register(userData);
 
-            resetForm();
+              Toast.fire({
+                icon: 'success',
+                title: 'Registro exitoso',
+                text: `Bienvenido, ${values.nameAndLastName}!`,
+              });
+
+              resetForm();
+            } catch (error) {
+              console.error('Error en el registro:', error);
+            }
           }}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, isValid }) => (
             <Form className="flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -52,11 +70,11 @@ const FormRegister = () => {
                   </label>
                   <Field
                     type="text"
-                    name="fullName"
+                    name="nameAndLastName"
                     className="w-full border-2 border-tertiary p-2 rounded-md"
                   />
                   <ErrorMessage
-                    name="fullName"
+                    name="nameAndLastName"
                     component="div"
                     className="text-red-500 text-xs"
                   />
@@ -76,6 +94,21 @@ const FormRegister = () => {
                     className="text-red-500 text-xs"
                   />
                 </div>
+                {/* <div>
+                  <label className="text-primary font-holtwood text-sm">
+                    N° de Documento:
+                  </label>
+                  <Field
+                    type="string"
+                    name="nDni"
+                    className="w-full border-2 border-tertiary p-2 rounded-md"
+                  />
+                  <ErrorMessage
+                    name="nDni"
+                    component="div"
+                    className="text-red-500 text-xs"
+                  />
+                </div> */}
 
                 <div>
                   <label className="text-primary font-holtwood text-sm">
@@ -190,8 +223,10 @@ const FormRegister = () => {
 
               <button
                 type="submit"
-                className="bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition"
-                disabled={isSubmitting}
+                className={`bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition ${
+                  !isValid ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                disabled={!isValid || isSubmitting}
               >
                 REGISTRARSE
               </button>

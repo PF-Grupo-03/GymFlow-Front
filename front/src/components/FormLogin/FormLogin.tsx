@@ -2,21 +2,17 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Toast } from '../Toast/Toast';
 import Link from 'next/link';
-import * as Yup from 'yup';
 import { Eye, EyeOff } from 'lucide-react';
-
-const loginValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Email no válido')
-    .required('El email es obligatorio'),
-  password: Yup.string()
-    .min(8, 'La contraseña debe tener al menos 8 caracteres')
-    .required('La contraseña es obligatoria'),
-});
+import loginValidationSchema from '@/helpers/LoginValidates';
+import { Login } from '@/helpers/auth.helper';
+import { useAuth } from '@/context/AuthContext';
+import Cookies from 'js-cookie';
+import axios from 'axios'; // Asegúrate de tener axios para la petición
+import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
 
 const FormLogin = () => {
+  const { setUserData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -32,16 +28,40 @@ const FormLogin = () => {
         <Formik
           initialValues={{ email: '', password: '' }}
           validationSchema={loginValidationSchema}
-          onSubmit={(values, { resetForm }) => {
-            console.log('Inicio de sesión:', values);
+          onSubmit={async (values, { setSubmitting }) => {
+            setSubmitting(true);
+            try {
+              // Paso 1: Realizar el login para obtener el token
+              const response = await Login(values);
 
-            Toast.fire({
-              icon: 'success',
-              title: 'Inicio de sesión exitoso',
-            });
+              // Paso 2: Guardamos el token y hacemos la petición para obtener los datos del usuario
+              const token = response.data.token;
+              const email = values.email;
 
-            resetForm();
-            router.push('/');
+              // Hacemos la petición al endpoint para obtener los datos del usuario
+              const userResponse = await axios.get(
+                `${NEXT_PUBLIC_API_URL}/users/email/${email}`, 
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+
+              // Paso 3: Guardamos los datos de sesión y del usuario
+              const sessionData = {
+                token: token,
+                user: userResponse.data, // Aquí guardas la información completa del usuario
+              };
+
+              // Actualizamos el contexto, localStorage y las cookies
+              setUserData(sessionData); // Actualiza el contexto
+              localStorage.setItem('userSession', JSON.stringify(sessionData)); // Guarda en localStorage
+              Cookies.set('authToken', sessionData.token, { expires: 7 }); // Guarda el token en cookies
+
+              // Redirigimos al usuario a la página principal
+              router.push('/');
+            } catch (error) {
+              console.error('Login failed:', error);
+            } finally {
+              setSubmitting(false);
+            }
           }}
         >
           {({ isSubmitting }) => (

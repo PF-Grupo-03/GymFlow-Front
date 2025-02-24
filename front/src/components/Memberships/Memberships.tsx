@@ -6,7 +6,7 @@ export default function Memberships() {
   return (
     <div className="text-center py-12 bg-primary -mt-5">
       {/* Título con fondo y sombra */}
-      <div className="inline-block bg-tertiary px-8 py-3 rounded-lg shadow-md">
+      <div className="inline-block bg-tertiary px-8 py-3 rounded-lg orangeShadow">
         <h2 className="text-3xl font-bold font-holtwood text-primary tracking-wider">
           NUESTRAS MEMBRESÍAS
         </h2>
@@ -17,7 +17,7 @@ export default function Memberships() {
         {memberships.map((membership, index) => (
           <div
             key={index}
-            className="w-80 p-6 bg-secondary rounded-lg shadow-[8px_8px_0px_rgba(0,0,0,0.6)] text-center border border-gray-300"
+            className="w-80 p-6 bg-secondary rounded-lg whiteShadow text-center border border-gray-300"
           >
             {/* Título de cada membresía */}
             <h3 className="text-2xl font-holtwood text-black uppercase">
@@ -49,4 +49,3 @@ export default function Memberships() {
     </div>
   );
 }
-
