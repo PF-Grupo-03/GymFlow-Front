@@ -14,7 +14,7 @@ export const LogoutButton: React.FC = () => {
     router.push('/Login');
     Toast.fire({
       icon: 'success',
-      title: 'Sesioó cerrada',
+      title: 'Sesión cerrada',
     });
   };
 

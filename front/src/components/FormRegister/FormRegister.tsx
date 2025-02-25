@@ -7,12 +7,13 @@ import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import { IRegister } from '@/interfaces/IRegister';
 import { Register } from '@/helpers/auth.helper';
+import { useRouter } from 'next/navigation';
 
 const FormRegister = () => {
   // Estados para controlar la visibilidad de las contraseñas
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const router = useRouter();
   return (
     <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/Register.jpg')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
@@ -52,10 +53,10 @@ const FormRegister = () => {
               Toast.fire({
                 icon: 'success',
                 title: 'Registro exitoso',
-                text: `Bienvenido, ${values.nameAndLastName}!`,
+                text: `Estas en GymFlow, ${values.nameAndLastName}!`,
               });
-
               resetForm();
+              router.push('/Login');
             } catch (error) {
               console.error('Error en el registro:', error);
             }
