@@ -32,10 +32,15 @@ export const RegisterValidates = Yup.object().shape({
       'Debes ser mayor de 12 años'
     ),
 
-  // nDni: Yup.string()
-  //   .matches(/^\d+$/, 'Solo se permiten números')
-  //   .min(7, 'Debe tener al menos 7 caracteres')
-  //   .required('Campo requerido'),
+  role: Yup.string()
+    .oneOf(['USER_MEMBER', 'USER_TRAINING'], 'Selecciona un rol válido')
+    .required('Campo requerido'),
+
+  dni: Yup.string()
+    .matches(/^\d+$/, 'El DNI solo debe contener números')
+    .min(7, 'El DNI debe tener al menos 7 dígitos')
+    .max(8, 'El DNI no puede tener más de 8 dígitos')
+    .required('El DNI es obligatorio'),
 });
 
 export default RegisterValidates;
