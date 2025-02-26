@@ -79,10 +79,14 @@ export default function CustomPaymentForm({ amount }: CustomPaymentFormProps) {
         {isAuthenticated ? (
           <form onSubmit={handlePayment}>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="payerEmail"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Correo del Pagador
               </label>
               <input
+                id="payerEmail"
                 type="email"
                 placeholder="ejemplo@email.com"
                 value={payerEmail}
@@ -93,10 +97,14 @@ export default function CustomPaymentForm({ amount }: CustomPaymentFormProps) {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="payerDni"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Número de DNI
               </label>
               <input
+                id="payerDni"
                 type="text"
                 placeholder="Ej: 12345678"
                 value={payerDni}
@@ -107,10 +115,14 @@ export default function CustomPaymentForm({ amount }: CustomPaymentFormProps) {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="cardNumber"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Número de Tarjeta
               </label>
               <input
+                id="cardNumber"
                 type="text"
                 placeholder="**** **** **** ****"
                 value={cardNumber}
@@ -120,23 +132,43 @@ export default function CustomPaymentForm({ amount }: CustomPaymentFormProps) {
               />
             </div>
 
+            {/* Expiración y CVV */}
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <input
-                type="text"
-                placeholder="MM/YY"
-                value={expiration}
-                onChange={(e) => setExpiration(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
-              <input
-                type="text"
-                placeholder="CVV"
-                value={cvv}
-                onChange={(e) => setCvv(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
+              <div>
+                <label
+                  htmlFor="expiration"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Fecha de Expiración (MM/YY)
+                </label>
+                <input
+                  id="expiration"
+                  type="text"
+                  placeholder="MM/YY"
+                  value={expiration}
+                  onChange={(e) => setExpiration(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="cvv"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Código de Seguridad (CVV)
+                </label>
+                <input
+                  id="cvv"
+                  type="text"
+                  placeholder="CVV"
+                  value={cvv}
+                  onChange={(e) => setCvv(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg"
+                  required
+                />
+              </div>
             </div>
 
             <button
