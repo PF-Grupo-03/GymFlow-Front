@@ -9,6 +9,7 @@ interface UserData {
   Email: string;
   Telefono: string;
   Dirección: string;
+  DNI: string;
 }
 
 const MyAccountComponent = () => {
@@ -20,15 +21,14 @@ const MyAccountComponent = () => {
     if (user) {
       const userParsed = JSON.parse(user);
 
-      // Ajuste aquí para tomar el nombre completo como "Nombre" y otros datos.
-      const { nameAndLastName, email, phone, address } = userParsed.user;
+      const { nameAndLastName, email, phone, address, dni } = userParsed.user;
       
-      // Ahora setea los datos correctamente en el estado.
       setUserData({
         Nombre: nameAndLastName,
         Email: email,
         Telefono: phone,
         Dirección: address,
+        DNI: dni,
       });
     }
   }, []);
@@ -45,7 +45,6 @@ const MyAccountComponent = () => {
       <div className="flex justify-center items-center my-10 mb-20">
         <div className={`flex flex-col justify-center items-center mt-5 gap-10 bg-secondary ${styles.whiteShadow} w-2/6 rounded-[10px] px-20 py-12 font-holtwood text-primary`}>
           {MyAccountItems.map((item: MyAccountItem) => {
-            // Usar un valor predeterminado vacío si userData es nulo
             const value: string = userData ? userData[item.name as keyof UserData] : "";
             return (
               <div key={item.id} className="w-full">
