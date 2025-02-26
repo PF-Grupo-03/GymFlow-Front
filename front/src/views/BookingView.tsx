@@ -32,7 +32,7 @@ const BookingView = () => {
           Reservá tu turno
         </h1>
 
-        <CalendarComponent onSelectDate={setSelectedDate} />
+        <CalendarComponent onSelectDate={(date) => setSelectedDate(date)} />
 
         <TimePickerComponent
           selectedDate={selectedDate}

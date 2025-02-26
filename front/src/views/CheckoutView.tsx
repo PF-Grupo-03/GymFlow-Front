@@ -1,18 +1,35 @@
 'use client';
-import CheckoutForm from '@/components/Payment/CheckoutForm';
-import { useRouter } from 'next/navigation';
+
+import CustomPaymentForm from '@/components/Payment/CustomPaymentForm';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function CheckoutView() {
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const [amount, setAmount] = useState<number>(0);
 
-  const handlePaymentSuccess = () => {
-    router.push('/success'); // Redirige a una página de éxito
-  };
+  useEffect(() => {
+    const queryAmount = searchParams.get('amount');
+    if (queryAmount) {
+      setAmount(parseFloat(queryAmount));
+    } else {
+      router.push('/plans'); // Redirige si no hay un monto válido
+    }
+  }, [searchParams, router]);
 
   return (
-    <div>
-      <h1>Pagar Membresía</h1>
-      <CheckoutForm onPaymentSuccess={handlePaymentSuccess} />
+    <div className="text-center bg-primary">
+      <div className="inline-block items-center bg-tertiary px-8 py-3 rounded-lg orangeShadow mt-6">
+        <h2 className="text-3xl font-bold font-holtwood text-primary tracking-wider">
+          PAGAR MEMBRESÍA
+        </h2>
+      </div>
+      {amount > 0 ? (
+        <CustomPaymentForm amount={amount} />
+      ) : (
+        <p className="text-center text-red-500">Cargando...</p>
+      )}
     </div>
   );
 }
