@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Link from 'next/link';
@@ -8,19 +8,25 @@ import loginValidationSchema from '@/helpers/LoginValidates';
 import { Login } from '@/helpers/auth.helper';
 import { useAuth } from '@/context/AuthContext';
 import Cookies from 'js-cookie';
-import axios from 'axios'; // Asegúrate de tener axios para la petición
+import axios from 'axios';
 import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
+import GoogleButton from '../GoogleButton/GoogleButton';
 
 const FormLogin = () => {
   const { setUserData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsExpanded(true);
+  }, []);
 
   return (
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/image_login.png')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
-      <div className="relative bg-secondary p-12 w-[420px] h-[450px] rounded-2xl shadow-lg mt-12">
+      <div className={`relative bg-secondary p-12 w-[420px] rounded-2xl shadow-lg mt-12 transition-all duration-300 ${isExpanded ? 'h-auto' : 'h-[450px]'}`}>        
         <h2 className="text-primary text-3xl font-holtwood text-center mb-12">
           INICIAR SESIÓN
         </h2>
@@ -31,31 +37,20 @@ const FormLogin = () => {
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              // Paso 1: Realizar el login para obtener el token
               const response = await Login(values);
-
-              // Paso 2: Guardamos el token y hacemos la petición para obtener los datos del usuario
               const token = response.data.token;
               const email = values.email;
-
-              // Hacemos la petición al endpoint para obtener los datos del usuario
               const userResponse = await axios.get(
                 `${NEXT_PUBLIC_API_URL}/users/email/${email}`, 
                 { headers: { Authorization: `Bearer ${token}` } }
               );
-
-              // Paso 3: Guardamos los datos de sesión y del usuario
               const sessionData = {
                 token: token,
-                user: userResponse.data, // Aquí guardas la información completa del usuario
+                user: userResponse.data,
               };
-
-              // Actualizamos el contexto, localStorage y las cookies
-              setUserData(sessionData); // Actualiza el contexto
-              localStorage.setItem('userSession', JSON.stringify(sessionData)); // Guarda en localStorage
-              Cookies.set('authToken', sessionData.token, { expires: 7 }); // Guarda el token en cookies
-
-              // Redirigimos al usuario a la página principal
+              setUserData(sessionData);
+              localStorage.setItem('userSession', JSON.stringify(sessionData));
+              Cookies.set('authToken', sessionData.token, { expires: 7 });
               router.push('/');
             } catch (error) {
               console.error('Login failed:', error);
@@ -65,27 +60,19 @@ const FormLogin = () => {
           }}
         >
           {({ isSubmitting }) => (
-            <Form className="flex flex-col gap-4">
+            <Form className="flex flex-col gap-4" onChange={() => setIsExpanded(true)}>
               <div>
-                <label className="text-primary font-holtwood text-sm">
-                  Email:
-                </label>
+                <label className="text-primary font-holtwood text-sm">Email:</label>
                 <Field
                   type="email"
                   name="email"
                   className="w-full border-2 border-tertiary p-2 rounded-md"
                 />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-xs"
-                />
+                <ErrorMessage name="email" component="div" className="text-red-500 text-xs" />
               </div>
 
               <div className="relative">
-                <label className="text-primary font-holtwood text-sm">
-                  Contraseña:
-                </label>
+                <label className="text-primary font-holtwood text-sm">Contraseña:</label>
                 <div className="relative">
                   <Field
                     type={showPassword ? 'text' : 'password'}
@@ -100,11 +87,7 @@ const FormLogin = () => {
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500 text-xs"
-                />
+                <ErrorMessage name="password" component="div" className="text-red-500 text-xs" />
               </div>
 
               <button
@@ -117,13 +100,11 @@ const FormLogin = () => {
 
               <p className="text-center text-sm text-primary font-ibm">
                 ¿No tienes una cuenta?{' '}
-                <Link
-                  href="/Register"
-                  className="text-orange-500 cursor-pointer"
-                >
+                <Link href="/Register" className="text-orange-500 cursor-pointer">
                   Regístrate
                 </Link>
               </p>
+              <GoogleButton/>
             </Form>
           )}
         </Formik>
