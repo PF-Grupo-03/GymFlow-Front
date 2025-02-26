@@ -65,7 +65,7 @@ const NavBar = () => {
 
           {/* Botón de logout o registrar (solo uno se muestra) */}
           {isAuthenticated ? (
-            <div className="w-[12%]">
+            <div className="hidden lg:block">
               <LogoutButton />
             </div>
           ) : (

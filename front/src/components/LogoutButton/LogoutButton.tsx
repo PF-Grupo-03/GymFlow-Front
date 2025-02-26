@@ -14,14 +14,14 @@ export const LogoutButton: React.FC = () => {
     router.push('/Login');
     Toast.fire({
       icon: 'success',
-      title: 'Sesioó cerrada',
+      title: 'Sesión cerrada',
     });
   };
 
   return (
     <button
       onClick={handleLogout}
-      className="text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300 w-full"
+      className="text-secondary bg-primary h-12 p-3 px-5 rounded-[10px] hover:bg-[#4b4b4b] transition duration-300 w-full lg:w-auto"
     >
       Cerrar Sesión
     </button>
