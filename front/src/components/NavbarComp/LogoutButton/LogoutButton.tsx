@@ -1,7 +1,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import { Toast } from '../Toast/Toast';
+import { Toast } from '../../Toast/Toast';
 
 export const LogoutButton: React.FC = () => {
   const { setUserData } = useAuth();

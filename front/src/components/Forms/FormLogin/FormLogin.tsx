@@ -26,7 +26,11 @@ const FormLogin = () => {
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/image_login.png')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
-      <div className={`relative bg-secondary p-12 w-[420px] rounded-2xl shadow-lg mt-12 transition-all duration-300 ${isExpanded ? 'h-auto' : 'h-[450px]'}`}>        
+      <div
+        className={`relative bg-secondary p-12 w-[420px] rounded-2xl shadow-lg mt-12 transition-all duration-300 ${
+          isExpanded ? 'h-auto' : 'h-[450px]'
+        }`}
+      >
         <h2 className="text-primary text-3xl font-holtwood text-center mb-12">
           INICIAR SESIÓN
         </h2>
@@ -41,7 +45,7 @@ const FormLogin = () => {
               const token = response.data.token;
               const email = values.email;
               const userResponse = await axios.get(
-                `${NEXT_PUBLIC_API_URL}/users/email/${email}`, 
+                `${NEXT_PUBLIC_API_URL}/users/email/${email}`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               const sessionData = {
@@ -60,19 +64,30 @@ const FormLogin = () => {
           }}
         >
           {({ isSubmitting }) => (
-            <Form className="flex flex-col gap-4" onChange={() => setIsExpanded(true)}>
+            <Form
+              className="flex flex-col gap-4"
+              onChange={() => setIsExpanded(true)}
+            >
               <div>
-                <label className="text-primary font-holtwood text-sm">Email:</label>
+                <label className="text-primary font-holtwood text-sm">
+                  Email:
+                </label>
                 <Field
                   type="email"
                   name="email"
                   className="w-full border-2 border-tertiary p-2 rounded-md"
                 />
-                <ErrorMessage name="email" component="div" className="text-red-500 text-xs" />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
               </div>
 
               <div className="relative">
-                <label className="text-primary font-holtwood text-sm">Contraseña:</label>
+                <label className="text-primary font-holtwood text-sm">
+                  Contraseña:
+                </label>
                 <div className="relative">
                   <Field
                     type={showPassword ? 'text' : 'password'}
@@ -87,7 +102,11 @@ const FormLogin = () => {
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
-                <ErrorMessage name="password" component="div" className="text-red-500 text-xs" />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
               </div>
 
               <button
@@ -100,11 +119,14 @@ const FormLogin = () => {
 
               <p className="text-center text-sm text-primary font-ibm">
                 ¿No tienes una cuenta?{' '}
-                <Link href="/Register" className="text-orange-500 cursor-pointer">
+                <Link
+                  href="/Register"
+                  className="text-orange-500 cursor-pointer"
+                >
                   Regístrate
                 </Link>
               </p>
-              <GoogleButton/>
+              <GoogleButton />
             </Form>
           )}
         </Formik>
