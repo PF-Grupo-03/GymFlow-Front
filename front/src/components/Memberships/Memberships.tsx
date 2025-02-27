@@ -21,14 +21,16 @@ export default function Memberships() {
   };
 
   return (
-    <div className="text-center py-12 bg-primary -mt-5">
-      <div className="inline-block bg-tertiary px-8 py-3 rounded-lg orangeShadow">
-        <h2 className="text-3xl font-bold font-holtwood text-primary tracking-wider">
-          NUESTRAS MEMBRESÍAS
-        </h2>
+    <>
+      <div className="flex justify-center items-center mt-5 font-holtwood">
+        <div
+          className={`bg-tertiary rounded-tl-lg rounded-br-lg orangeShadow p-6 w-3/6 flex justify-center items-center mt-5`}
+        >
+          <span className="text-primary text-4xl">Nuestras Membresías</span>
+        </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-10 mt-10">
+      <div className="flex flex-wrap justify-center gap-10 mt-10 pb-12">
         {memberships.map((membership, index) => (
           <div
             key={index}
@@ -60,6 +62,6 @@ export default function Memberships() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import RegisterValidates from '@/helpers/RegisterValidates';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Toast } from '../Toast/Toast';
+import { Toast } from '../../Toast/Toast';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import { IRegister } from '@/interfaces/IRegister';

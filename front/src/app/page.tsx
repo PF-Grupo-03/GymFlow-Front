@@ -1,6 +1,6 @@
-import GymFlowBanner from '@/components/GymFlowBanner/GymFlowBanner';
-import WhyChooseUs from '@/components/WhyChooseUs/WhyChooseUs';
-import SelectYourActivitie from '@/components/SelectYourActivity/SelectYourActivity';
+import GymFlowBanner from '@/components/Home/GymFlowBanner/GymFlowBanner';
+import WhyChooseUs from '@/components/Home/WhyChooseUs/WhyChooseUs';
+import SelectYourActivitie from '@/components/Home/SelectYourActivity/SelectYourActivity';
 
 export function Home() {
   return (
