@@ -1,36 +1,48 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { memberships } from '@/data/Memberships';
+import { useAuth } from '@/context/AuthContext';
+import { Toast } from '../Toast/Toast';
 
 export default function Memberships() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+
+  const handleSelectPlan = (price: number) => {
+    if (!isAuthenticated) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Debes iniciar sesión para adquirir una membresía.',
+      });
+      return;
+    }
+    router.push(`/Checkoutmp?amount=${price}`); // Redirige con el monto en la URL
+  };
+
   return (
     <div className="text-center py-12 bg-primary -mt-5">
-      {/* Título con fondo y sombra */}
       <div className="inline-block bg-tertiary px-8 py-3 rounded-lg orangeShadow">
         <h2 className="text-3xl font-bold font-holtwood text-primary tracking-wider">
           NUESTRAS MEMBRESÍAS
         </h2>
       </div>
 
-      {/* Contenedor de tarjetas */}
-      <div className="flex justify-center gap-10 mt-10">
+      <div className="flex flex-wrap justify-center gap-10 mt-10">
         {memberships.map((membership, index) => (
           <div
             key={index}
             className="w-80 p-6 bg-secondary rounded-lg whiteShadow text-center border border-gray-300"
           >
-            {/* Título de cada membresía */}
             <h3 className="text-2xl font-holtwood text-black uppercase">
               {membership.title}
             </h3>
 
-            {/* Precio */}
             <p className="text-2xl font-holtwood text-black mt-2">
               ${membership.price}
               <span className="text-sm font-light">/MES</span>
             </p>
 
-            {/* Lista de características */}
             <ul className="mt-4 text-left text-md text-black font-ibm">
               {membership.features.map((feature, i) => (
                 <li key={i} className="mb-2">
@@ -39,8 +51,10 @@ export default function Memberships() {
               ))}
             </ul>
 
-            {/* Botón de adquirir */}
-            <button className="mt-6 bg-tertiary text-black font-holtwood py-2 px-6 rounded-md shadow-lg hover:bg-[#E66400] transition">
+            <button
+              onClick={() => handleSelectPlan(membership.price)}
+              className="mt-6 bg-tertiary text-black font-holtwood py-2 px-6 rounded-md shadow-lg hover:bg-[#E66400] transition"
+            >
               ADQUIRIR
             </button>
           </div>
