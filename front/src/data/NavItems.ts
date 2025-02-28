@@ -8,7 +8,8 @@ export const NavItemsLogIn: NavItem[] = [
   { texto: "Inicio", link: "/", id: 1 },
   { texto: "Planes", link: "/Plans", id: 2 },
   { texto: "Sobre Nosotros", link: "/About", id: 3 },
-  { texto: "Mi cuenta", link: "/MyAccount", id: 4 },
+  { texto: "Agendar Turno", link: "/Booking", id: 4 },
+  { texto: "Mi cuenta", link: "/MyAccount", id: 5 },
 ];
 
 export const NavItemsLogOut: NavItem[] = [

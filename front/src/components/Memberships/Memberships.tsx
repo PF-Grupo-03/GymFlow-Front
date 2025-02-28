@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { memberships } from '@/data/Memberships';
 import { useAuth } from '@/context/AuthContext';
 import { Toast } from '../Toast/Toast';
+import TitleBox from '../TitleBox/TitleBox';
 
 export default function Memberships() {
   const router = useRouter();
@@ -21,13 +22,9 @@ export default function Memberships() {
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center mt-5 font-holtwood">
-        <div
-          className={`bg-tertiary rounded-tl-lg rounded-br-lg orangeShadow p-6 w-3/6 flex justify-center items-center mt-5`}
-        >
-          <span className="text-primary text-4xl">Nuestras Membresías</span>
-        </div>
+    <div className="text-center py-12 bg-primary -mt-5">
+      <div className='flex justify-center items-center'>
+      <TitleBox title="Nuestras Membresías" />
       </div>
 
       <div className="flex flex-wrap justify-center gap-10 mt-10 pb-12">
@@ -62,6 +59,6 @@ export default function Memberships() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }

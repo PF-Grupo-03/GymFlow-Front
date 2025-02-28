@@ -1,8 +1,9 @@
-"use client"
+"use client";
 
 import { MyAccountItem, MyAccountItems } from "@/data/MyAccountItems";
 import styles from "./MyAccount.module.css";
 import { useEffect, useState } from "react";
+import TitleBox from "../TitleBox/TitleBox";
 
 interface UserData {
   Nombre: string;
@@ -36,14 +37,10 @@ const MyAccountComponent = () => {
   return (
     <>
       <div className="flex justify-center items-center mt-5 font-holtwood">
-        <div
-          className={`bg-tertiary rounded-tl-lg rounded-br-lg ${styles.orangeShadow} p-6 w-3/6 flex justify-center items-center mt-5`}
-        >
-          <span className="text-primary text-4xl">Mi Cuenta</span>
-        </div>
+        <TitleBox title="Mi Cuenta" />
       </div>
-      <div className="flex justify-center items-center my-10 mb-20">
-        <div className={`flex flex-col justify-center items-center mt-5 gap-10 bg-secondary ${styles.whiteShadow} w-2/6 rounded-[10px] px-20 py-12 font-holtwood text-primary`}>
+      <div className="flex justify-center items-center my-10 mb-20 mx-6 sm:mx-12 md:mx-20 lg:mx-32 xl:mx-48"> {/* Margen horizontal aumentado */}
+        <div className={`flex flex-col justify-center items-center mt-5 gap-10 bg-secondary ${styles.whiteShadow} w-full sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-2/5 rounded-[10px] px-4 sm:px-8 md:px-12 py-8 sm:py-12 font-holtwood text-primary`}>
           {MyAccountItems.map((item: MyAccountItem) => {
             const value: string = userData ? userData[item.name as keyof UserData] : "";
             return (
