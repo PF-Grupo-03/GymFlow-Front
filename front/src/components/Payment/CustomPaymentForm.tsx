@@ -20,9 +20,8 @@ import TitleBox from "../TitleBox/TitleBox";
     const router = useRouter();
 
     useEffect(() => {
-      initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY!, {
-        locale: "es-AR",
-      });
+      initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY!);
+      console.log(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY)
     }, []);
 
     useEffect(() => {
