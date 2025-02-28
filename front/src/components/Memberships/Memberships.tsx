@@ -27,7 +27,7 @@ export default function Memberships() {
       <TitleBox title="Nuestras Membresías" />
       </div>
 
-      <div className="flex flex-wrap justify-center gap-10 mt-10">
+      <div className="flex flex-wrap justify-center gap-10 mt-10 pb-12">
         {memberships.map((membership, index) => (
           <div
             key={index}

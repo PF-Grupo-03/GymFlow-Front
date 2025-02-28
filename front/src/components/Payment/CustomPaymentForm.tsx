@@ -1,188 +1,138 @@
-'use client';
+"use client";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { initMercadoPago, CardPayment } from "@mercadopago/sdk-react";
+import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+import { Toast } from "../Toast/Toast";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+export default function CustomPaymentForm() {
+  const { userData } = useAuth();
+  const [paymentToken, setPaymentToken] = useState("");
+  const [amount, setAmount] = useState<number>(0);
+  const [paymentMethodId, setPaymentMethodId] = useState("");
+  const [dni, setDni] = useState(""); // Estado para capturar el DNI
+  const [isProcessing, setIsProcessing] = useState(false);
 
-interface CustomPaymentFormProps {
-  amount: number;
-}
-
-export default function CustomPaymentForm({ amount }: CustomPaymentFormProps) {
-  const { isAuthenticated, userData } = useAuth();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiration, setExpiration] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [payerEmail, setPayerEmail] = useState(userData?.user?.email || '');
-  const [payerDni, setPayerDni] = useState('');
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY!, {
+      locale: "es-AR",
+    });
+  }, []);
 
-  const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!isAuthenticated) {
-      alert('Debes iniciar sesión para comprar una membresía.');
-      return;
+  useEffect(() => {
+    const queryAmount = searchParams.get("amount");
+    if (queryAmount) {
+      setAmount(parseFloat(queryAmount));
+    } else {
+      router.push("/Plans");
     }
+  }, [searchParams, router]);
 
-    if (!payerEmail || !payerDni || !cardNumber || !expiration || !cvv) {
-      alert('Por favor completa todos los campos.');
-      return;
-    }
-
-    setLoading(true);
-
-    const paymentData = {
-      transaction_amount: amount,
-      card_number: cardNumber,
-      expiration_date: expiration,
-      security_code: cvv,
-      payer: {
-        email: payerEmail,
-        identification: {
-          type: 'DNI',
-          number: payerDni,
-        },
-      },
-    };
-
-    try {
-      const response = await fetch('/api/payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentData),
+  const handlePayment = async (token: string) => {
+    console.log("🔵 handlePayment llamado");
+  
+    if (isProcessing) return;
+  
+    if (!token) {
+      Toast.fire({
+        icon: "error",
+        title: "Por favor, ingresa los datos de la tarjeta.",
       });
-
-      const result = await response.json();
-      if (result.status === 'approved') {
-        router.push('/success');
-      } else {
-        alert('Error en el pago: ' + result.message);
-      }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      alert('Hubo un problema con el pago.');
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+  
+    if (!dni) {
+      Toast.fire({
+        icon: "error",
+        title: "Por favor, ingresa tu DNI.",
+      });
+      return;
+    }
+  
+    setIsProcessing(true);
+  
+    const paymentData = {
+      description: "Pago de Membresía",
+      transactionAmount: amount,
+      paymentMethodId,
+      token, // Utiliza el token que pasas como argumento
+      dni,
+      payerEmail: userData?.user?.email || "",
+    };
+  
+    console.log("🔵 Datos de pago enviados:", paymentData);
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/payment",
+        paymentData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+  
+      console.log("🟡 Respuesta del backend:", response);
+  
+      Toast.fire({ icon: "success", title: "Pago registrado exitosamente." });
+    } catch (error: any) {
+      console.error(
+        "🔴 Error en el pago:",
+        error.response?.data || error.message
+      );
+      Toast.fire({
+        icon: "error",
+        title: error.response?.data?.message || "Error en el pago",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };  
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-primary px-4">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg whiteShadow">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-4 mt-6">
-          Completá tu pago
-        </h2>
+    <div>
+      <h2>Formulario de Pago</h2>
+      <CardPayment
+        initialization={{ amount }}
+        onReady={() => console.log("✅ Secure Fields ready")}
+        onError={(error) => console.error("🔴 Secure Fields error:", error)}
+        onSubmit={async (formData) => {
+          console.log("✅ Datos del formulario:", formData); // Imprime todo el objeto formData
+          if (!formData.token) {
+            Toast.fire({
+              icon: "error",
+              title: "Por favor, ingresa los datos de la tarjeta.",
+            });
+            return;
+          }
 
-        {isAuthenticated ? (
-          <form onSubmit={handlePayment}>
-            <div className="mb-4">
-              <label
-                htmlFor="payerEmail"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Correo del Pagador
-              </label>
-              <input
-                id="payerEmail"
-                type="email"
-                placeholder="ejemplo@email.com"
-                value={payerEmail}
-                onChange={(e) => setPayerEmail(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
-                required
-              />
-            </div>
+          // Imprimir el token para verlo en la consola
+          console.log("🟢 Token obtenido:", formData.token);
 
-            <div className="mb-4">
-              <label
-                htmlFor="payerDni"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Número de DNI
-              </label>
-              <input
-                id="payerDni"
-                type="text"
-                placeholder="Ej: 12345678"
-                value={payerDni}
-                onChange={(e) => setPayerDni(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
-                required
-              />
-            </div>
+          // Obtener el DNI desde formData.payer.identification.number
+          const dniFromCard = formData.payer?.identification?.number || "";
+          if (!dniFromCard) {
+            Toast.fire({
+              icon: "error",
+              title: "Por favor, ingresa tu DNI.",
+            });
+            return;
+          }
 
-            <div className="mb-4">
-              <label
-                htmlFor="cardNumber"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Número de Tarjeta
-              </label>
-              <input
-                id="cardNumber"
-                type="text"
-                placeholder="**** **** **** ****"
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
-                required
-              />
-            </div>
+          console.log("🟡 DNI del titular:", dniFromCard); // Imprime el DNI
 
-            {/* Expiración y CVV */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="expiration"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Fecha de Expiración (MM/YY)
-                </label>
-                <input
-                  id="expiration"
-                  type="text"
-                  placeholder="MM/YY"
-                  value={expiration}
-                  onChange={(e) => setExpiration(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
+          // Establecer el DNI y el token en el estado
+          setDni(dniFromCard);
+          setPaymentToken(formData.token); // Asegúrate de actualizar el estado con el token recibido
+          setPaymentMethodId(formData.payment_method_id);
 
-              <div>
-                <label
-                  htmlFor="cvv"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Código de Seguridad (CVV)
-                </label>
-                <input
-                  id="cvv"
-                  type="text"
-                  placeholder="CVV"
-                  value={cvv}
-                  onChange={(e) => setCvv(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg transition disabled:bg-gray-400"
-              disabled={loading}
-            >
-              {loading ? 'Procesando...' : `Pagar $${amount}`}
-            </button>
-          </form>
-        ) : (
-          <p className="text-center text-red-500">Debes iniciar sesión.</p>
-        )}
-      </div>
+          // Llamamos a handlePayment con el DNI y token correcto
+          await handlePayment(formData.token); // Pasa el token directo en la llamada a handlePayment
+        }}
+      />
     </div>
   );
 }

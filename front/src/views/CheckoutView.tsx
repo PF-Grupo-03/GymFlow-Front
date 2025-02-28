@@ -19,17 +19,19 @@ export default function CheckoutView() {
   }, [searchParams, router]);
 
   return (
-    <div className="text-center bg-primary">
-      <div className="inline-block items-center bg-tertiary px-8 py-3 rounded-lg orangeShadow mt-6">
-        <h2 className="text-3xl font-bold font-holtwood text-primary tracking-wider">
-          PAGAR MEMBRESÍA
-        </h2>
+    <>
+      <div className="flex justify-center items-center mt-5 font-holtwood">
+        <div
+          className={`bg-tertiary rounded-tl-lg rounded-br-lg orangeShadow p-6 w-3/6 flex justify-center items-center mt-5`}
+        >
+          <span className="text-primary text-4xl">Pagar Membresía</span>
+        </div>
       </div>
       {amount > 0 ? (
         <CustomPaymentForm amount={amount} />
       ) : (
         <p className="text-center text-red-500">Cargando...</p>
       )}
-    </div>
+    </>
   );
 }
