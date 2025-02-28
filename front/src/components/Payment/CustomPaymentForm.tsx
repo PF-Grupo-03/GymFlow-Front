@@ -1,188 +1,106 @@
 'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { initMercadoPago, CardPayment } from '@mercadopago/sdk-react';
+import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
+import { Toast } from '../Toast/Toast';
 
-interface CustomPaymentFormProps {
-  amount: number;
-}
-
-export default function CustomPaymentForm({ amount }: CustomPaymentFormProps) {
-  const { isAuthenticated, userData } = useAuth();
+export default function CustomPaymentForm() {
+  const { userData } = useAuth();
+  const [paymentToken, setPaymentToken] = useState('');
+  const [amount, setAmount] = useState<number>(0);
+  const [paymentMethodId, setPaymentMethodId] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiration, setExpiration] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [payerEmail, setPayerEmail] = useState(userData?.user?.email || '');
-  const [payerDni, setPayerDni] = useState('');
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    // Inicializa MercadoPago con la PUBLIC_KEY de prueba
+    initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY!, {
+      locale: 'es-AR',
+    });
+  }, []);
 
-  const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    const queryAmount = searchParams.get('amount');
+    if (queryAmount) {
+      setAmount(parseFloat(queryAmount));
+    } else {
+      router.push('/Plans'); // Redirige si no hay un monto válido
+    }
+  }, [searchParams, router]);
 
-    if (!isAuthenticated) {
-      alert('Debes iniciar sesión para comprar una membresía.');
+  const handlePayment = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (isProcessing) return;
+
+    if (!paymentToken) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Por favor, ingresa los datos de la tarjeta.',
+      });
       return;
     }
 
-    if (!payerEmail || !payerDni || !cardNumber || !expiration || !cvv) {
-      alert('Por favor completa todos los campos.');
-      return;
-    }
-
-    setLoading(true);
+    setIsProcessing(true);
 
     const paymentData = {
-      transaction_amount: amount,
-      card_number: cardNumber,
-      expiration_date: expiration,
-      security_code: cvv,
-      payer: {
-        email: payerEmail,
-        identification: {
-          type: 'DNI',
-          number: payerDni,
-        },
-      },
+      description: 'Pago de Membresía',
+      transactionAmount: amount,
+      paymentMethodId,
+      token: paymentToken,
+      payerEmail: userData?.user?.email || '',
     };
 
     try {
-      const response = await fetch('/api/payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(paymentData),
-      });
+      console.log('🔵 Enviando datos de pago a backend...', paymentData);
 
-      const result = await response.json();
-      if (result.status === 'approved') {
-        router.push('/success');
-      } else {
-        alert('Error en el pago: ' + result.message);
-      }
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      alert('Hubo un problema con el pago.');
+      const response = await axios.post(
+        'http://localhost:3001/api/payment',
+        paymentData,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      console.log('🟡 Respuesta del backend:', response);
+
+      Toast.fire({ icon: 'success', title: 'Pago registrado exitosamente.' });
+
+      // router.push(
+      //   `/Payment-success?amount=${paymentData.transactionAmount}&description=${paymentData.description}&email=${paymentData.payerEmail}&paymentId=${data.id}`
+      // );
+    } catch (error: any) {
+      console.error(
+        '🔴 Error en el pago:',
+        error.response?.data || error.message
+      );
+      Toast.fire({
+        icon: 'error',
+        title: error.response?.data?.message || 'Error en el pago',
+      });
     } finally {
-      setLoading(false);
+      setIsProcessing(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-primary px-4">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg whiteShadow">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-4 mt-6">
-          Completá tu pago
-        </h2>
-
-        {isAuthenticated ? (
-          <form onSubmit={handlePayment}>
-            <div className="mb-4">
-              <label
-                htmlFor="payerEmail"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Correo del Pagador
-              </label>
-              <input
-                id="payerEmail"
-                type="email"
-                placeholder="ejemplo@email.com"
-                value={payerEmail}
-                onChange={(e) => setPayerEmail(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="payerDni"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Número de DNI
-              </label>
-              <input
-                id="payerDni"
-                type="text"
-                placeholder="Ej: 12345678"
-                value={payerDni}
-                onChange={(e) => setPayerDni(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
-                required
-              />
-            </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="cardNumber"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Número de Tarjeta
-              </label>
-              <input
-                id="cardNumber"
-                type="text"
-                placeholder="**** **** **** ****"
-                value={cardNumber}
-                onChange={(e) => setCardNumber(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm"
-                required
-              />
-            </div>
-
-            {/* Expiración y CVV */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label
-                  htmlFor="expiration"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Fecha de Expiración (MM/YY)
-                </label>
-                <input
-                  id="expiration"
-                  type="text"
-                  placeholder="MM/YY"
-                  value={expiration}
-                  onChange={(e) => setExpiration(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="cvv"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Código de Seguridad (CVV)
-                </label>
-                <input
-                  id="cvv"
-                  type="text"
-                  placeholder="CVV"
-                  value={cvv}
-                  onChange={(e) => setCvv(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg transition disabled:bg-gray-400"
-              disabled={loading}
-            >
-              {loading ? 'Procesando...' : `Pagar $${amount}`}
-            </button>
-          </form>
-        ) : (
-          <p className="text-center text-red-500">Debes iniciar sesión.</p>
-        )}
-      </div>
+    <div>
+      <h2>Formulario de Pago</h2>
+      <CardPayment
+        initialization={{ amount }}
+        onReady={() => console.log('✅ Secure Fields ready')}
+        onError={(error) => console.error('🔴 Secure Fields error:', error)}
+        onSubmit={async (formData) => {
+          console.log('✅ Token generado:', formData.token);
+          setPaymentToken(formData.token);
+          setPaymentMethodId(formData.payment_method_id);
+        }}
+      />
+      <button onClick={handlePayment} disabled={isProcessing}>
+        {isProcessing ? 'Procesando...' : 'Pagar'}
+      </button>
     </div>
   );
 }
