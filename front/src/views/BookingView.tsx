@@ -1,8 +1,8 @@
-'use client';
-import CalendarComponent from '@/components/Booking/CalendarComponent';
-import TimePickerComponent from '@/components/Booking/TimePickerComponent';
-import { Toast } from '@/components/Toast/Toast';
-import { useState } from 'react';
+"use client";
+import CalendarComponent from "@/components/Booking/CalendarComponent";
+import TimePickerComponent from "@/components/Booking/TimePickerComponent";
+import { Toast } from "@/components/Toast/Toast";
+import { useState } from "react";
 
 const BookingView = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -11,14 +11,14 @@ const BookingView = () => {
   const handleBooking = () => {
     if (selectedDate && selectedTime) {
       Toast.fire({
-        icon: 'success',
-        title: 'Turno reservado con éxito',
+        icon: "success",
+        title: "Turno reservado con éxito",
         text: `📅 ${selectedDate.toLocaleDateString()} ⏰ ${selectedTime}`,
       });
     } else {
       Toast.fire({
-        icon: 'error',
-        title: 'Por favor, selecciona una fecha y hora',
+        icon: "error",
+        title: "Por favor, selecciona una fecha y hora",
       });
     }
   };
@@ -41,7 +41,7 @@ const BookingView = () => {
 
         <button
           onClick={handleBooking}
-          className="mt-6 bg-tertiary text-primary font-holtwood py-3 px-6 rounded-lg shadow-md transition-all hover:bg-orange-600 w-full"
+          className="mt-6 bg-tertiary text-primary font-holtwood py-3 px-6 rounded-lg shadow-md duration-300 w-full transition-transform transform hover:bg-orange-800 hover:scale-105"
         >
           Reservar
         </button>

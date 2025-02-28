@@ -30,8 +30,8 @@ const TimePickerComponent: React.FC<TimePickerComponentProps> = ({
                 onClick={() => handleTimeSelect(hour)}
                 className={`p-3 rounded-lg font-bold transition-all duration-200 ${
                   selectedTime === hour
-                    ? 'bg-tertiary text-white shadow-lg'
-                    : 'bg-gray-200 hover:bg-tertiary hover:text-white'
+                    ? 'bg-primary text-white shadow-lg'
+                    : 'bg-gray-200 hover:bg-tertiary hover:text-white focus:bg-primary'
                 }`}
               >
                 {hour}
@@ -40,7 +40,7 @@ const TimePickerComponent: React.FC<TimePickerComponentProps> = ({
           </div>
         </>
       ) : (
-        <p className="text-center font-ibm text-gray-500">
+        <p className="text-center font-ibm text-gray-500 ">
           Seleccioná un día primero
         </p>
       )}

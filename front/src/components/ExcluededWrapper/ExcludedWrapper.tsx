@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 
-const excludeRoutes = ["/Login", "/Register"];
+const excludeRoutes = ["/Login", "/Register", "/Booking"];
 
 const ExcludedWrapper = ({ children }: { children: React.ReactNode }) => {
   const path = usePathname();
