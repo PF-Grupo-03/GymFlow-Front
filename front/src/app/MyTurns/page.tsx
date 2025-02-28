@@ -1,7 +1,9 @@
+import Turns from "@/components/Turns/Turns";
+
 const page = () => {
   return (
     <div>
-      <h1>MyTurns</h1>
+      <Turns />
     </div>
   );
 };
