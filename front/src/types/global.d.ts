@@ -1,6 +1,8 @@
+// global.d.ts
 declare global {
   interface Window {
-    Mercadopago: any;
+    MercadoPago: any;
   }
 }
+
 export {};
