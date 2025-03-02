@@ -1,14 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { memberships } from '@/data/Memberships';
 import { useAuth } from '@/context/AuthContext';
 import { Toast } from '../Toast/Toast';
 import TitleBox from '../TitleBox/TitleBox';
+import CheckoutBrick from '../Payment/CheckoutBricks'; // Importa el componente CheckoutBrick
 
 export default function Memberships() {
-  const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const [selectedPlan, setSelectedPlan] = useState<number | null>(null); // Estado para almacenar el precio seleccionado
 
   const handleSelectPlan = (price: number) => {
     if (!isAuthenticated) {
@@ -18,13 +19,13 @@ export default function Memberships() {
       });
       return;
     }
-    router.push(`/Checkoutmp?amount=${price}`); // Redirige con el monto en la URL
+    setSelectedPlan(price); // Establecer el plan seleccionado
   };
 
   return (
     <div className="text-center py-12 bg-primary -mt-5">
-      <div className='flex justify-center items-center'>
-      <TitleBox title="Nuestras Membresías" />
+      <div className="flex justify-center items-center">
+        <TitleBox title="Nuestras Membresías" />
       </div>
 
       <div className="flex flex-wrap justify-center gap-10 mt-10 pb-12">
@@ -59,6 +60,15 @@ export default function Memberships() {
           </div>
         ))}
       </div>
+
+      {/* Renderiza el CheckoutBrick solo si un plan ha sido seleccionado */}
+      {selectedPlan && (
+        <CheckoutBrick
+          publicKey={process.env.NEXT_PUBLIC_MP_PUBLIC_KEY || ''}
+          preferenceId="your-preference-id-here" // Esto lo debes obtener desde el backend
+          amount={selectedPlan}
+        />
+      )}
     </div>
   );
 }
