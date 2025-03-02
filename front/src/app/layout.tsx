@@ -5,7 +5,6 @@ import Footer from '../components/Footer/Footer';
 import NavBar from '../components/NavbarComp/Navbar/NavBar';
 import ExcludedWrapper from '@/components/ExcluededWrapper/ExcludedWrapper';
 import { AuthProvider } from '@/context/AuthContext';
-import { MercadoPagoProvider } from '@/context/MercadoPagocontext';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,13 +32,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <MercadoPagoProvider>
-            <NavBar />
-            {children}
-            <ExcludedWrapper>
-              <Footer />
-            </ExcludedWrapper>
-          </MercadoPagoProvider>
+          <NavBar />
+          {children}
+          <ExcludedWrapper>
+            <Footer />
+          </ExcludedWrapper>
         </AuthProvider>
       </body>
     </html>
