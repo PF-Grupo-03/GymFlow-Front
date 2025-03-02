@@ -11,12 +11,16 @@ export default function PaymentSuccess() {
   const paymentType = searchParams.get('payment_type');
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-green-100 text-green-900 p-6">
-      <CheckCircle className="w-16 h-16 text-green-600" />
-      <h1 className="text-3xl font-bold mt-4">¡Pago Exitoso! 🎉</h1>
-      <p className="text-lg mt-2">Tu pago ha sido procesado correctamente.</p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-green-900 p-6">
+      <CheckCircle className="w-16 h-16 text-tertiary" />
+      <h1 className="text-3xl text-tertiary font-holtwood mt-4">
+        ¡Pago Exitoso! 🎉
+      </h1>
+      <p className="text-lg text-white text-ibm mt-2">
+        Tu pago ha sido procesado correctamente.
+      </p>
 
-      <div className="bg-white shadow-md rounded-lg p-4 mt-4">
+      <div className="bg-secondary whiteShadow text-black text-ibm rounded-lg p-4 mt-4">
         <p>
           <strong>ID de Pago:</strong> {paymentId || 'No disponible'}
         </p>
@@ -30,7 +34,7 @@ export default function PaymentSuccess() {
 
       <Link
         href="/"
-        className="mt-6 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition"
+        className="mt-6 bg-tertiary text-white font-odor py-2 px-4 rounded-md hover:bg-tertiary transition"
       >
         Volver al Inicio
       </Link>
