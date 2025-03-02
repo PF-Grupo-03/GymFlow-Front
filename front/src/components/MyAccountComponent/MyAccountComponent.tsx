@@ -4,6 +4,7 @@ import { MyAccountItem, MyAccountItems } from "@/data/MyAccountItems";
 import styles from "./MyAccount.module.css";
 import { useEffect, useState } from "react";
 import TitleBox from "../TitleBox/TitleBox";
+import { useRouter } from "next/navigation";
 
 interface UserData {
   Nombre: string;
@@ -15,6 +16,7 @@ interface UserData {
 
 const MyAccountComponent = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const user = localStorage.getItem("userSession");
@@ -52,7 +54,7 @@ const MyAccountComponent = () => {
               </div>
             );
           })}
-          <button className="w-full bg-tertiary text-primary rounded-lg p-2 mt-2 hover:bg-orange-400 transition-all duration-300 hover:scale-105">
+          <button className="w-full bg-tertiary text-primary rounded-lg p-2 mt-2 hover:bg-orange-400 transition-all duration-300 hover:scale-105" onClick={() => router.push("/MyTurns")}>
             Mis Turnos
           </button>
         </div>
