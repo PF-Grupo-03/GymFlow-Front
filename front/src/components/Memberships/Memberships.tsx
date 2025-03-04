@@ -8,7 +8,7 @@ import { ChevronsRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Toast } from '../Toast/Toast';
 
-initMercadoPago('TEST-e8c5932a-0595-44b2-afe3-42082a339608', {
+initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY, {
   locale: 'es-AR',
 });
 
@@ -60,24 +60,27 @@ export default function Memberships() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
-  const { isAuthenticated } = useAuth(); // Obtén el estado de autenticación
+  const { isAuthenticated, userId, userEmail } = useAuth(); // Obtén el estado de autenticación, userId y userEmail
   const router = useRouter(); // Redirigir al usuario si no está autenticado
 
   const handleCreatePreference = async (plan: Plan) => {
     if (!isAuthenticated) {
-      // Mostrar Toast de notificación
       Toast.fire({
         icon: 'warning',
         title: 'Para elegir un plan, debes iniciar sesión.',
       });
-
-      // Redirigir al usuario a /Login
       router.push('/Login');
-      return; // Detener ejecución si no está autenticado
+      return;
     }
 
     try {
-      console.log('Creando preferencia para el plan:', plan);
+      console.log('📌 Enviando solicitud para crear preferencia');
+      console.log('📦 Datos enviados al backend:', {
+        title: plan.title,
+        price: plan.price,
+        userId: userId,
+        userEmail: userEmail,
+      });
 
       const response = await fetch('http://localhost:3001/payment/preference', {
         method: 'POST',
@@ -85,30 +88,38 @@ export default function Memberships() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          turno: {
-            service: plan.title,
-            price: plan.price,
-          },
+          title: plan.title,
+          price: plan.price,
+          userId: userId,
+          userEmail: userEmail,
         }),
       });
 
+      console.log('🔍 Respuesta completa del servidor:', response);
+
       if (!response.ok) {
-        throw new Error('Error al crear la preferencia');
+        const errorText = await response.text();
+        console.error('❌ Error en la respuesta del backend:', errorText);
+        throw new Error('Error al crear la preferencia: ' + errorText);
       }
 
       const data = await response.json();
-      console.log('Respuesta del servidor:', data);
+      console.log('✅ Respuesta parseada:', data);
 
-      if (data && data.id) {
-        setPreferenceId(data.id);
+      if (data && data.preferenceId) {
+        setPreferenceId(data.preferenceId); // Usar preferenceId en lugar de id
         setSelectedPlan(plan);
       } else {
+        console.error(
+          '❌ La respuesta del servidor no tiene un ID válido:',
+          data
+        );
         throw new Error(
           'La respuesta del servidor no contiene un ID de preferencia válido'
         );
       }
     } catch (error) {
-      console.error('Error al crear la preferencia:', error);
+      console.error('🚨 Error en handleCreatePreference:', error);
     }
   };
 
