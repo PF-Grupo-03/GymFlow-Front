@@ -32,19 +32,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Manejo de sesión con NextAuth
     if (session?.user) {
       const userSession: IUserSession = {
-        id: session.user.id,
-        name: session.user.name!,
-        email: session.user.email!,
-        image: session.user.image!,
+        token: session?.accessToken ?? '', // Puedes asignar el token aquí si lo necesitas
+        user: {
+          id: '', // Si el id está disponible en session.user
+          nameAndLastName: session.user.name!, // O usa el nombre completo
+          bDate: '', // Si necesitas agregar esta propiedad, obténla de alguna parte
+          email: session.user.email!,
+          password: '', // Aquí asume que no puedes obtener la contraseña por razones de seguridad
+          confirmPassword: '', // Igual para la confirmación de contraseña
+          phone: '', // Si quieres agregar un teléfono, ajusta según lo que tengas disponible
+          address: '', // Lo mismo con la dirección
+          role: '', // Lo mismo con el rol
+        },
       };
       setUserData(userSession);
       setIsAuthenticated(true);
       localStorage.setItem('userSession', JSON.stringify(userSession));
     } else {
-      // Si no hay sesión en NextAuth, revisar localStorage
       const storedSession = localStorage.getItem('userSession');
       if (storedSession) {
         const parsedUserData = JSON.parse(storedSession);
@@ -56,6 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     }
   }, [session]);
+  
 
   useEffect(() => {
     if (userData) {
