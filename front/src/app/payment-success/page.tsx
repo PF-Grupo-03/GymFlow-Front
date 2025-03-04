@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
@@ -9,6 +10,19 @@ export default function PaymentSuccess() {
   const paymentId = searchParams.get('payment_id');
   const status = searchParams.get('status');
   const paymentType = searchParams.get('payment_type');
+
+  useEffect(() => {
+    if (paymentId && status === 'approved') {
+      fetch('http://localhost:3001/payment/process', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId }),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log('Pago procesado en backend:', data))
+        .catch((error) => console.error('Error al procesar el pago:', error));
+    }
+  }, [paymentId, status]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-green-900 p-6">
