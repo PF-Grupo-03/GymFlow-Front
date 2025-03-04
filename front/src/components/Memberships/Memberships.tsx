@@ -82,6 +82,8 @@ export default function Memberships() {
         userEmail: userEmail,
       });
 
+      localStorage.setItem('selectedPlanAmount', plan.price.toString());
+
       const response = await fetch('http://localhost:3001/payment/preference', {
         method: 'POST',
         headers: {

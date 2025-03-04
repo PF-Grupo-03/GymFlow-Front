@@ -1,9 +1,25 @@
+// payment-success/page.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react'; // Importar useState
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+
+// Función para obtener el nombre del plan según el monto
+const getPlanName = (amount: number): string => {
+  switch (amount) {
+    case 18000:
+      return 'Básico';
+    case 30000:
+      return 'Premium';
+    case 50000:
+      return 'Diamond';
+    default:
+      return 'Desconocido';
+  }
+};
 
 export default function PaymentSuccess() {
   const searchParams = useSearchParams();
@@ -11,18 +27,47 @@ export default function PaymentSuccess() {
   const status = searchParams.get('status');
   const paymentType = searchParams.get('payment_type');
 
+  // Obtén el email del usuario desde el contexto de autenticación
+  const { userEmail } = useAuth();
+
+  // Estado para guardar el monto del plan
+  const [amount, setAmount] = useState<number>(0);
+
   useEffect(() => {
-    if (paymentId && status === 'approved') {
+    if (paymentId && status === 'approved' && userEmail) {
+      // Obtener el monto del plan desde localStorage
+      const storedAmount =
+        Number(localStorage.getItem('selectedPlanAmount')) || 0;
+
+      // Guardar el monto en el estado
+      setAmount(storedAmount);
+
+      // Limpiar el monto guardado en localStorage
+      localStorage.removeItem('selectedPlanAmount');
+
+      // Datos que se enviarán al backend
+      const paymentData = {
+        paymentId,
+        status,
+        amount: storedAmount, // Usar el monto almacenado
+        userEmail,
+      };
+
+      console.log('📦 Datos enviados al backend:', paymentData);
+
       fetch('http://localhost:3001/payment/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentId }),
+        body: JSON.stringify(paymentData),
       })
         .then((res) => res.json())
         .then((data) => console.log('Pago procesado en backend:', data))
         .catch((error) => console.error('Error al procesar el pago:', error));
     }
-  }, [paymentId, status]);
+  }, [paymentId, status, userEmail]);
+
+  // Obtener el nombre del plan usando el monto guardado en el estado
+  const planName = getPlanName(amount);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-green-900 p-6">
@@ -43,6 +88,9 @@ export default function PaymentSuccess() {
         </p>
         <p>
           <strong>Método de Pago:</strong> {paymentType || 'No especificado'}
+        </p>
+        <p>
+          <strong>Plan:</strong> {planName} {/* Mostrar el nombre del plan */}
         </p>
       </div>
 
