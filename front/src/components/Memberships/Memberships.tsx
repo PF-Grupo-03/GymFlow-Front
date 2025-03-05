@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Para redirigir al usuario
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import TitleBox from '../TitleBox/TitleBox';
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { ChevronsRight } from 'lucide-react';
@@ -60,8 +60,34 @@ export default function Memberships() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
-  const { isAuthenticated, userId, userEmail } = useAuth(); // Obtén el estado de autenticación, userId y userEmail
-  const router = useRouter(); // Redirigir al usuario si no está autenticado
+  const { isAuthenticated, userId, userEmail, userData } = useAuth(); // Obtén el estado de autenticación y los datos del usuario
+  const router = useRouter();
+
+  const paymentButtonRef = useRef<HTMLDivElement>(null);
+
+  // Verificar si el usuario tiene una membresía activa
+  const hasActiveMembership = () => {
+    if (!userData) return false;
+
+    const activeRoles = ['USER_BASIC', 'USER_PREMIUM', 'USER_DIAMOND'];
+    return activeRoles.includes(userData.user.role);
+  };
+
+  // Obtener el nombre de la membresía activa
+  const getActiveMembershipName = () => {
+    if (!userData) return '';
+
+    switch (userData.user.role) {
+      case 'USER_BASIC':
+        return 'Básico';
+      case 'USER_PREMIUM':
+        return 'Premium';
+      case 'USER_DIAMOND':
+        return 'Diamond';
+      default:
+        return '';
+    }
+  };
 
   const handleCreatePreference = async (plan: Plan) => {
     if (!isAuthenticated) {
@@ -71,6 +97,11 @@ export default function Memberships() {
       });
       router.push('/Login');
       return;
+    }
+
+    // Verificar si el usuario tiene una membresía activa
+    if (hasActiveMembership()) {
+      return; // No hacer nada si ya tiene una membresía activa
     }
 
     try {
@@ -109,8 +140,17 @@ export default function Memberships() {
       console.log('✅ Respuesta parseada:', data);
 
       if (data && data.preferenceId) {
-        setPreferenceId(data.preferenceId); // Usar preferenceId en lugar de id
+        setPreferenceId(data.preferenceId);
         setSelectedPlan(plan);
+
+        setTimeout(() => {
+          if (paymentButtonRef.current) {
+            paymentButtonRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+          }
+        }, 100);
       } else {
         console.error(
           '❌ La respuesta del servidor no tiene un ID válido:',
@@ -131,7 +171,6 @@ export default function Memberships() {
         <TitleBox title="Nuestras Membresías" />
       </div>
 
-      {/* Sección de Tarjetas de Membresías */}
       <div className="flex flex-wrap justify-center gap-6">
         {plans.map((membership, index) => (
           <div
@@ -158,19 +197,35 @@ export default function Memberships() {
             <button
               className="w-full bg-tertiary text-primary font-holtwood text-lg py-2 px-4 rounded-md hover:bg-opacity-80 transition"
               onClick={() => handleCreatePreference(membership)}
-              disabled={!!preferenceId}
+              disabled={!!preferenceId || hasActiveMembership()} // Deshabilitar si ya tiene una membresía activa
             >
-              {preferenceId ? 'Seleccionado' : 'Seleccionar'}
+              {hasActiveMembership()
+                ? 'Membresía Activa'
+                : preferenceId
+                ? 'Seleccionado'
+                : 'Seleccionar'}
             </button>
+
+            {/* Mostrar mensaje si el usuario tiene una membresía activa */}
+            {hasActiveMembership() && (
+              <div className="mt-4 text-sm text-red-600">
+                Actualmente posees la membresía: {getActiveMembershipName()}.
+                <br />
+                Debes esperar a que expire para adquirir otra.
+              </div>
+            )}
           </div>
         ))}
       </div>
 
-      {/* Sección de Confirmación */}
       {preferenceId && selectedPlan && (
-        <div className="flex items-center justify-center mt-6">
+        <div
+          ref={paymentButtonRef}
+          className="flex items-center justify-center mt-6"
+          style={{ minHeight: '200px' }}
+        >
           <div className="w-72">
-            <h2 className="text-xl text-white font-semibold mb-4">
+            <h2 className="text-2xl text-white font-odor mb-4">
               Proceso de pago para: {selectedPlan.title}
             </h2>
             <Wallet initialization={{ preferenceId }} />

@@ -6,22 +6,26 @@ export interface MyAccountItem {
 export const MyAccountItems: MyAccountItem[] = [
   {
     id: 1,
-    name: "Nombre",
+    name: 'Nombre',
   },
   {
     id: 2,
-    name: "Email",
+    name: 'Email',
   },
   {
     id: 3,
-    name: "Telefono",
+    name: 'Telefono',
   },
   {
     id: 4,
-    name: "Dirección",
+    name: 'Dirección',
   },
   {
     id: 5,
-    name: "DNI",
+    name: 'DNI',
+  },
+  {
+    id: 6,
+    name: 'Membresia',
   },
 ];
