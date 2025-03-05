@@ -1,7 +1,6 @@
-// payment-success/page.tsx
 'use client';
 
-import { useEffect, useState } from 'react'; // Importar useState
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
@@ -28,7 +27,7 @@ export default function PaymentSuccess() {
   const paymentType = searchParams.get('payment_type');
 
   // Obtén el email del usuario desde el contexto de autenticación
-  const { userEmail } = useAuth();
+  const { userEmail, setUserData } = useAuth();
 
   // Estado para guardar el monto del plan
   const [amount, setAmount] = useState<number>(0);
@@ -55,16 +54,31 @@ export default function PaymentSuccess() {
 
       console.log('📦 Datos enviados al backend:', paymentData);
 
+      // Procesar el pago en el backend
       fetch('http://localhost:3001/payment/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paymentData),
       })
         .then((res) => res.json())
-        .then((data) => console.log('Pago procesado en backend:', data))
+        .then(async (data) => {
+          console.log('Pago procesado en backend:', data);
+
+          // Obtener la información actualizada del usuario desde el backend
+          const userResponse = await fetch(
+            `http://localhost:3001/users/email/${userEmail}`
+          );
+          const userData = await userResponse.json();
+
+          // Actualizar el localStorage con la información actualizada del usuario
+          if (userData) {
+            localStorage.setItem('userSession', JSON.stringify(userData));
+            setUserData(userData); // Actualizar el estado global del usuario
+          }
+        })
         .catch((error) => console.error('Error al procesar el pago:', error));
     }
-  }, [paymentId, status, userEmail]);
+  }, [paymentId, status, userEmail, setUserData]);
 
   // Obtener el nombre del plan usando el monto guardado en el estado
   const planName = getPlanName(amount);

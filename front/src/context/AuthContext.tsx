@@ -2,23 +2,21 @@
 
 import { IUserSession } from '@/interfaces/IUserSession';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 export interface AuthContextProps {
   userData: IUserSession | null;
   setUserData: (userData: IUserSession | null) => void;
   isAuthenticated: boolean;
-  loginWithGoogle: () => void;
-  logout: () => void;
+  userId: string | null; // Nuevo: userId
+  userEmail: string | null; // Nuevo: userEmail
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   userData: null,
   setUserData: () => {},
   isAuthenticated: false,
-  loginWithGoogle: () => {},
-  logout: () => {},
+  userId: null, // Nuevo: valor inicial
+  userEmail: null, // Nuevo: valor inicial
 });
 
 export interface AuthProviderProps {
@@ -26,69 +24,67 @@ export interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { data: session } = useSession();
-  const router = useRouter();
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    if (session?.user) {
-      const userSession: IUserSession = {
-        token: session?.accessToken ?? '', // Puedes asignar el token aquí si lo necesitas
-        user: {
-          id: '', // Si el id está disponible en session.user
-          nameAndLastName: session.user.name!, // O usa el nombre completo
-          bDate: '', // Si necesitas agregar esta propiedad, obténla de alguna parte
-          email: session.user.email!,
-          password: '', // Aquí asume que no puedes obtener la contraseña por razones de seguridad
-          confirmPassword: '', // Igual para la confirmación de contraseña
-          phone: '', // Si quieres agregar un teléfono, ajusta según lo que tengas disponible
-          address: '', // Lo mismo con la dirección
-          role: '', // Lo mismo con el rol
-        },
-      };
-      setUserData(userSession);
-      setIsAuthenticated(true);
-      localStorage.setItem('userSession', JSON.stringify(userSession));
-    } else {
-      const storedSession = localStorage.getItem('userSession');
-      if (storedSession) {
-        const parsedUserData = JSON.parse(storedSession);
-        setUserData(parsedUserData);
-        setIsAuthenticated(true);
-      } else {
-        setUserData(null);
-        setIsAuthenticated(false);
-      }
-    }
-  }, [session]);
-  
+  // Nuevo: Extraer userId y userEmail de userData (con verificación)
+  const userId = userData?.user?.id || null;
+  const userEmail = userData?.user?.email || null;
 
   useEffect(() => {
+    // Revisar si existe una sesión en el localStorage
+    const userSession = localStorage.getItem('userSession');
+    if (userSession) {
+      try {
+        const parsedUserData = JSON.parse(userSession);
+
+        // Adaptar la estructura de parsedUserData a IUserSession
+        const adaptedUserData: IUserSession = {
+          token: '', // Si no tienes un token, puedes dejarlo como cadena vacía
+          user: {
+            id: parsedUserData.id,
+            nameAndLastName: parsedUserData.nameAndLastName,
+            bDate: parsedUserData.bDate,
+            email: parsedUserData.email,
+            password: parsedUserData.password,
+            confirmPassword: '', // Si no tienes confirmPassword, déjalo como cadena vacía
+            phone: parsedUserData.phone,
+            address: parsedUserData.address,
+            role: parsedUserData.role,
+          },
+        };
+
+        // Verificar si adaptedUserData tiene la estructura esperada
+        if (adaptedUserData.user?.id && adaptedUserData.user?.email) {
+          setUserData(adaptedUserData);
+          setIsAuthenticated(true); // Si existe la sesión, el usuario está autenticado
+        } else {
+          // Si no tiene la estructura esperada, limpiar el localStorage
+          console.error('Estructura de userSession inválida:', parsedUserData);
+          localStorage.removeItem('userSession');
+        }
+      } catch (error) {
+        console.error('Error al parsear userSession:', error);
+        localStorage.removeItem('userSession');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Actualiza localStorage si cambia userData
     if (userData) {
       localStorage.setItem('userSession', JSON.stringify(userData));
-      setIsAuthenticated(true);
+      setIsAuthenticated(true); // Si se tiene userData, es considerado autenticado
     } else {
       localStorage.removeItem('userSession');
-      setIsAuthenticated(false);
+      setIsAuthenticated(false); // Si no hay userData, no está autenticado
     }
   }, [userData]);
 
-  const loginWithGoogle = async () => {
-    await signIn('google', { redirect: false });
-    router.push('/');
-  };
-
-  const logout = async () => {
-    await signOut();
-    localStorage.removeItem('userSession');
-    setUserData(null);
-    setIsAuthenticated(false);
-    router.push('/login');
-  };
-
   return (
-    <AuthContext.Provider value={{ userData, setUserData, isAuthenticated, loginWithGoogle, logout }}>
+    <AuthContext.Provider
+      value={{ userData, setUserData, isAuthenticated, userId, userEmail }} // Nuevo: agregar userId y userEmail
+    >
       {children}
     </AuthContext.Provider>
   );
