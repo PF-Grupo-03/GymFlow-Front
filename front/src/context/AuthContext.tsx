@@ -27,17 +27,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Nuevo: Extraer userId y userEmail de userData
-  const userId = userData?.user.id || null;
-  const userEmail = userData?.user.email || null;
+  // Nuevo: Extraer userId y userEmail de userData (con verificación)
+  const userId = userData?.user?.id || null;
+  const userEmail = userData?.user?.email || null;
 
   useEffect(() => {
     // Revisar si existe una sesión en el localStorage
     const userSession = localStorage.getItem('userSession');
     if (userSession) {
-      const parsedUserData = JSON.parse(userSession);
-      setUserData(parsedUserData);
-      setIsAuthenticated(true); // Si existe la sesión, el usuario está autenticado
+      try {
+        const parsedUserData = JSON.parse(userSession);
+
+        // Adaptar la estructura de parsedUserData a IUserSession
+        const adaptedUserData: IUserSession = {
+          token: '', // Si no tienes un token, puedes dejarlo como cadena vacía
+          user: {
+            id: parsedUserData.id,
+            nameAndLastName: parsedUserData.nameAndLastName,
+            bDate: parsedUserData.bDate,
+            email: parsedUserData.email,
+            password: parsedUserData.password,
+            confirmPassword: '', // Si no tienes confirmPassword, déjalo como cadena vacía
+            phone: parsedUserData.phone,
+            address: parsedUserData.address,
+            role: parsedUserData.role,
+          },
+        };
+
+        // Verificar si adaptedUserData tiene la estructura esperada
+        if (adaptedUserData.user?.id && adaptedUserData.user?.email) {
+          setUserData(adaptedUserData);
+          setIsAuthenticated(true); // Si existe la sesión, el usuario está autenticado
+        } else {
+          // Si no tiene la estructura esperada, limpiar el localStorage
+          console.error('Estructura de userSession inválida:', parsedUserData);
+          localStorage.removeItem('userSession');
+        }
+      } catch (error) {
+        console.error('Error al parsear userSession:', error);
+        localStorage.removeItem('userSession');
+      }
     }
   }, []);
 

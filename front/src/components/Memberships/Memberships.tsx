@@ -208,7 +208,7 @@ export default function Memberships() {
 
             {/* Mostrar mensaje si el usuario tiene una membresía activa */}
             {hasActiveMembership() && (
-              <div className="mt-4 text-sm text-red-600">
+              <div className="mt-4 font-odor text-sm text-red-600">
                 Actualmente posees la membresía: {getActiveMembershipName()}.
                 <br />
                 Debes esperar a que expire para adquirir otra.
