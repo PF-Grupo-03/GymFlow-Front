@@ -1,9 +1,9 @@
-import MyAccount from "@/components/MyAccountComponent/MyAccountComponent";
+import DashboardU from '@/components/UserDashboard/DashboardU';
 
-export default function Login() {
+export default function MyAcount() {
   return (
     <>
-      <MyAccount />
+      <DashboardU />
     </>
   );
 }

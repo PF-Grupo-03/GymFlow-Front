@@ -3,7 +3,7 @@
 import { MyAccountItem, MyAccountItems } from '@/data/MyAccountItems';
 import styles from './MyAccount.module.css';
 import { useEffect, useState } from 'react';
-import TitleBox from '../TitleBox/TitleBox';
+import TitleBox from '../../TitleBox/TitleBox';
 import { useRouter } from 'next/navigation';
 
 interface UserData {

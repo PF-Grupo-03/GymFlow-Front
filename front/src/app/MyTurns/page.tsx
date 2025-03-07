@@ -1,4 +1,4 @@
-import Turns from "@/components/Turns/Turns";
+import Turns from '@/components/UserDashboard/Turns/Turns';
 
 const page = () => {
   return (
