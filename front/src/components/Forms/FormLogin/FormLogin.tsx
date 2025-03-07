@@ -10,6 +10,9 @@ import { useAuth } from '@/context/AuthContext';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
+import { signIn } from 'next-auth/react';
+import GoogleButton from '../GoogleButton/GoogleButton';
+import LoginGoogleButton from '@/components/LoginGoogleButton/LoginGoogleButton';
 
 export default function FormLogin() {
   const { setUserData } = useAuth();
@@ -112,6 +115,8 @@ export default function FormLogin() {
               >
                 INICIAR SESIÓN
               </button>
+
+              <LoginGoogleButton />
 
               <p className="text-center text-sm text-primary font-ibm">
                 ¿No tienes una cuenta?{' '}

@@ -6,25 +6,10 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export let users: IUserSession[] = [];
-
-const storedUsers = localStorage.getItem("users");
-if (storedUsers) {
-  users = JSON.parse(storedUsers);
-}
-
 export async function Register(userData: IRegister) {
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
     console.log("Response completa:", response);
-
-    if (response.data && response.data.user) {
-      users.push(response.data.user);
-      console.log("Usuarios actualizados:", users);
-      localStorage.setItem("users", JSON.stringify(users));
-    } else {
-      console.warn("No se recibió un 'user' en la respuesta");
-    }
 
     if (response.status === 201) {
       return response;
