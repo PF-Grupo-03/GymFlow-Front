@@ -2,23 +2,24 @@
 import { useState } from 'react';
 import RegisterValidates from '@/helpers/RegisterValidates';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Toast } from '../Toast/Toast';
+
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import { IRegister } from '@/interfaces/IRegister';
 import { Register } from '@/helpers/auth.helper';
 import { useRouter } from 'next/navigation';
+import { Toast } from '../Toast/Toast';
 
 const FormRegister = () => {
-  // Estados para controlar la visibilidad de las contraseñas
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const router = useRouter();
+
   return (
     <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">
       <div className="absolute inset-0 bg-[url('/assets/Register.jpg')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
-      <div className="relative bg-secondary p-8 mt-12 rounded-2xl whiteShadow w-full max-w-xl ">
+      <div className="relative bg-secondary p-8 mt-12 rounded-2xl whiteShadow w-full max-w-xl">
         <h2 className="text-primary text-3xl font-holtwood text-center mb-6">
           REGISTRARSE
         </h2>
@@ -27,12 +28,13 @@ const FormRegister = () => {
           initialValues={{
             nameAndLastName: '',
             birthdate: '',
-            // nDni: '',
             email: '',
             password: '',
             confirmPassword: '',
             phone: '',
             address: '',
+            role: '',
+            dni: '',
           }}
           validationSchema={RegisterValidates}
           onSubmit={async (values, { resetForm }) => {
@@ -45,7 +47,8 @@ const FormRegister = () => {
                 phone: values.phone,
                 confirmPassword: values.confirmPassword,
                 address: values.address,
-                role: 'USER_MEMBER',
+                role: values.role || 'USER_MEMBER',
+                dni: values.dni,
               };
 
               await Register(userData);
@@ -53,10 +56,11 @@ const FormRegister = () => {
               Toast.fire({
                 icon: 'success',
                 title: 'Registro exitoso',
-                text: `Estas en GymFlow, ${values.nameAndLastName}!`,
+                text: `Estas en GymFlow, Ahora inicia sesión ${values.nameAndLastName}!`,
               });
+
               resetForm();
-              router.push('/Login');
+              router.push("/Login"); 
             } catch (error) {
               console.error('Error en el registro:', error);
             }
@@ -64,6 +68,7 @@ const FormRegister = () => {
         >
           {({ isSubmitting, isValid }) => (
             <Form className="flex flex-col gap-4">
+              {/* Nombre y Apellido - Fecha de Nacimiento */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-primary font-holtwood text-sm">
@@ -80,6 +85,7 @@ const FormRegister = () => {
                     className="text-red-500 text-xs"
                   />
                 </div>
+
                 <div>
                   <label className="text-primary font-holtwood text-sm">
                     Fecha de Nacimiento:
@@ -95,40 +101,65 @@ const FormRegister = () => {
                     className="text-red-500 text-xs"
                   />
                 </div>
-                {/* <div>
+              </div>
+
+              {/* Rol - DNI */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
                   <label className="text-primary font-holtwood text-sm">
-                    N° de Documento:
+                    Rol:
                   </label>
                   <Field
-                    type="string"
-                    name="nDni"
+                    as="select"
+                    name="role"
                     className="w-full border-2 border-tertiary p-2 rounded-md"
-                  />
+                  >
+                    <option value="">Elige tu rol</option>
+                    <option value="USER_MEMBER">Cliente</option>
+                    <option value="USER_TRAINING">Entrenador</option>
+                  </Field>
                   <ErrorMessage
-                    name="nDni"
+                    name="role"
                     component="div"
                     className="text-red-500 text-xs"
                   />
-                </div> */}
+                </div>
 
                 <div>
                   <label className="text-primary font-holtwood text-sm">
-                    Email:
+                    DNI:
                   </label>
                   <Field
-                    type="email"
-                    name="email"
+                    type="text"
+                    name="dni"
                     className="w-full border-2 border-tertiary p-2 rounded-md"
                   />
                   <ErrorMessage
-                    name="email"
+                    name="dni"
                     component="div"
                     className="text-red-500 text-xs"
                   />
                 </div>
               </div>
 
-              {/* Contraseña */}
+              {/* Email (Ocupa todo el ancho) */}
+              <div>
+                <label className="text-primary font-holtwood text-sm">
+                  Email:
+                </label>
+                <Field
+                  type="email"
+                  name="email"
+                  className="w-full border-2 border-tertiary p-2 rounded-md"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-xs"
+                />
+              </div>
+
+              {/* Contraseña - Repetir Contraseña */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
                   <label className="text-primary font-holtwood text-sm">
@@ -155,7 +186,6 @@ const FormRegister = () => {
                   />
                 </div>
 
-                {/* Repetir contraseña */}
                 <div className="relative">
                   <label className="text-primary font-holtwood text-sm">
                     Repetir Contraseña:
@@ -188,6 +218,7 @@ const FormRegister = () => {
                 </div>
               </div>
 
+              {/* Teléfono - Dirección */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-primary font-holtwood text-sm">

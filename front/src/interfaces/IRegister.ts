@@ -7,4 +7,5 @@ export interface IRegister {
   phone: string;
   address: string;
   role: string;
+  dni: string;
 }
