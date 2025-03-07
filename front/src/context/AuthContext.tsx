@@ -1,90 +1,63 @@
-'use client';
+"use client";
 
-import { IUserSession } from '@/interfaces/IUserSession';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { IUserSession } from "@/interfaces/IUserSession";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export interface AuthContextProps {
   userData: IUserSession | null;
   setUserData: (userData: IUserSession | null) => void;
   isAuthenticated: boolean;
-  userId: string | null; // Nuevo: userId
-  userEmail: string | null; // Nuevo: userEmail
+  userId: string | null;
+  userEmail: string | null;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   userData: null,
   setUserData: () => {},
   isAuthenticated: false,
-  userId: null, // Nuevo: valor inicial
-  userEmail: null, // Nuevo: valor inicial
+  userId: null,
+  userEmail: null,
 });
 
-export interface AuthProviderProps {
-  children: React.ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Nuevo: Extraer userId y userEmail de userData (con verificación)
   const userId = userData?.user?.id || null;
   const userEmail = userData?.user?.email || null;
 
   useEffect(() => {
-    // Revisar si existe una sesión en el localStorage
-    const userSession = localStorage.getItem('userSession');
+    const userSession = localStorage.getItem("userSession");
     if (userSession) {
       try {
-        const parsedUserData = JSON.parse(userSession);
+        const parsedUserData: IUserSession = JSON.parse(userSession);
 
-        // Adaptar la estructura de parsedUserData a IUserSession
-        const adaptedUserData: IUserSession = {
-          token: '', // Si no tienes un token, puedes dejarlo como cadena vacía
-          user: {
-            id: parsedUserData.id,
-            nameAndLastName: parsedUserData.nameAndLastName,
-            bDate: parsedUserData.bDate,
-            email: parsedUserData.email,
-            password: parsedUserData.password,
-            confirmPassword: '', // Si no tienes confirmPassword, déjalo como cadena vacía
-            phone: parsedUserData.phone,
-            address: parsedUserData.address,
-            role: parsedUserData.role,
-          },
-        };
-
-        // Verificar si adaptedUserData tiene la estructura esperada
-        if (adaptedUserData.user?.id && adaptedUserData.user?.email) {
-          setUserData(adaptedUserData);
-          setIsAuthenticated(true); // Si existe la sesión, el usuario está autenticado
+        if (parsedUserData.user?.id && parsedUserData.user?.email) {
+          setUserData(parsedUserData);
+          setIsAuthenticated(true);
         } else {
-          // Si no tiene la estructura esperada, limpiar el localStorage
-          console.error('Estructura de userSession inválida:', parsedUserData);
-          localStorage.removeItem('userSession');
+          console.error("Estructura inválida en localStorage:", parsedUserData);
+          localStorage.removeItem("userSession");
         }
       } catch (error) {
-        console.error('Error al parsear userSession:', error);
-        localStorage.removeItem('userSession');
+        console.error("Error al parsear userSession:", error);
+        localStorage.removeItem("userSession");
       }
     }
   }, []);
 
   useEffect(() => {
-    // Actualiza localStorage si cambia userData
     if (userData) {
-      localStorage.setItem('userSession', JSON.stringify(userData));
-      setIsAuthenticated(true); // Si se tiene userData, es considerado autenticado
+      localStorage.setItem("userSession", JSON.stringify(userData));
+      setIsAuthenticated(true);
     } else {
-      localStorage.removeItem('userSession');
-      setIsAuthenticated(false); // Si no hay userData, no está autenticado
+      localStorage.removeItem("userSession");
+      setIsAuthenticated(false);
     }
   }, [userData]);
 
   return (
-    <AuthContext.Provider
-      value={{ userData, setUserData, isAuthenticated, userId, userEmail }} // Nuevo: agregar userId y userEmail
-    >
+    <AuthContext.Provider value={{ userData, setUserData, isAuthenticated, userId, userEmail }}>
       {children}
     </AuthContext.Provider>
   );

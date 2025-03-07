@@ -8,7 +8,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export async function Register(userData: IRegister) {
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
-    console.log('Response completa:', response);
+
+    console.log("Response completa:", response);
 
     if (response.status === 201) {
       return response;
