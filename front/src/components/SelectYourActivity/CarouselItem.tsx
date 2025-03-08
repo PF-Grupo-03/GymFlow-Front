@@ -13,6 +13,7 @@ const CarouselItem: React.FC<ICarouselItemProps> = ({ item, isActive }) => {
           src={item.image}
           alt={item.title}
           fill
+          sizes="(max-width: 800px) 100vw, 800px"
           className="rounded-xl object-cover"
         />
         <div className="absolute inset-x-0 bottom-0 p-4 bg-black/50 text-white">

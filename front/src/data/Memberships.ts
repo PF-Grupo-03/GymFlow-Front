@@ -1,33 +1,39 @@
-export const memberships = [
-    {
-      title: "Básico",
-      price: "18.000/mes",
-      features: [
-        "Acceso al gimnasio en horario reducido (8hs - 18hs)",
-        "Uso de máquinas y pesas",
-        "Sin clases grupales",
-        "Precio más económico"
-      ]
-    },
-    {
-      title: "Premium",
-      price: "30.000/mes",
-      features: [
-        "Acceso al gimnasio en horario completo (24/7)",
-        "Uso de máquinas y pesas",
-        "Clases grupales incluidas (Spinning y Funcional)",
-        "Asesoría mensual con un entrenador"
-      ]
-    },
-    {
-      title: "Diamante",
-      price: "50.000/mes",
-      features: [
-        "Todos los beneficios de Premium",
-        "Plan de entrenamiento personalizado",
-        "Nutricionista con seguimiento mensual",
-        "Prioridad en reservas de clases y entrenamientos",
-        "Descuentos en suplementos o tienda del gimnasio"
-      ]
-    }
-  ];
+import IPlan from '@/interfaces/IPlan';
+
+export const plans: IPlan[] = [
+  {
+    title: 'Plan Básico',
+    price: 18000,
+    benefits: [
+      'Acceso al Gimnasio',
+      'Reserva de turnos de musculación de 8:00 a 18:00hrs',
+      'Asistencia Pasiva',
+      'Registro de avances',
+    ],
+  },
+  {
+    title: 'Plan Premium',
+    price: 30000,
+    benefits: [
+      'Acceso al Gimnasio',
+      'Reserva de turnos de musculación las 24hrs',
+      'Reserva de turnos de clases las 24hrs',
+      'Asistencia Pasiva',
+      'Registro de avances',
+      'Plan de entrenamiento',
+    ],
+  },
+  {
+    title: 'Plan Diamond',
+    price: 50000,
+    benefits: [
+      'Acceso al Gimnasio',
+      'Reserva de turnos las de musculación las 24hrs',
+      'Reserva de turnos de clases las 24hrs',
+      'Asistencia Activa',
+      'Registro de avances',
+      'Plan de entrenamiento',
+      'Plan dietético',
+    ],
+  },
+];
