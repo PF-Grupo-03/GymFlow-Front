@@ -8,7 +8,7 @@ import loginValidationSchema from '@/helpers/LoginValidates';
 import { Login } from '@/helpers/auth.helper';
 import { useAuth } from '@/context/AuthContext';
 import Cookies from 'js-cookie';
-import axios from 'axios'; // Asegúrate de tener axios para la petición
+import axios from 'axios';
 import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
 
 const FormLogin = () => {
@@ -40,7 +40,7 @@ const FormLogin = () => {
 
               // Hacemos la petición al endpoint para obtener los datos del usuario
               const userResponse = await axios.get(
-                `${NEXT_PUBLIC_API_URL}/users/email/${email}`, 
+                `${NEXT_PUBLIC_API_URL}/users/email/${email}`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
 
