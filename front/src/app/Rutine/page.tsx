@@ -1,4 +1,4 @@
-import RoutineView from '@/components/UserDashboard/RoutineView/RoutineView';
+import RoutineView from '@/components/UserDashboard/MyRoutine/MyRoutine';
 
 const Rutine = () => {
   return <RoutineView />;

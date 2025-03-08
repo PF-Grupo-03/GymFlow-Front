@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import MyAccountComponent from './MyAccountComponent/MyAccountComponent';
-import RoutineView from './RoutineView/RoutineView';
+import MyAccountComponent from './MyProfile/MyProfile';
+import RoutineView from './MyRoutine/MyRoutine';
 import MyMembership from './MyMemberships';
-import Turns from './Turns/Turns';
+import Turns from './MyTurns/MyTurns';
 import TitleBox from '../TitleBox/TitleBox';
 
 const DashboardU = () => {
@@ -30,7 +30,7 @@ const DashboardU = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-primary text-white">
       {/* Menú lateral */}
-      <div className="w-full md:w-64 bg-secondary p-4">
+      <div className="w-full md:w-64 bg-primary p-4">
         <h2 className="text-xl font-holtwood mb-4">Menú</h2>
         <ul className="space-y-2">
           <li>

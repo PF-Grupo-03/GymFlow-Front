@@ -1,5 +1,5 @@
 import React from 'react';
-import RoutineView from '../UserDashboard/RoutineView/RoutineView';
+import RoutineView from '../UserDashboard/MyRoutine/MyRoutine';
 
 const UserRoutines = () => {
   return (
