@@ -11,7 +11,7 @@ export const LogoutButton: React.FC = () => {
     setUserData(null);
     Cookies.remove('userData');
     localStorage.removeItem('userSession');
-    router.push('/Login');
+    router.push('/Signin');
     Toast.fire({
       icon: 'success',
       title: 'Sesión cerrada',

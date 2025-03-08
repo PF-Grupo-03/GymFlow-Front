@@ -1,15 +1,14 @@
 import { Toast } from '@/components/Toast/Toast';
-import { ILogin } from '@/interfaces/ILogin';
+import { ISignin } from '@/interfaces/ISignin';
 import { IRegister } from '@/interfaces/IRegister';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function Register(userData: IRegister) {
-
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
-    console.log( response);
+    console.log(response);
     if (response.status === 201) {
       Toast.fire({
         icon: 'success',
@@ -18,7 +17,7 @@ export async function Register(userData: IRegister) {
       return response;
     }
   } catch (error: any) {
-    console.log(`${API_URL}/auth/signup`)
+    console.log(`${API_URL}/auth/signup`);
     console.log(error);
     Toast.fire({
       icon: 'error',
@@ -29,7 +28,7 @@ export async function Register(userData: IRegister) {
   }
 }
 
-export async function Login(userData: ILogin) {
+export async function Signin(userData: ISignin) {
   try {
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,

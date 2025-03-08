@@ -4,21 +4,21 @@ import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
-import loginValidationSchema from '@/helpers/LoginValidates';
-import { Login } from '@/helpers/auth.helper';
 import { useAuth } from '@/context/AuthContext';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
+import SigninValidationSchema from '@/helpers/SigninValidates';
+import { Signin } from '@/helpers/auth.helper';
 
-const FormLogin = () => {
+const FormSignin = () => {
   const { setUserData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   return (
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
-      <div className="absolute inset-0 bg-[url('/assets/image_login.png')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
+      <div className="absolute inset-0 bg-[url('/assets/image_Signin.png')] bg-cover bg-center before:absolute before:inset-0 before:bg-black/60"></div>
 
       <div className="relative bg-secondary p-12 w-[420px] h-[450px] rounded-2xl shadow-lg mt-12">
         <h2 className="text-primary text-3xl font-holtwood text-center mb-12">
@@ -27,12 +27,12 @@ const FormLogin = () => {
 
         <Formik
           initialValues={{ email: '', password: '' }}
-          validationSchema={loginValidationSchema}
+          validationSchema={SigninValidationSchema}
           onSubmit={async (values, { setSubmitting }) => {
             setSubmitting(true);
             try {
-              // Paso 1: Realizar el login para obtener el token
-              const response = await Login(values);
+              // Paso 1: Realizar el Signin para obtener el token
+              const response = await Signin(values);
 
               // Paso 2: Guardamos el token y hacemos la petición para obtener los datos del usuario
               const token = response.data.token;
@@ -58,7 +58,7 @@ const FormLogin = () => {
               // Redirigimos al usuario a la página principal
               router.push('/');
             } catch (error) {
-              console.error('Login failed:', error);
+              console.error('Signin failed:', error);
             } finally {
               setSubmitting(false);
             }
@@ -132,4 +132,4 @@ const FormLogin = () => {
   );
 };
 
-export default FormLogin;
+export default FormSignin;

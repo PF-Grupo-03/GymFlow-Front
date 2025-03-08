@@ -60,7 +60,7 @@ const FormRegister = () => {
               });
 
               resetForm();
-              router.push("/Login"); 
+              router.push('/Signin');
             } catch (error) {
               console.error('Error en el registro:', error);
             }
@@ -265,7 +265,7 @@ const FormRegister = () => {
 
               <p className="text-center text-sm text-primary font-ibm">
                 ¿Ya tienes una cuenta?{' '}
-                <Link href="/Login" className="text-orange-500 cursor-pointer">
+                <Link href="/Signin" className="text-orange-500 cursor-pointer">
                   Inicia sesión
                 </Link>
               </p>

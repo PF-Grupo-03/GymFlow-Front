@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { NavItem, NavItemsLogOut, NavItemsLogIn } from '@/data/NavItems';
+import { NavItem, NavItemsLogOut, NavItemsSignin } from '@/data/NavItems';
 import { useAuth } from '@/context/AuthContext';
 import { LogoutButton } from '../LogoutButton/LogoutButton';
 
@@ -49,7 +49,7 @@ const NavBar = () => {
             } overflow-hidden lg:overflow-visible lg:max-h-none lg:opacity-100 lg:ml-auto lg:mr-5`}
           >
             {/* Elementos de navegación según autenticación */}
-            {(isAuthenticated ? NavItemsLogIn : NavItemsLogOut).map(
+            {(isAuthenticated ? NavItemsSignin : NavItemsLogOut).map(
               (NavItem: NavItem) => (
                 <li key={NavItem.id}>
                   <Link href={NavItem.link}>
