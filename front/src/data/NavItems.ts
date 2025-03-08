@@ -15,5 +15,5 @@ export const NavItemsLogOut: NavItem[] = [
   { texto: 'Inicio', link: '/', id: 1 },
   { texto: 'Planes', link: '/Plans', id: 2 },
   { texto: 'Sobre Nosotros', link: '/About', id: 3 },
-  { texto: 'Iniciar Sesion', link: '/Login', id: 4 },
+  { texto: 'Iniciar Sesion', link: '/Signin', id: 4 },
 ];
