@@ -90,10 +90,10 @@ body {
 
 /* ===== Fuentes personalizadas ===== */
 @font-face {
-  font-family: "Odor Mean Chey Regular";
+  font-family: "Odor Mean Chey";
   font-style: normal;
   font-weight: normal;
-  src: local("Odor Mean Chey Regular"), url("../../public/fonts/OdorMeanChey-Regular.woff") format("woff");
+  src: url("/fonts/OdorMeanChey-Regular.woff") format("woff");
 }
 
 /* ===== Fondo personalizado para Booking ===== */
