@@ -1,7 +1,7 @@
 'use client';
 
 import { MyAccountItem, MyAccountItems } from '@/data/MyAccountItems';
-import styles from './MyAccount.module.css';
+import styles from './MyProfile.module.css';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -14,7 +14,7 @@ interface UserData {
   Membresia: string;
 }
 
-const MyAccountComponent = () => {
+const MyProfile = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const router = useRouter();
 
@@ -93,4 +93,4 @@ const MyAccountComponent = () => {
   );
 };
 
-export default MyAccountComponent;
+export default MyProfile;

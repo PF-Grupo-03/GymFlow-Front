@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import styles from './Turns.module.css';
+import styles from './MyTurns.module.css';
 import { useRouter } from 'next/navigation';
 
 interface Turn {

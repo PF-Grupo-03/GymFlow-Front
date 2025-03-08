@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import MyAccountComponent from './MyAccountComponent/MyAccountComponent';
-import RoutineView from './RoutineView/RoutineView';
+import MyAccountComponent from './MyProfile/MyProfile';
+import RoutineView from './MyRoutine/MyRoutine';
 import MyMembership from './MyMemberships';
-import Turns from './Turns/Turns';
+import Turns from './MyTurns/MyTurns';
 import TitleBox from '../TitleBox/TitleBox';
 
 const DashboardU = () => {
