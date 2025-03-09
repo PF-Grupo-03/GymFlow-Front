@@ -14,8 +14,6 @@ initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY, {
   locale: 'es-AR',
 });
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 export default function Memberships() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<IPlan | null>(null);
@@ -75,18 +73,21 @@ export default function Memberships() {
 
       localStorage.setItem('selectedPlanAmount', plan.price.toString());
 
-      const response = await fetch(`${API_URL}/payment/preference`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: plan.title,
-          price: plan.price,
-          userId: userId,
-          userEmail: userEmail,
-        }),
-      });
+      const response = await fetch(
+        `https://gymflow-back.onrender.com/payment/preference`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: plan.title,
+            price: plan.price,
+            userId: userId,
+            userEmail: userEmail,
+          }),
+        }
+      );
 
       console.log('🔍 Respuesta completa del servidor:', response);
 
