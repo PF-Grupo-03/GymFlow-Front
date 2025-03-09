@@ -1,16 +1,12 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import TitleBox from '../TitleBox/TitleBox';
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { ChevronsRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Toast } from '../Toast/Toast';
-
-initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY, {
-  locale: 'es-AR',
-});
 
 interface Plan {
   title: string;
@@ -167,6 +163,22 @@ export default function Memberships() {
       console.error('🚨 Error en handleCreatePreference:', error);
     }
   };
+
+  // Verificar si la clave pública está correctamente cargada
+  useEffect(() => {
+    const publicKey = process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY;
+    console.log('MercadoPago Public Key:', publicKey); // Verifica que la clave pública esté correcta
+
+    if (publicKey) {
+      initMercadoPago(publicKey, {
+        locale: 'es-AR',
+      });
+    } else {
+      console.error(
+        '❌ Clave pública de MercadoPago no encontrada en las variables de entorno'
+      );
+    }
+  }, []);
 
   return (
     <div className="text-center py-8 bg-primary gap-1">
