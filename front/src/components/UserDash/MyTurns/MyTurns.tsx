@@ -27,30 +27,42 @@ const Turns = () => {
 
   return (
     <>
+      {/* Título */}
       <div className="flex justify-center items-center mt-5 font-odor mb-1">
         <h2 className="inline-block bg-white text-3xl rounded-[10px] text-primary px-4 py-2 mx-2 whiteShadow">
           Mis Turnos
         </h2>
       </div>
-      <div className="flex justify-center items-center mt-1 mb-20 mx-6 sm:mx-12 md:mx-20 lg:mx-32 xl:mx-48">
+
+      {/* Contenedor principal */}
+      <div className="flex justify-center items-center mt-1 mb-20 mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
         <div
-          className={`flex flex-col justify-center items-center mt-5 gap-5 bg-secondary ${styles.whiteShadow} w-full sm:w-5/6 md:w-3/4 lg:w-1/2 xl:w-2/5 rounded-[10px] px-4 sm:px-8 md:px-12 py-8 sm:py-12 font-holtwood text-primary`}
+          className={`flex flex-col justify-center items-center mt-5 gap-6 bg-secondary ${styles.whiteShadow} w-full max-w-3xl rounded-[10px] px-4 sm:px-8 md:px-12 py-8 sm:py-12 font-holtwood text-primary`}
         >
+          {/* Listado de turnos */}
           {turns.map((turn) => (
             <div key={turn.id} className="w-full">
-              <div className="border-2 rounded-[10px] border-tertiary w-full p-4 text-xs">
-                <div className="flex justify-between items-center">
-                  <span>Fecha: {turn.fecha}</span>
-                  <span>Hora: {turn.hora}</span>
+              <div className="border-2 rounded-[10px] border-tertiary w-full p-4 text-xs sm:text-sm flex flex-col gap-2 break-words">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
+                  <span>
+                    <strong>Fecha:</strong> {turn.fecha}
+                  </span>
+                  <span>
+                    <strong>Hora:</strong> {turn.hora}
+                  </span>
                 </div>
-                <div className="mt-2">
-                  <span>Estado: {turn.estado}</span>
+                <div>
+                  <span>
+                    <strong>Estado:</strong> {turn.estado}
+                  </span>
                 </div>
               </div>
             </div>
           ))}
+
+          {/* Botón para agendar nuevo turno */}
           <button
-            className="w-full bg-tertiary text-primary rounded-lg p-2 mt-4 hover:bg-orange-400 transition-all duration-300 hover:scale-105"
+            className="w-full bg-tertiary text-primary rounded-lg p-3 mt-4 hover:bg-orange-400 transition-all duration-300 hover:scale-105"
             onClick={() => router.push('/Booking')}
           >
             Agendar Nuevo Turno
