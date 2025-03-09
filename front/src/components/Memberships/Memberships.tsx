@@ -7,16 +7,58 @@ import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { ChevronsRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Toast } from '../Toast/Toast';
-import { plans } from '@/data/Memberships';
-import IPlan from '@/interfaces/IPlan';
 
 initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY, {
   locale: 'es-AR',
 });
 
+interface Plan {
+  title: string;
+  price: number;
+  benefits: string[];
+}
+
+const plans: Plan[] = [
+  {
+    title: 'Plan Básico',
+    price: 18000,
+    benefits: [
+      'Acceso al Gimnasio',
+      'Reserva de turnos de musculación de 8:00 a 18:00hrs',
+      'Asistencia Pasiva',
+      'Registro de avances',
+    ],
+  },
+  {
+    title: 'Plan Premium',
+    price: 30000,
+    benefits: [
+      'Acceso al Gimnasio',
+      'Reserva de turnos de musculación las 24hrs',
+      'Reserva de turnos de clases las 24hrs',
+      'Asistencia Pasiva',
+      'Registro de avances',
+      'Plan de entrenamiento',
+    ],
+  },
+  {
+    title: 'Plan Diamond',
+    price: 50000,
+    benefits: [
+      'Acceso al Gimnasio',
+      'Reserva de turnos las de musculación las 24hrs',
+      'Reserva de turnos de clases las 24hrs',
+      'Asistencia Activa',
+      'Registro de avances',
+      'Plan de entrenamiento',
+      'Plan dietético',
+    ],
+  },
+];
+
 export default function Memberships() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<IPlan | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
   const { isAuthenticated, userId, userEmail, userData } = useAuth(); // Obtén el estado de autenticación y los datos del usuario
   const router = useRouter();
@@ -47,13 +89,13 @@ export default function Memberships() {
     }
   };
 
-  const handleCreatePreference = async (plan: IPlan) => {
+  const handleCreatePreference = async (plan: Plan) => {
     if (!isAuthenticated) {
       Toast.fire({
         icon: 'warning',
         title: 'Para elegir un plan, debes iniciar sesión.',
       });
-      router.push('/Signin');
+      router.push('/Login');
       return;
     }
 
@@ -74,7 +116,7 @@ export default function Memberships() {
       localStorage.setItem('selectedPlanAmount', plan.price.toString());
 
       const response = await fetch(
-        `https://gymflow-back.onrender.com/payment/preference`,
+        'https://gymflow-back.onrender.com/payment/preference',
         {
           method: 'POST',
           headers: {
