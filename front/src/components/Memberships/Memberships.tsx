@@ -14,6 +14,8 @@ initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY, {
   locale: 'es-AR',
 });
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function Memberships() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<IPlan | null>(null);
@@ -73,7 +75,7 @@ export default function Memberships() {
 
       localStorage.setItem('selectedPlanAmount', plan.price.toString());
 
-      const response = await fetch('http://localhost:3001/payment/preference', {
+      const response = await fetch(`${API_URL}/payment/preference`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

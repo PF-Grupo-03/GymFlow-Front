@@ -21,7 +21,7 @@ export default {
         md: '8px',
       },
       fontFamily: {
-        odor: ['Odor Mean Chey Regular', 'sans-serif'], 
+        odor: ['Odor Mean Chey', 'sans-serif'],
         holtwood: ["'Holtwood One SC'", 'serif'],
         ibm: ['IBM Plex Sans', 'sans-serif'],
       },
