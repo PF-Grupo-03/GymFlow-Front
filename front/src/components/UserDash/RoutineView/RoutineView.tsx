@@ -66,8 +66,8 @@ const routineData = [
 
 const RoutineView = () => {
   return (
-    <div className="flex justify-center items-center mt-5 mb-20 mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32 whiteShadow">
-      <div className="bg-secondary p-6 sm:p-8 md:p-12 rounded-[10px] w-full max-w-4xl font-holtwood text-primary">
+    <div className="flex justify-center items-center mt-5 mb-20 mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
+      <div className="bg-secondary p-6 sm:p-8 md:p-12 rounded-[10px] w-full max-w-4xl font-holtwood text-primary ">
         <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 underline">
           Mi Rutina - Marcos Cardozo
         </h1>
