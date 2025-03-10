@@ -37,7 +37,7 @@ const DashboardU = () => {
             <button
               className={`w-full text-left p-2 rounded ${
                 selectedOption === 'personalData'
-                  ? 'bg-tertiary text-primary'
+                  ? 'bg-tertiary text-primary '
                   : 'hover:bg-tertiary hover:text-primary'
               }`}
               onClick={() => setSelectedOption('personalData')}

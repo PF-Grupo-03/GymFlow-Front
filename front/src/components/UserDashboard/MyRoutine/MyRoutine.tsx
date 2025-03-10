@@ -1,4 +1,5 @@
-import React from "react";
+import { useAuth } from "@/context/AuthContext";
+
 
 const routineData = [
   {
@@ -69,18 +70,21 @@ const routineData = [
   }
 ];
 
+
+
 const RoutineView = () => {
+  const { userData } = useAuth();
   return (
     <div className="min-h-screen p-6 text-white font-odor">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg">
         <h1 className="text-2xl font-bold text-gray-900 mb-6 underline">
-          Mi Rutina - Marcos Cardozo
+          Mi Rutina - {userData?.user.nameAndLastName}
         </h1>
 
         <div className="flex flex-wrap justify-between gap-4">
           {routineData.map((day, index) => (
-            <div key={index} className="flex-1 min-w-[45%] bg-gray-100 p-4 rounded-lg shadow">
-              <h2 className="text-lg font-bold text-gray-800 bg-orange-500 px-3 py-1 rounded">
+            <div key={index} className="flex-1 min-w-[45%] bg-gray-100 p-4 rounded-tl-lg rounded-br-lg shadow">
+              <h2 className="text-lg font-bold text-gray-800 bg-orange-500 px-3 py-1 rounded-tl-lg rounded-br-lg ">
                 {day.day}
               </h2>
 
@@ -88,7 +92,7 @@ const RoutineView = () => {
                 {day.categories.map((category, catIndex) => (
                   <span
                     key={catIndex}
-                    className="text-sm font-semibold text-gray-900 bg-orange-300 px-2 py-1 rounded mr-2"
+                    className="text-sm font-semibold text-gray-900 bg-orange-300 px-2 py-1 rounded-tl-lg rounded-br-lg mr-2"
                   >
                     {category}
                   </span>
@@ -99,7 +103,7 @@ const RoutineView = () => {
               <div className="mt-3 space-y-2">
                 {day.exercises.length > 0 ? (
                   day.exercises.map((exercise, exIndex) => (
-                    <div key={exIndex} className="bg-gray-200 p-2 rounded flex items-center">
+                    <div key={exIndex} className="bg-gray-200 p-2 rounded-tl-lg rounded-br-lg flex items-center">
                       <div>
                         <p className="text-gray-800 font-semibold">{exercise.name}</p>
                         <p className="text-gray-600 text-sm">
