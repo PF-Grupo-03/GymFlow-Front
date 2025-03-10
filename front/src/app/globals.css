@@ -81,7 +81,7 @@ body {
   font-family: "Odor Mean Chey Regular";
   font-style: normal;
   font-weight: normal;
-  src: local("Odor Mean Chey Regular"), url("../../public/fonts/OdorMeanChey-Regular.woff") format("woff");
+  src: local("Odor Mean Chey Regular"), url("/fonts/OdorMeanChey-Regular.woff") format("woff");
 }
 
 .booking-bg {

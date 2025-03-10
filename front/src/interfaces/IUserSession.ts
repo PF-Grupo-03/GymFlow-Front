@@ -2,6 +2,7 @@ export interface IUserSession {
   token: string;
   user: {
     id: string;
+    dni: string
     nameAndLastName: string;
     bDate: string;
     email: string;

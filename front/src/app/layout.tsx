@@ -5,7 +5,6 @@ import Footer from '../components/Footer/Footer';
 import NavBar from '../components/NavbarComp/Navbar/NavBar';
 import ExcludedWrapper from '@/components/ExcluededWrapper/ExcludedWrapper';
 import { AuthProvider } from '@/context/AuthContext';
-import { Providers } from './Providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -29,6 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <script src="//code.tidio.co/q6zyk8rs2gndnns3cgqhjcmt2cuuwqwk.js" async></script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
