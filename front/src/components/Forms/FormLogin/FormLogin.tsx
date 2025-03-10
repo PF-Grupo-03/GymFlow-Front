@@ -10,8 +10,6 @@ import { useAuth } from '@/context/AuthContext';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
-import { signIn } from 'next-auth/react';
-import GoogleButton from '../GoogleButton/GoogleButton';
 import LoginGoogleButton from '@/components/LoginGoogleButton/LoginGoogleButton';
 
 export default function FormLogin() {

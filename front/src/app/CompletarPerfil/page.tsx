@@ -1,122 +1,151 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation"; // Para redirigir después de la actualización
+import { useAuth } from "@/context/AuthContext";
+import { NEXT_PUBLIC_API_URL } from "../config/envs";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const CompletarPerfil = () => {
+const CompleteProfile = () => {
+  const { userData, setUserData } = useAuth();
   const router = useRouter();
-  
-  // Estado para controlar si estamos en el cliente
-  const [isClient, setIsClient] = useState(false);
-  const [id, setId] = useState<string | null>(null);
-
+  const searchParams = useSearchParams();
+  const userId = searchParams.get("id"); // Se obtiene el id desde la URL
+  console.log(userId);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    bDate: "",
-    address: "",
+    dni: "",
     phone: "",
+    address: "",
   });
 
-  const [message, setMessage] = useState<string | null>(null);
-
-  // Efecto para asegurarse de que el código solo se ejecute en el cliente
+  // Obtener la información del usuario al montar el componente
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // Efecto para obtener el `id` de los parámetros de la URL solo en el cliente
-  useEffect(() => {
-    if (isClient) {
-      const searchParams = new URLSearchParams(window.location.search);
-      setId(searchParams.get("id"));
+    if (!userId) {
+      console.error("No se encontró el id en la URL.");
+      setLoading(false);
+      return;
     }
-  }, [isClient]);
 
-  useEffect(() => {
-    if (id) {
-      axios
-        .get(`/users/${id}`)
-        .then((response) => {
-          const user = response.data;
-          setFormData({
-            bDate: user.bDate || "",
-            address: user.address || "",
-            phone: user.phone || "",
-          });
-        })
-        .catch((error) => {
-          console.error("Error al obtener los datos del usuario:", error);
-          setMessage("Error al cargar los datos del usuario");
+    const fetchUserData = async () => {
+      try {
+        const res = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`);
+        if (!res.ok) throw new Error("Error al obtener los datos del usuario");
+        const data = await res.json();
+
+        // Actualizar el contexto con los datos obtenidos
+        setUserData({ user: data, token: userData?.token || "" });
+
+        // Prellenar el formulario con los datos del usuario
+        setFormData({
+          dni: data.dni || "",
+          phone: data.phone || "",
+          address: data.address || "",
         });
-    }
-  }, [id]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(`/users/update-google/${id}`, formData);
-      if (response.status === 200) {
-        setMessage("Perfil actualizado con éxito");
-        router.push("/dashboard");
+      } catch (error) {
+        if (error instanceof Error) {
+          if (error instanceof Error) {
+            console.error(error.message);
+          } else {
+            console.error("An unknown error occurred");
+          }
+        } else {
+          console.error("An unknown error occurred");
+        }
+      } finally {
+        setLoading(false);
       }
+    };
+
+    fetchUserData();
+  }, [userId, setUserData, userData?.token]);
+
+  // Controlador para actualizar el estado local del formulario
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Función que maneja el envío del formulario
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!userId) {
+      console.error("No se ha encontrado el ID del usuario en la URL.");
+      return;
+    }
+  
+    const updatedFormData = {
+      ...formData,
+      role: "USER_BASIC", // 👈 Ajusta este valor según lo que corresponda
+    };
+  
+    console.log("📤 Enviando datos:", JSON.stringify(updatedFormData));
+  
+    try {
+      const response = await fetch(
+        `${NEXT_PUBLIC_API_URL}/users/update-google/${userId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedFormData),
+        }
+      );
+  
+      console.log("🔍 Respuesta del servidor (status):", response.status);
+  
+      const data = await response.json();
+      console.log("📩 Respuesta del servidor (body):", data);
+  
+      if (!response.ok) throw new Error(data.message || "Error al actualizar el perfil");
+  
+      // Obtener la información actualizada del usuario
+      const resUser = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`);
+      if (!resUser.ok) throw new Error("Error al obtener el usuario actualizado");
+      const updatedUser = await resUser.json();
+  
+      console.log("✅ Usuario actualizado correctamente:", updatedUser);
+  
+      // Actualizar el contexto con el usuario actualizado
+      setUserData({ user: updatedUser, token: userData?.token || "" });
+  
+      // Redirigir al usuario
+      router.push("/");
     } catch (error) {
-      console.error("Error al actualizar el perfil:", error);
-      setMessage("Error al actualizar el perfil");
+      if (error instanceof Error) {
+        console.error("❌ Error en handleSubmit:", error.message);
+      } else {
+        console.error("❌ Error en handleSubmit:", error);
+      }
     }
   };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="container">
-      <h1>Completar Perfil</h1>
-      {message && <div>{message}</div>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="bDate">Fecha de nacimiento:</label>
-          <input
-            type="date"
-            id="bDate"
-            name="bDate"
-            value={formData.bDate}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="address">Dirección:</label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="phone">Teléfono:</label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit">Guardar Cambios</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="dni"
+        value={formData.dni}
+        onChange={handleInputChange}
+        placeholder="DNI"
+      />
+      <input
+        type="text"
+        name="phone"
+        value={formData.phone}
+        onChange={handleInputChange}
+        placeholder="Phone"
+      />
+      <input
+        type="text"
+        name="address"
+        value={formData.address}
+        onChange={handleInputChange}
+        placeholder="Address"
+      />
+      <button type="submit">Guardar perfil</button>
+    </form>
   );
 };
 
-export default CompletarPerfil;
+export default CompleteProfile;
