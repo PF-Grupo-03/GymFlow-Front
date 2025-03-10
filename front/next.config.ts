@@ -1,9 +1,11 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
-    domains: ['https://gym-flow-front.vercel.app/'],
+    domains: [
+      'gym-flow-front.vercel.app', // Dominio de producción
+      'localhost', // Dominio para desarrollo local
+    ],
   },
 };
 
