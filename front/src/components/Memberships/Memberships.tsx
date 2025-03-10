@@ -21,7 +21,7 @@ interface Plan {
 const plans: Plan[] = [
   {
     title: 'Plan Básico',
-    price: 18000,
+    price: 1,
     benefits: [
       'Acceso al Gimnasio',
       'Reserva de turnos de musculación de 8:00 a 18:00hrs',
@@ -31,7 +31,7 @@ const plans: Plan[] = [
   },
   {
     title: 'Plan Premium',
-    price: 30000,
+    price: 2,
     benefits: [
       'Acceso al Gimnasio',
       'Reserva de turnos de musculación las 24hrs',
@@ -43,7 +43,7 @@ const plans: Plan[] = [
   },
   {
     title: 'Plan Diamond',
-    price: 50000,
+    price: 3,
     benefits: [
       'Acceso al Gimnasio',
       'Reserva de turnos las de musculación las 24hrs',

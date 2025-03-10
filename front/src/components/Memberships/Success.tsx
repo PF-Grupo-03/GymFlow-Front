@@ -8,11 +8,11 @@ import { useAuth } from '@/context/AuthContext';
 
 const getPlanName = (amount: number): string => {
   switch (amount) {
-    case 18000:
+    case 1:
       return 'Básico';
-    case 30000:
+    case 2:
       return 'Premium';
-    case 50000:
+    case 3:
       return 'Diamond';
     default:
       return 'Desconocido';
