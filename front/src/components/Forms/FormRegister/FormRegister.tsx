@@ -59,7 +59,7 @@ const FormRegister = () => {
               });
 
               resetForm();
-              router.push("/Login"); 
+              router.push('/Login');
             } catch (error) {
               console.error('Error en el registro:', error);
             }
