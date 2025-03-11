@@ -10,6 +10,7 @@ import axios from 'axios';
 import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
 import SigninValidationSchema from '@/helpers/SigninValidates';
 import { Signin } from '@/helpers/auth.helper';
+import LoginGoogleButton from '../LoginGoogleButton/LoginGoogleButton';
 
 const FormSignin = () => {
   const { setUserData } = useAuth();
@@ -114,6 +115,8 @@ const FormSignin = () => {
               >
                 INICIAR SESIÓN
               </button>
+
+              <LoginGoogleButton />
 
               <p className="text-center text-sm text-primary font-ibm">
                 ¿No tienes una cuenta?{' '}
