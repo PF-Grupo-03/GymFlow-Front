@@ -85,7 +85,7 @@ export default function Memberships() {
       case 'USER_DIAMOND':
         return 'Diamond';
       default:
-        return '';
+        return 'USER_BASIC';
     }
   };
 
@@ -95,7 +95,7 @@ export default function Memberships() {
         icon: 'warning',
         title: 'Para elegir un plan, debes iniciar sesión.',
       });
-      router.push('/SignIn');
+      router.push('/Signin');
       return;
     }
 
@@ -178,7 +178,7 @@ export default function Memberships() {
         {plans.map((membership, index) => (
           <div
             key={index}
-            className="w-80 p-6 bg-secondary rounded-lg whiteShadow text-center border border-gray-300 cursor-pointer"
+            className="w-80 p-6 bg-secondary rounded-lg whiteShadow text-center border border-gray-300 cursor-pointer flex flex-col" // Agregado flex y flex-col
           >
             <h3 className="text-2xl font-holtwood text-black uppercase">
               {membership.title}
@@ -187,7 +187,9 @@ export default function Memberships() {
               ${membership.price}
               <span className="text-sm font-light">/MES</span>
             </p>
-            <ul className="text-left mt-4 mb-4">
+            <ul className="text-left mt-4 mb-4 flex-1">
+              {' '}
+              {/* Agregado flex-1 para que ocupe el espacio restante */}
               {membership.benefits.map((benefit, idx) => (
                 <li
                   key={idx}
@@ -198,9 +200,9 @@ export default function Memberships() {
               ))}
             </ul>
             <button
-              className="w-full bg-tertiary text-primary font-holtwood text-lg py-2 px-4 rounded-md hover:bg-opacity-80 transition"
+              className="w-full bg-tertiary text-primary font-holtwood text-lg py-2 px-4 rounded-md hover:bg-opacity-80 transition mt-auto" // Agregado mt-auto
               onClick={() => handleCreatePreference(membership)}
-              disabled={!!preferenceId || hasActiveMembership()} // Deshabilitar si ya tiene una membresía activa
+              disabled={!!preferenceId || hasActiveMembership()}
             >
               {hasActiveMembership()
                 ? 'Membresía Activa'
