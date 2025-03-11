@@ -17,6 +17,7 @@ const CompleteProfileContent = () => {
     dni: "",
     phone: "",
     address: "",
+    role: ""
   });
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const CompleteProfileContent = () => {
           dni: data.dni || "",
           phone: data.phone || "",
           address: data.address || "",
+          role: data.role || "",
         });
       } catch (error) {
         console.error(error instanceof Error ? error.message : "Unknown error");
@@ -61,7 +63,7 @@ const CompleteProfileContent = () => {
       return;
     }
 
-    const updatedFormData = { ...formData, role: "USER_BASIC" };
+    const updatedFormData = { ...formData };
 
     console.log("📤 Enviando datos:", JSON.stringify(updatedFormData));
 
@@ -80,10 +82,12 @@ const CompleteProfileContent = () => {
       const data = await response.json();
       console.log("📩 Respuesta del servidor (body):", data);
 
-      if (!response.ok) throw new Error(data.message || "Error al actualizar el perfil");
+      if (!response.ok)
+        throw new Error(data.message || "Error al actualizar el perfil");
 
       const resUser = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`);
-      if (!resUser.ok) throw new Error("Error al obtener el usuario actualizado");
+      if (!resUser.ok)
+        throw new Error("Error al obtener el usuario actualizado");
       const updatedUser = await resUser.json();
 
       console.log("✅ Usuario actualizado correctamente:", updatedUser);
@@ -92,7 +96,10 @@ const CompleteProfileContent = () => {
 
       router.push("/");
     } catch (error) {
-      console.error("❌ Error en handleSubmit:", error instanceof Error ? error.message : error);
+      console.error(
+        "❌ Error en handleSubmit:",
+        error instanceof Error ? error.message : error
+      );
     }
   };
 
@@ -100,9 +107,34 @@ const CompleteProfileContent = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" name="dni" value={formData.dni} onChange={handleInputChange} placeholder="DNI" />
-      <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" />
-      <input type="text" name="address" value={formData.address} onChange={handleInputChange} placeholder="Address" />
+      <input
+        type="text"
+        name="dni"
+        value={formData.dni}
+        onChange={handleInputChange}
+        placeholder="DNI"
+      />
+      <input
+        type="text"
+        name="phone"
+        value={formData.phone}
+        onChange={handleInputChange}
+        placeholder="Phone"
+      />
+      <input
+        type="text"
+        name="address"
+        value={formData.address}
+        onChange={handleInputChange}
+        placeholder="Address"
+      />
+
+      <select name="" id="">
+        <option value="">Elige tu rol</option>
+        <option value="USER_MEMBER">Cliente</option>
+        <option value="USER_TRAINING">Entrenador</option>
+      </select>
+
       <button type="submit">Guardar perfil</button>
     </form>
   );
