@@ -95,7 +95,7 @@ export default function Memberships() {
         icon: 'warning',
         title: 'Para elegir un plan, debes iniciar sesión.',
       });
-      router.push('/SignIn');
+      router.push('/Signin');
       return;
     }
 
