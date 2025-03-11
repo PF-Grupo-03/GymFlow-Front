@@ -10,14 +10,13 @@ const CompleteProfileContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("id"); // Se obtiene el id desde la URL
-  console.log(userId);
 
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     dni: "",
     phone: "",
     address: "",
-    role: ""
+    role: "",
   });
 
   useEffect(() => {
@@ -51,7 +50,9 @@ const CompleteProfileContent = () => {
     fetchUserData();
   }, [userId, setUserData, userData?.token]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -129,7 +130,7 @@ const CompleteProfileContent = () => {
         placeholder="Address"
       />
 
-      <select name="" id="">
+      <select name="role" value={formData.role} onChange={handleInputChange}>
         <option value="">Elige tu rol</option>
         <option value="USER_MEMBER">Cliente</option>
         <option value="USER_TRAINING">Entrenador</option>

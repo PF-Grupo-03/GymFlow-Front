@@ -3,7 +3,7 @@ import { NEXT_PUBLIC_API_URL } from "@/app/config/envs";
 
 const LoginGoogleButton = () => {
   const handleLogin = () => {
-    window.location.href = `${NEXT_PUBLIC_API_URL}/auth/google/redirect`;
+    window.location.href = `${NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (
