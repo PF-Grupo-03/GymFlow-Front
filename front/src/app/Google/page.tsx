@@ -1,16 +1,27 @@
+"use client";  
+
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react"; 
 
 const Google = () => {
-      const searchParams = useSearchParams();
-      const userToken = searchParams.get("token"); 
-      const userId = searchParams.get("id");
+  return (
+    <Suspense fallback={<div>Cargando...</div>}> 
+      <GoogleContent />
+    </Suspense>
+  );
+};
 
-      return (<>
-        <div>
-            {userToken}
-            {userId}
-        </div>
-      </>)
-}
+const GoogleContent = () => {
+  const searchParams = useSearchParams();
+  const userToken = searchParams.get("token"); 
+  const userId = searchParams.get("id");
 
-export default Google
+  return (
+    <div>
+      <p>Token: {userToken}</p>
+      <p>ID: {userId}</p>
+    </div>
+  );
+};
+
+export default Google;
