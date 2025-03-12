@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   FooterIcons,
   FooterIconsItem,
@@ -5,9 +6,8 @@ import {
   FooterItems,
   FooterLinks,
   FooterLinksItem,
-} from '@/data/FooterItems';
-import Image from 'next/image';
-import Link from 'next/link';
+} from "@/data/FooterItems";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -48,16 +48,13 @@ const Footer = () => {
         <div className="flex justify-center gap-3 md:gap-5">
           {FooterIcons.map((FooterIcon: FooterIconsItem) => (
             <Link key={FooterIcon.id} href={FooterIcon.link}>
-              <Image
+              <img
                 src={FooterIcon.direccion}
                 alt={`${FooterIcon.direccion
-                  .split('/')
+                  .split("/")
                   .pop()
-                  ?.replace('.svg', '')} icon`}
-                width={40}
-                height={40}
+                  ?.replace(".svg", "")} icon`}
                 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 transition-all duration-300 hover:scale-110"
-                unoptimized={process.env.NODE_ENV !== 'production'}
               />
             </Link>
           ))}
