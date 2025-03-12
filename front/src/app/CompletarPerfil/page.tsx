@@ -4,12 +4,14 @@ import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { NEXT_PUBLIC_API_URL } from "../config/envs";
 import { useRouter, useSearchParams } from "next/navigation";
+import "../../app/globals.css";
 
 const CompleteProfileContent = () => {
   const { userData, setUserData } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const userId = searchParams.get("id"); // Se obtiene el id desde la URL
+  const userId = searchParams.get("id");
+  const userToken = searchParams.get("token");
 
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -93,7 +95,7 @@ const CompleteProfileContent = () => {
 
       console.log("✅ Usuario actualizado correctamente:", updatedUser);
 
-      setUserData({ user: updatedUser, token: userData?.token || "" });
+      setUserData({ user: updatedUser, token: userToken || "" });
 
       router.push("/");
     } catch (error) {
@@ -107,37 +109,78 @@ const CompleteProfileContent = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="dni"
-        value={formData.dni}
-        onChange={handleInputChange}
-        placeholder="DNI"
-      />
-      <input
-        type="text"
-        name="phone"
-        value={formData.phone}
-        onChange={handleInputChange}
-        placeholder="Phone"
-      />
-      <input
-        type="text"
-        name="address"
-        value={formData.address}
-        onChange={handleInputChange}
-        placeholder="Address"
-      />
+    <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
+      <div className="relative bg-secondary whiteShadow p-12 w-[420px] h-[400px] rounded-tl-lg rounded-br-lg shadow-lg mt-12">
+        <h2 className="text-primary text-3xl font-holtwood text-center mb-8">
+          COMPLETAR PERFIL
+        </h2>
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-2 gap-x-6 gap-y-4"
+        >
+          <div className="flex flex-col">
+            <label className="text-primary font-holtwood text-sm">DNI:</label>
+            <input
+              type="text"
+              name="dni"
+              value={formData.dni}
+              onChange={handleInputChange}
+              placeholder="Ej: 12345678"
+              className="border-2 border-tertiary p-2 rounded-md"
+            />
+          </div>
 
-      <select name="role" value={formData.role} onChange={handleInputChange}>
-        <option value="">Elige tu rol</option>
-        <option value="USER_MEMBER">Cliente</option>
-        <option value="USER_TRAINING">Entrenador</option>
-      </select>
+          <div className="flex flex-col">
+            <label className="text-primary font-holtwood text-sm">
+              Teléfono:
+            </label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder="+54 XXX XXX XXXX"
+              className="border-2 border-tertiary p-2 rounded-md"
+            />
+          </div>
 
-      <button type="submit">Guardar perfil</button>
-    </form>
+          <div className="flex flex-col">
+            <label className="text-primary font-holtwood text-sm">
+              Dirección:
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              placeholder="Dirección"
+              className="border-2 border-tertiary p-2 rounded-md"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-primary font-holtwood text-sm">Rol:</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleInputChange}
+              className="border-2 border-tertiary p-2 rounded-md"
+            >
+              <option value="">Elige tu rol</option>
+              <option value="USER_MEMBER">Cliente</option>
+              <option value="USER_TRAINING">Entrenador</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="col-span-2 bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition mx-auto"
+          >
+            Guardar perfil
+          </button>
+        </form>
+      </div>
+    </div>
   );
 };
 
