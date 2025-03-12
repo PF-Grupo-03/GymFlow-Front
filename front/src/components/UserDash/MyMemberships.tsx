@@ -49,7 +49,6 @@ const mapMembershipName = (type: string): string => {
 const MyMembership = () => {
   const { userData, loading, error } = useUserData();
 
-  // Manejamos el estado de la carga y el error
   if (loading) return <p>Cargando membresía...</p>;
   if (error || !userData?.member) return <p>No tienes membresía activa.</p>;
 
