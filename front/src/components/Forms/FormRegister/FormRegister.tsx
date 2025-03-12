@@ -2,17 +2,73 @@
 import { useState } from 'react';
 import RegisterValidates from '@/helpers/RegisterValidates';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Toast } from '../../Toast/Toast';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import { IRegister } from '@/interfaces/IRegister';
 import { Register } from '@/helpers/auth.helper';
 import { useRouter } from 'next/navigation';
 
+import { useFetch } from '@/Utils/hooks/useFetch';
+import { sendEmail } from '@/Utils/services/apiServices';
+import { getWelcomeEmailTemplate } from '@/Utils/TemplatesEmail/welcome';
+import { Toast } from '@/components/Toast/Toast';
+
 const FormRegister = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { loading, error, fetchData: sendEmailRequest } = useFetch(sendEmail);
+
+  const onSubmit = async (values: any, { resetForm }: any) => {
+    try {
+      const userData: IRegister = {
+        nameAndLastName: values.nameAndLastName,
+        bDate: values.birthdate,
+        email: values.email,
+        password: values.password,
+        phone: values.phone,
+        confirmPassword: values.confirmPassword,
+        address: values.address,
+        role: values.role || 'USER_MEMBER',
+        dni: values.dni,
+      };
+
+      await Register(userData);
+
+      if(loading) {
+        Toast.fire({
+          icon: 'info',
+          title: 'Enviando email de registro',
+          text: 'xxxxx',
+        });
+      }
+      if(error) {
+        Toast.fire({
+          icon: 'error',
+          title: 'Hubo un error enviando el email de registro',
+          text: 'xxxxx',
+        });
+      }
+      const htmlTemplate = getWelcomeEmailTemplate(values.nameAndLastName);
+      sendEmailRequest(
+        values.email,
+        'GYMFLOW / Te da la bienvenida!!!',
+        htmlTemplate,
+        'WELCOME_EVENT' 
+      );
+
+      Toast.fire({
+        icon: 'success',
+        title: 'Registro exitoso',
+        text: `Estas en GymFlow, Ahora inicia sesión ${values.nameAndLastName}!`,
+      });
+
+      resetForm();
+      router.push('/Signin');
+    } catch (error) {
+      console.error('Error en el registro:', error);
+    }
+  };
 
   return (
     <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">
@@ -36,34 +92,7 @@ const FormRegister = () => {
             dni: '',
           }}
           validationSchema={RegisterValidates}
-          onSubmit={async (values, { resetForm }) => {
-            try {
-              const userData: IRegister = {
-                nameAndLastName: values.nameAndLastName,
-                bDate: values.birthdate,
-                email: values.email,
-                password: values.password,
-                phone: values.phone,
-                confirmPassword: values.confirmPassword,
-                address: values.address,
-                role: values.role || 'USER_MEMBER',
-                dni: values.dni,
-              };
-
-              await Register(userData);
-
-              Toast.fire({
-                icon: 'success',
-                title: 'Registro exitoso',
-                text: `Estas en GymFlow, Ahora inicia sesión ${values.nameAndLastName}!`,
-              });
-
-              resetForm();
-              router.push('/Login');
-            } catch (error) {
-              console.error('Error en el registro:', error);
-            }
-          }}
+          onSubmit={onSubmit}
         >
           {({ isSubmitting, isValid }) => (
             <Form className="flex flex-col gap-4">
@@ -102,7 +131,7 @@ const FormRegister = () => {
                 </div>
               </div>
 
-              {/* Rol - DNI */}
+              
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-primary font-holtwood text-sm">
@@ -141,7 +170,7 @@ const FormRegister = () => {
                 </div>
               </div>
 
-              {/* Email (Ocupa todo el ancho) */}
+              
               <div>
                 <label className="text-primary font-holtwood text-sm">
                   Email:
@@ -158,7 +187,7 @@ const FormRegister = () => {
                 />
               </div>
 
-              {/* Contraseña - Repetir Contraseña */}
+             
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
                   <label className="text-primary font-holtwood text-sm">
@@ -217,7 +246,7 @@ const FormRegister = () => {
                 </div>
               </div>
 
-              {/* Teléfono - Dirección */}
+            
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-primary font-holtwood text-sm">
@@ -264,7 +293,7 @@ const FormRegister = () => {
 
               <p className="text-center text-sm text-primary font-ibm">
                 ¿Ya tienes una cuenta?{' '}
-                <Link href="/Login" className="text-orange-500 cursor-pointer">
+                <Link href="/Signin" className="text-orange-500 cursor-pointer">
                   Inicia sesión
                 </Link>
               </p>
