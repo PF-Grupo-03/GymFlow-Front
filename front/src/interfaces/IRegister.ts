@@ -8,4 +8,8 @@ export interface IRegister {
   address: string;
   role: string;
   dni: string;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a

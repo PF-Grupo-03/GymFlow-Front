@@ -1,9 +1,9 @@
-import GymFlowBanner from '@/components/Home/GymFlowBanner/GymFlowBanner';
-import WhyChooseUs from '@/components/Home/WhyChooseUs/WhyChooseUs';
-import SelectYourActivitie from '@/components/Home/SelectYourActivity/SelectYourActivity';
 
-// Exporta por defecto
-export default function Home() {
+import GymFlowBanner from '@/components/Landing/GymFlowBanner/GymFlowBanner';
+import WhyChooseUs from '@/components/Landing/WhyChooseUs/WhyChooseUs';
+import SelectYourActivitie from '@/components/Landing/SelectYourActivity/SelectYourActivity';
+
+export default function Page() {
   return (
     <div className="bg-primary">
       <GymFlowBanner />

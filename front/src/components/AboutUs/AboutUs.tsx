@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import TitleBox from "../TitleBox/TitleBox";
-import "../../app/globals.css";
-import { Employee, employees } from "@/data/employees";
+import Image from 'next/image';
+import TitleBox from '../TitleBox/TitleBox';
+import '../../app/globals.css';
+import { Employee, employees } from '@/data/employees';
 
 export default function AboutUs() {
   return (

@@ -22,6 +22,7 @@ export const LogoutButton: React.FC = () => {
 
     // Eliminar datos locales
     localStorage.removeItem('userSession');
+<<<<<<< HEAD
 
     // Cerrar sesión con Google
     await fetch('/api/auth/signout', { method: 'POST' });
@@ -29,6 +30,9 @@ export const LogoutButton: React.FC = () => {
     // Redirigir a Google para forzar el cierre de sesión
     window.location.href = 'https://accounts.google.com/Logout';
 
+=======
+    router.push('/Signin');
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a
     Toast.fire({
       icon: 'success',
       title: 'Sesión cerrada',

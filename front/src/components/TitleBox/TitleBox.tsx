@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "./Title.module.css";
+import React from 'react';
+import styles from './Title.module.css';
 
 const TitleBox = ({ title }: { title: string }) => {
   return (
@@ -11,4 +11,8 @@ const TitleBox = ({ title }: { title: string }) => {
   );
 };
 
+<<<<<<< HEAD
 export default TitleBox;
+=======
+export default TitleBox;
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a

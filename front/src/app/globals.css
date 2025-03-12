@@ -78,10 +78,10 @@ body {
   }
 
 @font-face {
-  font-family: "Odor Mean Chey Regular";
+  font-family: "Odor Mean Chey";
   font-style: normal;
   font-weight: normal;
-  src: local("Odor Mean Chey Regular"), url("../../public/fonts/OdorMeanChey-Regular.woff") format("woff");
+  src: url("/fonts/OdorMeanChey-Regular.woff") format("woff");
 }
 
 .booking-bg {
@@ -90,6 +90,8 @@ body {
   background-position: center;
 }
 
+
+/* ===== Personalización de la barra de scroll ===== */
 ::-webkit-scrollbar {
   width: 12px;
 }

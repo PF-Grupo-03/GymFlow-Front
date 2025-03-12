@@ -35,14 +35,22 @@ const FormRegister = () => {
 
       await Register(userData);
 
+<<<<<<< HEAD:front/src/components/Forms/FormRegister/FormRegister.tsx
       if(loading) {
+=======
+      if (loading) {
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/FormRegister/FormRegister.tsx
         Toast.fire({
           icon: 'info',
           title: 'Enviando email de registro',
           text: 'xxxxx',
         });
       }
+<<<<<<< HEAD:front/src/components/Forms/FormRegister/FormRegister.tsx
       if(error) {
+=======
+      if (error) {
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/FormRegister/FormRegister.tsx
         Toast.fire({
           icon: 'error',
           title: 'Hubo un error enviando el email de registro',
@@ -54,7 +62,11 @@ const FormRegister = () => {
         values.email,
         'GYMFLOW / Te da la bienvenida!!!',
         htmlTemplate,
+<<<<<<< HEAD:front/src/components/Forms/FormRegister/FormRegister.tsx
         'WELCOME_EVENT' 
+=======
+        'WELCOME_EVENT'
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/FormRegister/FormRegister.tsx
       );
 
       Toast.fire({
@@ -131,7 +143,10 @@ const FormRegister = () => {
                 </div>
               </div>
 
+<<<<<<< HEAD:front/src/components/Forms/FormRegister/FormRegister.tsx
               
+=======
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/FormRegister/FormRegister.tsx
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-primary font-holtwood text-sm">
@@ -170,7 +185,10 @@ const FormRegister = () => {
                 </div>
               </div>
 
+<<<<<<< HEAD:front/src/components/Forms/FormRegister/FormRegister.tsx
               
+=======
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/FormRegister/FormRegister.tsx
               <div>
                 <label className="text-primary font-holtwood text-sm">
                   Email:
@@ -187,7 +205,10 @@ const FormRegister = () => {
                 />
               </div>
 
+<<<<<<< HEAD:front/src/components/Forms/FormRegister/FormRegister.tsx
              
+=======
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/FormRegister/FormRegister.tsx
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative">
                   <label className="text-primary font-holtwood text-sm">

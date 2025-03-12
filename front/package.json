@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@mercadopago/sdk-react": "^1.0.0",
-    "@types/mercadopago": "^1.5.11",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
@@ -31,6 +30,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/js-cookie": "^3.0.6",
+    "@types/mercadopago": "^1.5.11",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

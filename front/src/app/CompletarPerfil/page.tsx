@@ -119,4 +119,16 @@ const CompletarPerfil = () => {
   );
 };
 
+<<<<<<< HEAD
 export default CompletarPerfil;
+=======
+const CompleteProfile = () => {
+  return (
+    <Suspense fallback={<div>Loading profile...</div>}>
+      <CompleteProfileContent />
+    </Suspense>
+  );
+};
+
+export default CompleteProfile;
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a
