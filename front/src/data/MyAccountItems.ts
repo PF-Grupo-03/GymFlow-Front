@@ -22,10 +22,6 @@ export const MyAccountItems: MyAccountItem[] = [
   },
   {
     id: 5,
-    name: 'DNI',
-  },
-  {
-    id: 6,
-    name: 'Membresia',
+    name: 'Membresía',
   },
 ];

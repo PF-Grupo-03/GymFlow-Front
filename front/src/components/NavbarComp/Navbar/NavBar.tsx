@@ -5,7 +5,11 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+<<<<<<< HEAD:front/src/components/NavbarComp/Navbar/NavBar.tsx
 import { NavItem, NavItemsLogOut, NavItemsLogIn } from '@/data/NavItems';
+=======
+import { NavItem, NavItemsLogOut, NavItemsSignin } from '@/data/NavItems';
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/Navbar/NavBar.tsx
 import { useAuth } from '@/context/AuthContext';
 import { LogoutButton } from '../LogoutButton/LogoutButton';
 
@@ -33,7 +37,13 @@ const NavBar = () => {
             {isOpen ? <X size={30} /> : <Menu size={30} />}
           </button>
 
-          <Image src="/images/logo.png" alt="logo" width={80} height={80} />
+          <Image
+            src="/images/logo.png"
+            alt="logo"
+            width={80}
+            height={80}
+            priority
+          />
 
           <ul
             className={`absolute lg:static top-20 left-0 w-full lg:w-auto bg-tertiary lg:bg-transparent flex flex-col lg:flex-row gap-5 p-5 lg:p-0 transition-all duration-300 ${
@@ -43,7 +53,11 @@ const NavBar = () => {
             } overflow-hidden lg:overflow-visible lg:max-h-none lg:opacity-100 lg:ml-auto lg:mr-5`}
           >
             {/* Elementos de navegación según autenticación */}
+<<<<<<< HEAD:front/src/components/NavbarComp/Navbar/NavBar.tsx
             {(isAuthenticated ? NavItemsLogIn : NavItemsLogOut).map(
+=======
+            {(isAuthenticated ? NavItemsSignin : NavItemsLogOut).map(
+>>>>>>> fad5864993e575b22134fb4b3cff5d5a8e529d5a:front/src/components/Navbar/NavBar.tsx
               (NavItem: NavItem) => (
                 <li key={NavItem.id}>
                   <Link href={NavItem.link}>

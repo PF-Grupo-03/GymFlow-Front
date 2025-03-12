@@ -1,5 +1,5 @@
 import { Toast } from '@/components/Toast/Toast';
-import { ILogin } from '@/interfaces/ILogin';
+import { ISignin } from '@/interfaces/ISignin';
 import { IRegister } from '@/interfaces/IRegister';
 import axios from 'axios';
 
@@ -8,36 +8,23 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export async function Register(userData: IRegister) {
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
-    console.log('Response completa:', response);
-
+    console.log(response);
     if (response.status === 201) {
       return response;
     }
   } catch (error: any) {
-    console.log('Error en la petición:', error);
-    console.log('URL llamada:', `${API_URL}/auth/signup`);
-
-    if (error.response) {
-      console.log('Error response:', error.response);
-
-      Toast.fire({
-        icon: 'error',
-        title: 'Registro Fallido',
-        text: error.response.data?.message || 'Error desconocido',
-      });
-    } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Registro Fallido',
-        text: 'No se pudo conectar con el servidor',
-      });
-    }
-
+    console.log(`${API_URL}/auth/signup`);
+    console.log(error);
+    Toast.fire({
+      icon: 'error',
+      title: 'Registro Fallido',
+      text: error.response.data.message,
+    });
     throw new Error(error);
   }
 }
 
-export async function Login(userData: ILogin) {
+export async function Signin(userData: ISignin) {
   try {
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/signin`,
