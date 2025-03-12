@@ -10,7 +10,7 @@ import { Toast } from '../Toast/Toast';
 import useUserData from '@/helpers/users.helper';
 import { Plan, plans } from '@/data/PlanMemberships';
 
-initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY, {
+initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY!, {
   locale: 'es-AR',
 });
 
@@ -19,12 +19,15 @@ export default function Memberships() {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
   const { isAuthenticated, userId, userEmail } = useAuth();
-  const { userData, loading, error } = useUserData();
+  const { userData, loading } = useUserData();
   const router = useRouter();
 
   const paymentButtonRef = useRef<HTMLDivElement>(null);
 
+  const hasActiveMembership = userData?.member?.isActive;
+
   const handleCreatePreference = async (plan: Plan) => {
+    // Si no está autenticado
     if (!isAuthenticated) {
       Toast.fire({
         icon: 'warning',
@@ -34,10 +37,11 @@ export default function Memberships() {
       return;
     }
 
-    if (userData?.member?.isActive) {
+    // Si ya tiene membresía activa
+    if (hasActiveMembership) {
       Toast.fire({
         icon: 'error',
-        title: 'Ya tienes una membresía activa.',
+        title: 'Ya tienes una membresía activa. Debes esperar a que expire.',
       });
       return;
     }
@@ -46,24 +50,22 @@ export default function Memberships() {
       console.log('📦 Datos enviados al backend:', {
         title: plan.title,
         price: plan.price,
-        userId: userId,
-        userEmail: userEmail,
+        userId,
+        userEmail,
       });
 
       localStorage.setItem('selectedPlanAmount', plan.price.toString());
 
       const response = await fetch(
-        'https://gymflow-back.onrender.com/payment/preference',
+        `${process.env.NEXT_PUBLIC_API_URL}/payment/preference`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             title: plan.title,
             price: plan.price,
-            userId: userId,
-            userEmail: userEmail,
+            userId,
+            userEmail,
           }),
         }
       );
@@ -79,12 +81,10 @@ export default function Memberships() {
         setSelectedPlan(plan);
 
         setTimeout(() => {
-          if (paymentButtonRef.current) {
-            paymentButtonRef.current.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',
-            });
-          }
+          paymentButtonRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
         }, 100);
       } else {
         throw new Error('La respuesta del servidor no contiene un ID válido');
@@ -95,7 +95,6 @@ export default function Memberships() {
   };
 
   if (loading) return <p>Cargando membresías...</p>;
-  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="text-center py-8 bg-primary gap-1">
@@ -116,6 +115,7 @@ export default function Memberships() {
               ${membership.price}
               <span className="text-sm font-light">/MES</span>
             </p>
+
             <ul className="text-left mt-4 mb-4 flex-1">
               {membership.benefits.map((benefit, idx) => (
                 <li
@@ -126,29 +126,35 @@ export default function Memberships() {
                 </li>
               ))}
             </ul>
+
             <button
-              className="w-full bg-tertiary text-primary font-holtwood text-lg py-2 px-4 rounded-md hover:bg-opacity-80 transition mt-auto"
+              className={`w-full bg-tertiary text-primary font-holtwood text-lg py-2 px-4 rounded-md hover:bg-opacity-80 transition mt-auto ${
+                hasActiveMembership && 'opacity-50 cursor-not-allowed'
+              }`}
               onClick={() => handleCreatePreference(membership)}
-              disabled={userData?.member?.isActive}
+              disabled={hasActiveMembership}
             >
-              {userData?.member?.isActive ? 'Membresía Activa' : 'Seleccionar'}
+              {hasActiveMembership ? 'Membresía Activa' : 'Seleccionar'}
             </button>
 
-            {userData?.member?.isActive && (
-              <div className="mt-4 font-odor text-sm text-red-600">
-                Actualmente posees la membresía:{' '}
-                {userData.member.memberShipType}.
-                <br />
-                Vigente hasta:{' '}
-                {new Date(userData.member.endDate).toLocaleDateString()}.
-                <br />
-                Debes esperar a que expire para adquirir otra.
-              </div>
-            )}
+            {/* Mostrar info si tiene membresía activa */}
+            {hasActiveMembership &&
+              userData?.member?.memberShipType === membership.title && (
+                <div className="mt-4 font-odor text-sm text-red-600">
+                  Actualmente posees la membresía:{' '}
+                  {userData.member.memberShipType}.
+                  <br />
+                  Vigente hasta:{' '}
+                  {new Date(userData.member.endDate).toLocaleDateString()}.
+                  <br />
+                  Debes esperar a que expire para adquirir otra.
+                </div>
+              )}
           </div>
         ))}
       </div>
 
+      {/* Si hay preferencia de pago generada */}
       {preferenceId && selectedPlan && (
         <div
           ref={paymentButtonRef}
