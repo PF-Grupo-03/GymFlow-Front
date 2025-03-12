@@ -7,87 +7,22 @@ import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { ChevronsRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Toast } from '../Toast/Toast';
+import useUserData from '@/helpers/users.helper';
+import { Plan, plans } from '@/data/PlanMemberships';
 
 initMercadoPago(process.env.NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY, {
   locale: 'es-AR',
 });
 
-interface Plan {
-  title: string;
-  price: number;
-  benefits: string[];
-}
-
-const plans: Plan[] = [
-  {
-    title: 'Plan Básico',
-    price: 1,
-    benefits: [
-      'Acceso al Gimnasio',
-      'Reserva de turnos de musculación de 8:00 a 18:00hrs',
-      'Asistencia Pasiva',
-      'Registro de avances',
-    ],
-  },
-  {
-    title: 'Plan Premium',
-    price: 2,
-    benefits: [
-      'Acceso al Gimnasio',
-      'Reserva de turnos de musculación las 24hrs',
-      'Reserva de turnos de clases las 24hrs',
-      'Asistencia Pasiva',
-      'Registro de avances',
-      'Plan de entrenamiento',
-    ],
-  },
-  {
-    title: 'Plan Diamond',
-    price: 3,
-    benefits: [
-      'Acceso al Gimnasio',
-      'Reserva de turnos las de musculación las 24hrs',
-      'Reserva de turnos de clases las 24hrs',
-      'Asistencia Activa',
-      'Registro de avances',
-      'Plan de entrenamiento',
-      'Plan dietético',
-    ],
-  },
-];
-
 export default function Memberships() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
-  const { isAuthenticated, userId, userEmail, userData } = useAuth(); // Obtén el estado de autenticación y los datos del usuario
+  const { isAuthenticated, userId, userEmail } = useAuth();
+  const { userData, loading, error } = useUserData();
   const router = useRouter();
 
   const paymentButtonRef = useRef<HTMLDivElement>(null);
-
-  // Verificar si el usuario tiene una membresía activa
-  const hasActiveMembership = () => {
-    if (!userData) return false;
-
-    const activeRoles = ['USER_BASIC', 'USER_PREMIUM', 'USER_DIAMOND'];
-    return activeRoles.includes(userData.user.role);
-  };
-
-  // Obtener el nombre de la membresía activa
-  const getActiveMembershipName = () => {
-    if (!userData) return '';
-
-    switch (userData.user.role) {
-      case 'USER_BASIC':
-        return 'Básico';
-      case 'USER_PREMIUM':
-        return 'Premium';
-      case 'USER_DIAMOND':
-        return 'Diamond';
-      default:
-        return 'USER_BASIC';
-    }
-  };
 
   const handleCreatePreference = async (plan: Plan) => {
     if (!isAuthenticated) {
@@ -99,13 +34,15 @@ export default function Memberships() {
       return;
     }
 
-    // Verificar si el usuario tiene una membresía activa
-    if (hasActiveMembership()) {
-      return; // No hacer nada si ya tiene una membresía activa
+    if (userData?.member?.isActive) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Ya tienes una membresía activa.',
+      });
+      return;
     }
 
     try {
-      console.log('📌 Enviando solicitud para crear preferencia');
       console.log('📦 Datos enviados al backend:', {
         title: plan.title,
         price: plan.price,
@@ -131,18 +68,13 @@ export default function Memberships() {
         }
       );
 
-      console.log('🔍 Respuesta completa del servidor:', response);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Error en la respuesta del backend:', errorText);
         throw new Error('Error al crear la preferencia: ' + errorText);
       }
 
       const data = await response.json();
-      console.log('✅ Respuesta parseada:', data);
-
-      if (data && data.preferenceId) {
+      if (data?.preferenceId) {
         setPreferenceId(data.preferenceId);
         setSelectedPlan(plan);
 
@@ -155,18 +87,15 @@ export default function Memberships() {
           }
         }, 100);
       } else {
-        console.error(
-          '❌ La respuesta del servidor no tiene un ID válido:',
-          data
-        );
-        throw new Error(
-          'La respuesta del servidor no contiene un ID de preferencia válido'
-        );
+        throw new Error('La respuesta del servidor no contiene un ID válido');
       }
     } catch (error) {
       console.error('🚨 Error en handleCreatePreference:', error);
     }
   };
+
+  if (loading) return <p>Cargando membresías...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="text-center py-8 bg-primary gap-1">
@@ -178,7 +107,7 @@ export default function Memberships() {
         {plans.map((membership, index) => (
           <div
             key={index}
-            className="w-80 p-6 bg-secondary rounded-lg whiteShadow text-center border border-gray-300 cursor-pointer flex flex-col" // Agregado flex y flex-col
+            className="w-80 p-6 bg-secondary rounded-lg whiteShadow text-center border border-gray-300 cursor-pointer flex flex-col"
           >
             <h3 className="text-2xl font-holtwood text-black uppercase">
               {membership.title}
@@ -188,8 +117,6 @@ export default function Memberships() {
               <span className="text-sm font-light">/MES</span>
             </p>
             <ul className="text-left mt-4 mb-4 flex-1">
-              {' '}
-              {/* Agregado flex-1 para que ocupe el espacio restante */}
               {membership.benefits.map((benefit, idx) => (
                 <li
                   key={idx}
@@ -200,21 +127,20 @@ export default function Memberships() {
               ))}
             </ul>
             <button
-              className="w-full bg-tertiary text-primary font-holtwood text-lg py-2 px-4 rounded-md hover:bg-opacity-80 transition mt-auto" // Agregado mt-auto
+              className="w-full bg-tertiary text-primary font-holtwood text-lg py-2 px-4 rounded-md hover:bg-opacity-80 transition mt-auto"
               onClick={() => handleCreatePreference(membership)}
-              disabled={!!preferenceId || hasActiveMembership()}
+              disabled={userData?.member?.isActive}
             >
-              {hasActiveMembership()
-                ? 'Membresía Activa'
-                : preferenceId
-                ? 'Seleccionado'
-                : 'Seleccionar'}
+              {userData?.member?.isActive ? 'Membresía Activa' : 'Seleccionar'}
             </button>
 
-            {/* Mostrar mensaje si el usuario tiene una membresía activa */}
-            {hasActiveMembership() && (
+            {userData?.member?.isActive && (
               <div className="mt-4 font-odor text-sm text-red-600">
-                Actualmente posees la membresía: {getActiveMembershipName()}.
+                Actualmente posees la membresía:{' '}
+                {userData.member.memberShipType}.
+                <br />
+                Vigente hasta:{' '}
+                {new Date(userData.member.endDate).toLocaleDateString()}.
                 <br />
                 Debes esperar a que expire para adquirir otra.
               </div>
