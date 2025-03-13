@@ -35,7 +35,7 @@ const useUserData = () => {
 
         const userParsed = JSON.parse(userSession);
         const userEmail = userParsed.user.email;
-
+        console.log(userEmail);
         const response = await fetch(`${API_URL}/users/email/${userEmail}`);
         console.log(response);
         if (!response.ok)
