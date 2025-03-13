@@ -25,6 +25,8 @@ const GoogleContent = () => {
 
   useEffect(() => {
     if (userId && userToken) {
+      console.log("userId", userId);
+      console.log("userToken", userToken);
       axios
         .get(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
           headers: {
