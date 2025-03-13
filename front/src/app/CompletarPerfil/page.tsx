@@ -31,11 +31,16 @@ const CompleteProfileContent = () => {
 
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`);
+        const res = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
         if (!res.ok) throw new Error("Error al obtener los datos del usuario");
         const data = await res.json();
 
-        setUserData({ user: data, token: userData?.token || "" });
+        setUserData({ user: data, token: userToken! });
 
         setFormData({
           dni: data.dni || "",
@@ -51,7 +56,7 @@ const CompleteProfileContent = () => {
     };
 
     fetchUserData();
-  }, [userId, setUserData, userData?.token]);
+  }, [userId, setUserData, userToken]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
