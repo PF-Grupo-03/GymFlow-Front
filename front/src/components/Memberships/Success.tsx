@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { sendEmail } from '@/Utils/services/apiServices';
-import { getPaymentSuccessEmailTemplate } from '@/Utils/TemplatesEmail/PaimentSuccess';
+import { getPaymentSuccessEmailTemplate } from '@/Utils/TemplatesEmail/paimentSuccess';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
