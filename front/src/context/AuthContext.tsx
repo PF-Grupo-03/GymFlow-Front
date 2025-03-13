@@ -9,6 +9,7 @@ export interface AuthContextProps {
   isAuthenticated: boolean;
   userId: string | null;
   userEmail: string | null;
+  token: string | null;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -17,6 +18,7 @@ export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
   userId: null,
   userEmail: null,
+  token: null,
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -24,6 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
 
   const userId = userData?.user?.id || null;
   const userEmail = userData?.user?.email || null;
@@ -34,8 +37,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const parsedUserData: IUserSession = JSON.parse(userSession);
 
-        if (parsedUserData.user?.id && parsedUserData.user?.email) {
+        if (
+          parsedUserData.user?.id &&
+          parsedUserData.user?.email &&
+          parsedUserData.token
+        ) {
           setUserData(parsedUserData);
+          setToken(parsedUserData.token);
           setIsAuthenticated(true);
         } else {
           console.error('Estructura inválida en localStorage:', parsedUserData);
@@ -51,16 +59,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (userData) {
       localStorage.setItem('userSession', JSON.stringify(userData));
+      setToken(userData.token);
       setIsAuthenticated(true);
     } else {
       localStorage.removeItem('userSession');
+      setToken(null);
       setIsAuthenticated(false);
     }
   }, [userData]);
 
   return (
     <AuthContext.Provider
-      value={{ userData, setUserData, isAuthenticated, userId, userEmail }}
+      value={{
+        userData,
+        setUserData,
+        isAuthenticated,
+        userId,
+        userEmail,
+        token,
+      }}
     >
       {children}
     </AuthContext.Provider>
