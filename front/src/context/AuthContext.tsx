@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           parsedUserData.token
         ) {
           setUserData(parsedUserData);
-          setToken(parsedUserData.token);
+          setToken(parsedUserData.token.token);
           setIsAuthenticated(true);
         } else {
           console.error(
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (userData) {
       localStorage.setItem('userSession', JSON.stringify(userData));
-      setToken(userData.token);
+      setToken(userData.token.token);
       setIsAuthenticated(true);
     } else {
       localStorage.removeItem('userSession');
