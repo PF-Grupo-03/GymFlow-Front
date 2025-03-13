@@ -39,7 +39,7 @@ const MyProfile = () => {
 
     if (user) {
       const userParsed = JSON.parse(user);
-
+      console.log(userParsed);
       const { nameAndLastName, email, phone, address, dni, role } =
         userParsed.user;
 
