@@ -1,11 +1,72 @@
+'use client';
+
+import useUserData from '@/helpers/users.helper';
+
+const benefitsMap: { [key: string]: string[] } = {
+  BASIC: ['Acceso al gimnasio', '1 clase grupal por semana'],
+  PREMIUM: [
+    'Acceso al gimnasio',
+    'Clases ilimitadas',
+    'Asesoramiento personalizado',
+  ],
+  DIAMOND: [
+    'Acceso total',
+    'Clases ilimitadas',
+    'Entrenador personal',
+    'Eventos VIP',
+  ],
+};
+
+const mapMembershipName = (type: string): string => {
+  switch (type) {
+    case 'BASIC':
+      return 'Básica';
+    case 'PREMIUM':
+      return 'Premium';
+    case 'DIAMOND':
+      return 'Diamond';
+    default:
+      return 'Sin Membresía';
+  }
+};
+
 const MyMembership = () => {
+  const { userData, loading, error } = useUserData();
+
+  if (loading) return <p>Cargando membresía...</p>;
+  if (error || !userData?.member) return <p>No tienes membresía activa.</p>;
+
+  const { member } = userData;
+  const benefits = benefitsMap[member.memberShipType] || [];
+
   return (
-    <div className="flex justify-center items-center mt-5 mb-20 mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
-      <div className="bg-secondary p-6 sm:p-8 md:p-12 rounded-[10px] whiteShadow w-full max-w-3xl font-holtwood text-primary">
-        <h3 className="text-2xl sm:text-3xl mb-6 text-center">Mi Membresía</h3>
-        <p className="text-primary text-center break-words">
-          Aquí puedes ver los detalles de tu membresía.
+    <div className="flex flex-col gap-4 bg-secondary p-6 rounded-xl shadow-lg text-primary max-w-xl mx-auto mt-8">
+      <h2 className="text-2xl font-bold text-center">Mi Membresía</h2>
+
+      <div>
+        <p>
+          <strong>Tipo:</strong> {mapMembershipName(member.memberShipType)}
         </p>
+        <p>
+          <strong>Estado:</strong> {member.isActive ? 'Activa' : 'Inactiva'}
+        </p>
+        <p>
+          <strong>Inicio:</strong>{' '}
+          {new Date(member.startDate).toLocaleDateString()}
+        </p>
+        <p>
+          <strong>Finaliza:</strong>{' '}
+          {new Date(member.endDate).toLocaleDateString()}
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-semibold mt-4">Beneficios:</h3>
+        <ul className="list-disc list-inside">
+          {benefits.map((benefit, index) => (
+            <li key={index}>{benefit}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
