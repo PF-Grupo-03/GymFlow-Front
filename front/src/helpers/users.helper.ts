@@ -34,6 +34,7 @@ const useUserData = () => {
         if (!userSession) throw new Error('No hay sesión activa.');
 
         const userParsed = JSON.parse(userSession);
+        console.log('Esto es la sesion del usuario:', userParsed);
         const userEmail = userParsed.user.email;
         console.log(userEmail);
         const response = await fetch(`${API_URL}/users/email/${userEmail}`);
