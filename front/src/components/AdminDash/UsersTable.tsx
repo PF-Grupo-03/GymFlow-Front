@@ -31,7 +31,7 @@ interface User {
 }
 
 const AdminUsersTable = () => {
-  const { userData } = useAuth(); // Obtén los datos del usuario del contexto
+  const { userData, token } = useAuth(); // Obtén los datos del usuario del contexto
   const [users, setUsers] = useState<User[]>([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
@@ -39,12 +39,11 @@ const AdminUsersTable = () => {
     const fetchUsers = async () => {
       if (!userData) return; // Si no hay datos de usuario, no hacer la solicitud
       try {
-        const userToken = userData; // Obtén el token desde los datos del usuario
-        console.log('Este es el token que usamos:', userToken);
+        console.log('Este es el token que usamos:', token);
         const response = await fetch(`${API_URL}/users`, {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${userToken}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!response.ok) throw new Error('Error al obtener los usuarios');
