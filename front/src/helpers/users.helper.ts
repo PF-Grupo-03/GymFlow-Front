@@ -36,7 +36,7 @@ const useUserData = () => {
         const userParsed = JSON.parse(userSession);
         console.log('Esto es la sesion del usuario:', userParsed);
         const userEmail = userParsed.user.email;
-        const userToken = userParsed.token;
+        const userToken = userParsed.token.token;
         console.log('Token del usuario:', userToken);
         console.log('Email del usuario:', userEmail);
 
