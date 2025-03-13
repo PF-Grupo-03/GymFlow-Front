@@ -17,7 +17,7 @@ const Google = () => {
 
 const GoogleContent = () => {
   const searchParams = useSearchParams();
-  const userToken = searchParams.get("token"); 
+  const userToken = searchParams.get("token");
   const userId = searchParams.get("id");
   const { setUserData } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
@@ -25,13 +25,20 @@ const GoogleContent = () => {
 
   useEffect(() => {
     if (userId && userToken) {
-      axios.get(`${NEXT_PUBLIC_API_URL}/users/${userId}`)
-        .then(response => {
+      axios
+        .get(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+        })
+        .then((response) => {
           const user = response.data;
           setUserData({ user, token: userToken });
           router.push("/");
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error al obtener usuario:", error);
         })
         .finally(() => {
