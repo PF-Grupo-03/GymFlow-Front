@@ -1,41 +1,44 @@
 import * as Yup from 'yup';
 
-export const RegisterValidates = Yup.object().shape({
+const RegisterValidates = Yup.object().shape({
   nameAndLastName: Yup.string()
-    .matches(/^\S+\s+\S+/, 'Debes ingresar nombre y apellido')
-    .required('Campo requerido'),
-
-  email: Yup.string().email('Correo inválido').required('Campo requerido'),
-
-  password: Yup.string()
-    .min(8, 'Mínimo 8 caracteres')
-    .matches(/[A-Z]/, 'Debe contener una mayúscula')
-    .matches(/[a-z]/, 'Debe contener una minúscula')
-    .matches(/[!@#$%^&*]/, 'Debe contener un carácter especial')
-    .required('Campo requerido'),
-
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Las contraseñas no coinciden')
-    .required('Campo requerido'),
-
-  phone: Yup.string()
-    .matches(/^\+\d{12}$/, 'Debe comenzar con "+" y tener 13 dígitos en total')
-    .required('Campo requerido'),
-
-  address: Yup.string().required('Campo requerido'),
+    .min(3, 'El nombre es muy corto')
+    .max(50, 'El nombre es muy largo')
+    .required('Nombre completo obligatorio'),
 
   birthdate: Yup.date()
-    .nullable()
-    .required('Campo requerido')
-    .max(
-      new Date(new Date().setFullYear(new Date().getFullYear() - 12)),
-      'Debes ser mayor de 12 años'
-    ),
+    .required('Fecha de nacimiento obligatoria')
+    .max(new Date(), 'La fecha no puede ser en el futuro'),
 
-  // nDni: Yup.string()
-  //   .matches(/^\d+$/, 'Solo se permiten números')
-  //   .min(7, 'Debe tener al menos 7 caracteres')
-  //   .required('Campo requerido'),
+  email: Yup.string()
+    .email('Correo electrónico inválido')
+    .required('Correo obligatorio'),
+
+  password: Yup.string()
+    .min(6, 'La contraseña debe tener al menos 6 caracteres')
+    .required('Contraseña obligatoria'),
+
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), ''], 'Las contraseñas deben coincidir')
+    .required('Repetir la contraseña es obligatorio'),
+
+  phone: Yup.string()
+    .min(7, 'Número de teléfono muy corto')
+    .max(15, 'Número de teléfono muy largo')
+    .required('Teléfono obligatorio'),
+
+  address: Yup.string()
+    .min(5, 'Dirección muy corta')
+    .max(100, 'Dirección muy larga')
+    .required('Dirección obligatoria'),
+
+  role: Yup.string()
+    .oneOf(['USER_MEMBER', 'USER_TRAINING'], 'Rol inválido')
+    .required('Rol obligatorio'),
+
+  // dni: Yup.string()
+  //   .matches(/^\d{7,8}$/, 'DNI inválido')
+  //   .required('DNI obligatorio'),
 });
 
 export default RegisterValidates;
