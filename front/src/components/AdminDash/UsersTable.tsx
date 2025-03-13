@@ -9,6 +9,7 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import { format } from 'date-fns'; // Importación de date-fns
+import { useAuth } from '@/context/AuthContext'; // Importa el contexto de autenticación
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -30,13 +31,22 @@ interface User {
 }
 
 const AdminUsersTable = () => {
+  const { userData } = useAuth(); // Obtén los datos del usuario del contexto
   const [users, setUsers] = useState<User[]>([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
+      if (!userData) return; // Si no hay datos de usuario, no hacer la solicitud
       try {
-        const response = await fetch(`${API_URL}/users`);
+        const userToken = userData.token; // Obtén el token desde los datos del usuario
+        const response = await fetch(`${API_URL}/users`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+        if (!response.ok) throw new Error('Error al obtener los usuarios');
         const data = await response.json();
         setUsers(data);
       } catch (error) {
@@ -44,7 +54,7 @@ const AdminUsersTable = () => {
       }
     };
     fetchUsers();
-  }, []);
+  }, [userData]); // Ejecutar la solicitud solo cuando los datos de usuario estén disponibles
 
   const columns = useMemo<ColumnDef<User>[]>(
     () => [
