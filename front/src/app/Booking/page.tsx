@@ -1,4 +1,4 @@
-import BookingView from '@/views/BookingView';
+import BookingView from '@/components/Booking/BookingView';
 
 export default function Booking() {
   return (

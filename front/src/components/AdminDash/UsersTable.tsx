@@ -2,16 +2,13 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  useTable,
-  useGlobalFilter,
-  useSortBy,
-  usePagination,
   ColumnDef,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
   flexRender,
 } from '@tanstack/react-table';
+import { format } from 'date-fns'; // Importación de date-fns
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -26,7 +23,7 @@ interface User {
   id: string;
   nameAndLastName: string;
   dni: string;
-  bDate: string; // Cambio de dateOfBirth a bDate
+  bDate: string;
   address: string;
   member: Membership | null;
   assistedBookingsCount: number;
@@ -61,9 +58,11 @@ const AdminUsersTable = () => {
       },
       {
         header: 'Fecha de Nacimiento',
-        accessorKey: 'bDate', // Cambio de dateOfBirth a bDate
-        cell: ({ getValue }) =>
-          new Date(getValue() as string).toLocaleDateString(),
+        accessorKey: 'bDate',
+        cell: ({ getValue }) => {
+          const date = new Date(getValue() as string);
+          return format(date, 'dd/MM/yyyy');
+        },
       },
       {
         header: 'Dirección',
@@ -87,7 +86,7 @@ const AdminUsersTable = () => {
         accessorKey: 'member.startDate',
         cell: ({ row }) =>
           row.original.member
-            ? new Date(row.original.member.startDate).toLocaleDateString()
+            ? format(new Date(row.original.member.startDate), 'dd/MM/yyyy')
             : 'N/A',
       },
       {
@@ -95,7 +94,7 @@ const AdminUsersTable = () => {
         accessorKey: 'member.endDate',
         cell: ({ row }) =>
           row.original.member
-            ? new Date(row.original.member.endDate).toLocaleDateString()
+            ? format(new Date(row.original.member.endDate), 'dd/MM/yyyy')
             : 'N/A',
       },
       {
@@ -116,8 +115,8 @@ const AdminUsersTable = () => {
   });
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-center">
+    <div className="p-6 bg-white rounded-lg whiteShadow">
+      <h2 className="text-2xl text-primary font-bold mb-4 text-center">
         Usuarios Registrados
       </h2>
 
@@ -131,7 +130,7 @@ const AdminUsersTable = () => {
       />
 
       {/* Tabla */}
-      <table className="min-w-full divide-y divide-gray-200 border">
+      <table className="min-w-full divide-y divide-tertiary border">
         <thead className="bg-gray-100">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -155,8 +154,11 @@ const AdminUsersTable = () => {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="px-4 py-2 whitespace-nowrap">
-                  {cell.renderValue() as string}
+                <td
+                  key={cell.id}
+                  className="px-4 py-2 text-primary whitespace-nowrap"
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
             </tr>

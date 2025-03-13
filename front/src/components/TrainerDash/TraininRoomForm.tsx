@@ -44,12 +44,17 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
     onSubmit: async (values) => {
       try {
         // Validación de roles (Descomentar cuando los roles estén activos)
-        /*
-        if (userData?.user.role !== 'USER_ADMIN' && userData?.user.role !== 'USER_TRAINER') {
-          Toast.fire({ icon: 'error', title: 'No tienes permisos para esta acción.' });
+
+        if (
+          userData?.user.role !== 'USER_ADMIN' &&
+          userData?.user.role !== 'USER_TRAINER'
+        ) {
+          Toast.fire({
+            icon: 'error',
+            title: 'No tienes permisos para esta acción.',
+          });
           return;
         }
-        */
 
         // Preparar días como string separados por coma antes de enviar
         const body = {
