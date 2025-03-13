@@ -6,9 +6,10 @@ import Turns from '../UserDash/MyTurns/MyTurns';
 import MyMembership from '../UserDash/MyMemberships';
 import RoutineView from '../UserDash/MyRoutine/MyRoutine';
 import TitleBox from '../TitleBox/TitleBox';
+import TrainingRoomForm from '../TrainerDash/TraininRoomForm';
+import AdminUsersTable from '../AdminDash/UsersTable';
 
 const Dashboard = () => {
-  // Estado para controlar la opción seleccionada
   const [selectedOption, setSelectedOption] = useState('personalData');
 
   // Función para renderizar el componente correspondiente
@@ -22,6 +23,10 @@ const Dashboard = () => {
         return <MyMembership />;
       case 'myRoutines':
         return <RoutineView />;
+      case 'manageRooms':
+        return <TrainingRoomForm />;
+      case 'manageUsers':
+        return <AdminUsersTable />;
       default:
         return <MyProfile />;
     }
@@ -79,6 +84,31 @@ const Dashboard = () => {
               onClick={() => setSelectedOption('myRoutines')}
             >
               Mis rutinas
+            </button>
+          </li>
+          {/* Opciones solo visibles para admin o entrenadores */}
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded ${
+                selectedOption === 'manageRooms'
+                  ? 'bg-tertiary text-primary'
+                  : 'hover:bg-tertiary hover:text-primary'
+              }`}
+              onClick={() => setSelectedOption('manageRooms')}
+            >
+              Gestionar Salas
+            </button>
+          </li>
+          <li>
+            <button
+              className={`w-full text-left p-2 rounded ${
+                selectedOption === 'manageUsers'
+                  ? 'bg-tertiary text-primary'
+                  : 'hover:bg-tertiary hover:text-primary'
+              }`}
+              onClick={() => setSelectedOption('manageUsers')}
+            >
+              Gestionar Usuarios
             </button>
           </li>
         </ul>
