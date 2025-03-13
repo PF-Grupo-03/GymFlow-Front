@@ -33,7 +33,7 @@ const FormRutina = () => {
       if(!userLocal) throw new Error('No hay sesión activa.');
       const userParsed = JSON.parse(userLocal);
 
-      const userToken = userParsed.token
+      const userToken = userParsed.token.token
       console.log('Token del usuario:', userToken);
       if(userToken){
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/excercise/muscle/${originalMuscle}`,
