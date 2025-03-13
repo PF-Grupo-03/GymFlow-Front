@@ -12,7 +12,7 @@ export const useFetch = <T, Args extends unknown[]>(
       setLoading(true);
       setError(null);
       try {
-        const result = await fetchService(...args);
+        const result = await fetchService(...args );
         setData(result);
       } catch (err) {
         setError((err as Error).message);
