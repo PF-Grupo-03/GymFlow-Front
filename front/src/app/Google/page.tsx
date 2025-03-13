@@ -9,7 +9,7 @@ import { ClipLoader } from "react-spinners";
 
 const Google = () => {
   return (
-    <Suspense fallback={<div>Cargando...</div>}>
+    <Suspense fallback={<ClipLoader color="#36D7B7" size={50} />}>
       <GoogleContent />
     </Suspense>
   );
@@ -40,26 +40,15 @@ const GoogleContent = () => {
         })
         .catch((error) => {
           if (error.response) {
-            // El servidor respondió con un código de estado fuera del rango 2xx
-            console.error(
-              "Error en la respuesta del servidor:",
-              error.response.data
-            );
-            console.error("Código de estado:", error.response.status);
-            console.error("Encabezados:", error.response.headers);
+            console.error("Error en la respuesta del servidor:", error.response.data);
           } else if (error.request) {
-            // La solicitud fue hecha pero no se recibió respuesta
-            console.error(
-              "No se recibió respuesta del servidor:",
-              error.request
-            );
+            console.error("No se recibió respuesta del servidor:", error.request);
           } else {
-            // Algo más causó el error
             console.error("Error al configurar la solicitud:", error.message);
           }
         })
         .finally(() => {
-          setIsLoading(false);
+          setTimeout(() => setIsLoading(false), 500); // Pequeño delay para suavizar la transición
         });
     } else {
       setIsLoading(false);
@@ -67,7 +56,11 @@ const GoogleContent = () => {
   }, [userId, userToken, setUserData, router]);
 
   if (isLoading) {
-    return <ClipLoader color="#36D7B7" size={50} />;
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <ClipLoader color="#36D7B7" size={50} />
+      </div>
+    );
   }
 
   return (
