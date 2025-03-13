@@ -29,14 +29,23 @@ const FormRutina = () => {
     setSelectedMuscle(formattedMuscle); 
 
     try {
+      const userLocal = localStorage.getItem('userSession');
+      if(!userLocal) throw new Error('No hay sesión activa.');
+      const userParsed = JSON.parse(userLocal);
+
+      const userToken = userParsed.token
+      console.log('Token del usuario:', userToken);
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/excercise/muscle/${originalMuscle}`,
+
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+              Authorization: `Bearer ${userToken}`,
             },
           }
       );
+
+      
       if (!response.ok) throw new Error("Error al obtener los ejercicios");
       const data = await response.json();
       setExercises(data);
