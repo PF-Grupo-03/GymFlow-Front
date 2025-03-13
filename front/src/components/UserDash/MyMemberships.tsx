@@ -1,19 +1,35 @@
 'use client';
 
+import { ChevronsRight } from 'lucide-react';
 import useUserData from '@/helpers/users.helper';
 
 const benefitsMap: { [key: string]: string[] } = {
-  BASIC: ['Acceso al gimnasio', '1 clase grupal por semana'],
+  BASIC: [
+    'Acceso al gimnasio',
+    '1 clase grupal por semana',
+    'Reserva de turnos de musculación de 8:00 a 18:00hrs',
+    'Asistencia Pasiva',
+    'Registro de avances',
+  ],
   PREMIUM: [
     'Acceso al gimnasio',
     'Clases ilimitadas',
     'Asesoramiento personalizado',
+    'Reserva de turnos de musculación las 24hrs',
+    'Reserva de turnos de clases las 24hrs',
+    'Asistencia Pasiva',
+    'Registro de avances',
+    'Plan de entrenamiento',
   ],
   DIAMOND: [
     'Acceso total',
     'Clases ilimitadas',
     'Entrenador personal',
     'Eventos VIP',
+    'Reserva de turnos las 24hrs',
+    'Asistencia Activa',
+    'Registro de avances',
+    'Plan dietético',
   ],
 };
 
@@ -33,6 +49,7 @@ const mapMembershipName = (type: string): string => {
 const MyMembership = () => {
   const { userData, loading, error } = useUserData();
 
+  // Manejamos el estado de la carga y el error
   if (loading) return <p>Cargando membresía...</p>;
   if (error || !userData?.member) return <p>No tienes membresía activa.</p>;
 
@@ -64,7 +81,10 @@ const MyMembership = () => {
         <h3 className="font-semibold mt-4">Beneficios:</h3>
         <ul className="list-disc list-inside">
           {benefits.map((benefit, index) => (
-            <li key={index}>{benefit}</li>
+            <li key={index} className="flex items-center gap-2">
+              <ChevronsRight className="text-tertiary w-6 h-6" />
+              {benefit}
+            </li>
           ))}
         </ul>
       </div>
