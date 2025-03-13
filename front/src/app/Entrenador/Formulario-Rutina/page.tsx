@@ -35,7 +35,8 @@ const FormRutina = () => {
 
       const userToken = userParsed.token
       console.log('Token del usuario:', userToken);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/excercise/muscle/${originalMuscle}`,
+      if(userToken){
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/excercise/muscle/${originalMuscle}`,
 
           {
             method: "GET",
@@ -44,11 +45,14 @@ const FormRutina = () => {
             },
           }
       );
-
-      
+      console.log('Esta es la response que tira el back:', response);
       if (!response.ok) throw new Error("Error al obtener los ejercicios");
       const data = await response.json();
       setExercises(data);
+      }
+
+      
+
     } catch (error) {
       console.error("Error al obtener ejercicios:", error);
     }
