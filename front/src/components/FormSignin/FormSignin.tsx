@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Link from 'next/link';
@@ -13,7 +13,13 @@ import LoginGoogleButton from '../LoginGoogleButton/LoginGoogleButton';
 const FormSignin = () => {
   const { setUserData } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [mounted, setMounted] = useState(false); // Estado para controlar que se monte en cliente
   const router = useRouter();
+
+  // Se activa solo cuando el componente está montado en cliente
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
@@ -40,13 +46,14 @@ const FormSignin = () => {
               // Paso 3: Guardamos los datos de sesión y del usuario
               const sessionData = {
                 token: token,
-                user, // Aquí guardas la información completa del usuario
+                user,
               };
               console.log('Este es lo que mandamos al contexto:', sessionData);
+
               // Actualizamos el contexto, localStorage y las cookies
-              setUserData(sessionData); // Actualiza el contexto
-              localStorage.setItem('userSession', JSON.stringify(sessionData)); // Guarda en localStorage
-              Cookies.set('authToken', sessionData.token, { expires: 7 }); // Guarda el token en cookies
+              setUserData(sessionData);
+              localStorage.setItem('userSession', JSON.stringify(sessionData));
+              Cookies.set('authToken', sessionData.token, { expires: 7 });
 
               // Redirigimos al usuario a la página principal
               router.push('/');
@@ -59,6 +66,7 @@ const FormSignin = () => {
         >
           {({ isSubmitting }) => (
             <Form className="flex flex-col gap-4">
+              {/* Email */}
               <div>
                 <label className="text-primary font-holtwood text-sm">
                   Email:
@@ -66,6 +74,7 @@ const FormSignin = () => {
                 <Field
                   type="email"
                   name="email"
+                  autoComplete="off" // Previene atributos dinámicos de extensiones
                   className="w-full border-2 border-tertiary p-2 rounded-md"
                 />
                 <ErrorMessage
@@ -75,6 +84,7 @@ const FormSignin = () => {
                 />
               </div>
 
+              {/* Password */}
               <div className="relative">
                 <label className="text-primary font-holtwood text-sm">
                   Contraseña:
@@ -83,15 +93,19 @@ const FormSignin = () => {
                   <Field
                     type={showPassword ? 'text' : 'password'}
                     name="password"
+                    autoComplete="off" // Previene atributos dinámicos de extensiones
                     className="w-full border-2 border-tertiary p-2 rounded-md pr-10"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
+                  {/* Mostrar/Ocultar contraseña solo si está montado */}
+                  {mounted && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  )}
                 </div>
                 <ErrorMessage
                   name="password"
@@ -100,16 +114,19 @@ const FormSignin = () => {
                 />
               </div>
 
+              {/* Botón de login */}
               <button
                 type="submit"
                 className="bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition"
                 disabled={isSubmitting}
               >
-                INICIAR SESIÓN
+                {isSubmitting ? 'Iniciando...' : 'INICIAR SESIÓN'}
               </button>
 
+              {/* Botón Google */}
               <LoginGoogleButton />
 
+              {/* Link a registro */}
               <p className="text-center text-sm text-primary font-ibm">
                 ¿No tienes una cuenta?{' '}
                 <Link
