@@ -182,7 +182,7 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           <select
             {...formik.getFieldProps('type')}
             onChange={handleTypeChange}
-            className="w-full  p-2 rounded font-holtwood"
+            className="w-full  p-2 rounded font-ibm"
           >
             <option value="">Seleccione un tipo</option>
             <option value="Musculación">Musculación</option>
