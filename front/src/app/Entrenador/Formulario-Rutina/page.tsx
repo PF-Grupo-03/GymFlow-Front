@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { muscles } from "@/data/muscles";
@@ -6,7 +7,6 @@ import { IUser } from "@/interfaces/IUserSession";
 import { useState, useEffect } from "react";
 
 const muscleMap = muscles.reduce((acc, muscle) => {
-
   const formattedName = muscle
     .replace(/_/g, " ")
     .toLowerCase()
@@ -23,38 +23,86 @@ const FormRutina = () => {
 
   const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
   const [exercises, setExercises] = useState<any[]>([]);
+  const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
+  const [series, setSeries] = useState<number>(0);
+  const [repetitions, setRepetitions] = useState<number>(0);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const handleMuscleSelect = async (formattedMuscle: string) => {
-    const originalMuscle = muscleMap[formattedMuscle]; 
-    setSelectedMuscle(formattedMuscle); 
+    const originalMuscle = muscleMap[formattedMuscle];
+    setSelectedMuscle(formattedMuscle);
 
     try {
-      const userLocal = localStorage.getItem('userSession');
-      if(!userLocal) throw new Error('No hay sesión activa.');
+      const userLocal = localStorage.getItem("userSession");
+      if (!userLocal) throw new Error("No hay sesión activa.");
       const userParsed = JSON.parse(userLocal);
 
-      const userToken = userParsed.token
-      console.log('Token del usuario:', userToken);
-      if(userToken){
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/excercise/muscle/${originalMuscle}`,
-
+      const userToken = userParsed.token.token;
+      console.log("Token del usuario:", userToken);
+      if (userToken) {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/exercise/muscle/${originalMuscle}`,
           {
             method: "GET",
             headers: {
               Authorization: `Bearer ${userToken}`,
             },
           }
-      );
-      console.log('Esta es la response que tira el back:', response);
-      if (!response.ok) throw new Error("Error al obtener los ejercicios");
-      const data = await response.json();
-      setExercises(data);
+        );
+        console.log("Esta es la response que tira el back:", response);
+        if (!response.ok) throw new Error("Error al obtener los ejercicios");
+        const data = await response.json();
+        setExercises(data);
       }
-
-      
-
     } catch (error) {
       console.error("Error al obtener ejercicios:", error);
+    }
+  };
+
+  const handleSaveRoutine = async () => {
+    try {
+      const userLocal = localStorage.getItem("userSession");
+      if (!userLocal) throw new Error("No hay sesión activa.");
+      const userParsed = JSON.parse(userLocal);
+
+      const userToken = userParsed.token.token;
+      const userId = userParsed.user.id;
+      console.log("Token del usuario:", userToken);
+      console.log("ID del usuario:", userId);
+      if (!selectedDay || !selectedExercise || !series || !repetitions) {
+        throw new Error("Por favor, complete todos los campos.");
+      }
+
+      const routineData = {
+        day: selectedDay.toUpperCase(),
+        userId: userId,
+        exercises: [
+          {
+            exerciseId: selectedExercise,
+            series: series,
+            repetitions: repetitions,
+          },
+        ],
+      };
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/routines`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(routineData),
+      });
+      console.log(response)
+      if (!response.ok) throw new Error("Error al guardar la rutina");
+
+      const result = await response.json();
+      console.log("Rutina guardada:", result);
+      alert("Rutina guardada con éxito!");
+    } catch (error) {
+      console.error("Error al guardar la rutina:", error);
+      alert((error as Error).message);
     }
   };
 
@@ -74,59 +122,134 @@ const FormRutina = () => {
   }, []);
 
   return (
-    <div>
-      <form>
-        <label>Elegir Cliente:</label>
-        {cargando ? (
-          <p>Cargando usuarios...</p>
-        ) : error ? (
-          <p>Error: {error}</p>
-        ) : (
-          <select>
-            <option value="">Seleccione un usuario</option>
-            {usuarios.map((usuario: IUser) => (
-              <option key={usuario.id} value={usuario.id}>
-                {usuario.nameAndLastName}
-              </option>
-            ))}
-          </select>
-        )}
+    <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">
+      <div className="relative bg-secondary p-8 mt-12 rounded-2xl whiteShadow w-full max-w-xl">
+        <h2 className="text-primary text-3xl font-holtwood text-center mb-6">
+          CREAR RUTINA
+        </h2>
 
-        <label>Elegir el día:</label>
-        <select>
-          <option>Lunes</option>
-          <option>Martes</option>
-          <option>Miércoles</option>
-          <option>Jueves</option>
-          <option>Viernes</option>
-          <option>Sábado</option>
-          <option>Domingo</option>
-        </select>
+        <form className="flex flex-col gap-4">
+          <div>
+            <label className="text-primary font-holtwood text-sm">
+              Elegir Cliente:
+            </label>
+            {cargando ? (
+              <p>Cargando usuarios...</p>
+            ) : error ? (
+              <p>Error: {error}</p>
+            ) : (
+              <select
+                onChange={(e) => setSelectedUserId(e.target.value)}
+                className="w-full border-2 border-tertiary p-2 rounded-md"
+              >
+                <option value="">Seleccione un usuario</option>
+                {usuarios.map((usuario: IUser) => (
+                  <option key={usuario.id} value={usuario.id}>
+                    {usuario.nameAndLastName}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
 
-        <div>
-          <h2>Selecciona un músculo:</h2>
-          {Object.keys(muscleMap).map((formattedMuscle) => (
-            <div key={formattedMuscle}>
-              <input
-                type="radio"
-                id={formattedMuscle}
-                name="muscle"
-                value={formattedMuscle}
-                checked={selectedMuscle === formattedMuscle}
-                onChange={() => handleMuscleSelect(formattedMuscle)}
-              />
-              <label htmlFor={formattedMuscle}>{formattedMuscle}</label>
+          <div>
+            <label className="text-primary font-holtwood text-sm">
+              Elegir el día:
+            </label>
+            <select
+              onChange={(e) => setSelectedDay(e.target.value)}
+              className="w-full border-2 border-tertiary p-2 rounded-md"
+            >
+              <option value="">Seleccione un día</option>
+              <option value="Lunes">Lunes</option>
+              <option value="Martes">Martes</option>
+              <option value="Miércoles">Miércoles</option>
+              <option value="Jueves">Jueves</option>
+              <option value="Viernes">Viernes</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </div>
+
+          <div>
+            <h2 className="text-primary font-holtwood text-sm mb-2">
+              Selecciona un músculo:
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {Object.keys(muscleMap).map((formattedMuscle) => (
+                <div key={formattedMuscle} className="flex items-center">
+                  <input
+                    type="radio"
+                    id={formattedMuscle}
+                    name="muscle"
+                    value={formattedMuscle}
+                    checked={selectedMuscle === formattedMuscle}
+                    onChange={() => handleMuscleSelect(formattedMuscle)}
+                    className="mr-2"
+                  />
+                  <label htmlFor={formattedMuscle} className="text-primary">
+                    {formattedMuscle}
+                  </label>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
 
-          <h2>Ejercicios para {selectedMuscle}</h2>
-          <ul>
-            {exercises.map((exercise, index) => (
-              <li key={index}>{exercise.name}</li>
-            ))}
-          </ul>
-        </div>
-      </form>
+          <div>
+            <label className="text-primary font-holtwood text-sm">
+              Selecciona un ejercicio:
+            </label>
+            <select
+              value={selectedExercise || ""}
+              onChange={(e) => setSelectedExercise(e.target.value)}
+              className="w-full border-2 border-tertiary p-2 rounded-md"
+            >
+              <option value="">Seleccione un ejercicio</option>
+              {exercises.map((exercise, index) => (
+                <option key={index} value={exercise.id}>
+                  {exercise.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-primary font-holtwood text-sm">
+                Series:
+              </label>
+              <input
+                type="number"
+                value={series}
+                onChange={(e) => setSeries(Number(e.target.value))}
+                min="0"
+                className="w-full border-2 border-tertiary p-2 rounded-md"
+              />
+            </div>
+
+            <div>
+              <label className="text-primary font-holtwood text-sm">
+                Repeticiones:
+              </label>
+              <input
+                type="number"
+                value={repetitions}
+                onChange={(e) => setRepetitions(Number(e.target.value))}
+                min="0"
+                className="w-full border-2 border-tertiary p-2 rounded-md"
+              />
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSaveRoutine}
+            className="bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition"
+          >
+            Guardar Rutina
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,15 +1,10 @@
 export const muscles: string[] = [
   "PECHO",
   "ESPALDA",
-  "BICEPS",
-  "TRICEPS",
   "HOMBROS",
-  "CORE",
-  "CARDIO",
   "BRAZOS_INFERIORES",
   "BRAZOS_SUPERIORES",
   "PIERNAS_INFERIORES",
   "PIERNAS_SUPERIORES",
-  "CUELLO",
   "CINTURA",
 ];
