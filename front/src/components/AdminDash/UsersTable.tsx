@@ -39,7 +39,7 @@ const AdminUsersTable = () => {
     const fetchUsers = async () => {
       if (!userData) return; // Si no hay datos de usuario, no hacer la solicitud
       try {
-        const userToken = userData.token; // Obtén el token desde los datos del usuario
+        const userToken = userData; // Obtén el token desde los datos del usuario
         console.log('Este es el token que usamos:', userToken);
         const response = await fetch(`${API_URL}/users`, {
           method: 'GET',
