@@ -27,9 +27,7 @@ const GoogleContent = () => {
     if (userId && userToken) {
       axios
         .get(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
-          method: "GET",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${userToken}`,
           },
         })
