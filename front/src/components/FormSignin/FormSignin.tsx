@@ -6,8 +6,6 @@ import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Cookies from 'js-cookie';
-import axios from 'axios';
-import { NEXT_PUBLIC_API_URL } from '@/app/config/envs';
 import SigninValidationSchema from '@/helpers/SigninValidates';
 import { Signin } from '@/helpers/auth.helper';
 import LoginGoogleButton from '../LoginGoogleButton/LoginGoogleButton';
@@ -37,20 +35,14 @@ const FormSignin = () => {
 
               // Paso 2: Guardamos el token y hacemos la petición para obtener los datos del usuario
               const token = response.data.token;
-              const email = values.email;
-
-              // Hacemos la petición al endpoint para obtener los datos del usuario
-              const userResponse = await axios.get(
-                `${NEXT_PUBLIC_API_URL}/users/email/${email}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-              );
+              const user = response.data.token.token.withoutPasswordAndRole;
 
               // Paso 3: Guardamos los datos de sesión y del usuario
               const sessionData = {
                 token: token,
-                user: userResponse.data, // Aquí guardas la información completa del usuario
+                user, // Aquí guardas la información completa del usuario
               };
-
+              console.log(sessionData);
               // Actualizamos el contexto, localStorage y las cookies
               setUserData(sessionData); // Actualiza el contexto
               localStorage.setItem('userSession', JSON.stringify(sessionData)); // Guarda en localStorage
