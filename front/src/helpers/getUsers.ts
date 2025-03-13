@@ -5,8 +5,16 @@ import axios from "axios";
 
 export const getUsers = async (): Promise<IUser[]> => {
     try {
-      const respuesta = await axios.get(`${NEXT_PUBLIC_API_URL}/users`);
+      const localStorageUser = localStorage.getItem("userSession");
+      const token = JSON.parse(localStorageUser!).token.token;
 
+      console.log("token del usuario:", token)
+      const respuesta = await axios.get(`${NEXT_PUBLIC_API_URL}/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}` // Aquí pasas el token en el header
+        }
+      });
+      console.log("respuesta del back:", respuesta)
       const data: IUser[] = await respuesta.data;
       console.log("Usuarios obtenidos:", data);
 
