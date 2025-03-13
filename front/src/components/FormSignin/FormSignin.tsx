@@ -35,7 +35,7 @@ const FormSignin = () => {
 
               // Paso 2: Guardamos el token y hacemos la petición para obtener los datos del usuario
               const token = response.data.token;
-              const user = response.data.token.token.withoutPasswordAndRole;
+              const user = response.data.token.withoutPasswordAndRole;
 
               // Paso 3: Guardamos los datos de sesión y del usuario
               const sessionData = {
