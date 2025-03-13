@@ -36,7 +36,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (userSession) {
       try {
         const parsedUserData: IUserSession = JSON.parse(userSession);
-
+        console.log(
+          'esto es el parsed de la respuesta del back:',
+          parsedUserData
+        );
         if (
           parsedUserData.user?.id &&
           parsedUserData.user?.email &&
