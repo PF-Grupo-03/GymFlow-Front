@@ -42,7 +42,7 @@ const FormSignin = () => {
                 token: token,
                 user, // Aquí guardas la información completa del usuario
               };
-              console.log(sessionData);
+              console.log('Este es lo que mandamos al contexto:', sessionData);
               // Actualizamos el contexto, localStorage y las cookies
               setUserData(sessionData); // Actualiza el contexto
               localStorage.setItem('userSession', JSON.stringify(sessionData)); // Guarda en localStorage
