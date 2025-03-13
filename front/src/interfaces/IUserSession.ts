@@ -1,6 +1,6 @@
 export interface IUser {
   id: string;
-  dni: string
+  dni: string;
   nameAndLastName: string;
   bDate: string;
   email: string;
@@ -9,9 +9,12 @@ export interface IUser {
   phone: string;
   address: string;
   role: string;
-};
+}
 
 export interface IUserSession {
-  token: string;
-  user: IUser
+  token: {
+    withoutPasswordAndRole: IUser;
+    token: string;
+  };
+  user: IUser;
 }
