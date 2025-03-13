@@ -36,8 +36,17 @@ const useUserData = () => {
         const userParsed = JSON.parse(userSession);
         console.log('Esto es la sesion del usuario:', userParsed);
         const userEmail = userParsed.user.email;
-        console.log(userEmail);
-        const response = await fetch(`${API_URL}/users/email/${userEmail}`);
+        const userToken = userParsed.token;
+        console.log('Token del usuario:', userToken);
+        console.log('Email del usuario:', userEmail);
+
+        const response = await fetch(`${API_URL}/users/email/${userEmail}`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
         console.log(response);
         if (!response.ok)
           throw new Error('Error al obtener los datos del usuario.');
