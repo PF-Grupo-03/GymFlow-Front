@@ -95,7 +95,9 @@ const CompleteProfileContent = () => {
       console.log("📩 Respuesta del servidor (body):", data);
 
       if (!response.ok)
-      setUserData({ user: data.userWithoutPassword , token: data.token });
+      console.log("Usuario actualizado:", data.userWithoutPassword);
+      console.log("Token actualizado:", data.token);
+      setUserData({ user: data.userWithoutPassword, token: data.token });
       router.push("/");
     } catch (error) {
       console.error(
