@@ -2,13 +2,17 @@
 
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { NEXT_PUBLIC_API_URL } from "../config/envs";
 import { useAuth } from "@/context/AuthContext";
 import { ClipLoader } from "react-spinners";
 
 const Google = () => {
-  return <GoogleContent />;
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <GoogleContent />
+    </Suspense>
+  );
 };
 
 const GoogleContent = () => {
