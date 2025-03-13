@@ -37,6 +37,7 @@ const useUserData = () => {
         const userEmail = userParsed.user.email;
 
         const response = await fetch(`${API_URL}/users/email/${userEmail}`);
+        console.log(response);
         if (!response.ok)
           throw new Error('Error al obtener los datos del usuario.');
 
