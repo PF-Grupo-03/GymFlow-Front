@@ -2,17 +2,13 @@
 
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { NEXT_PUBLIC_API_URL } from "../config/envs";
 import { useAuth } from "@/context/AuthContext";
 import { ClipLoader } from "react-spinners";
 
 const Google = () => {
-  return (
-    <Suspense fallback={<ClipLoader color="#36D7B7" size={50} />}>
-      <GoogleContent />
-    </Suspense>
-  );
+  return <GoogleContent />;
 };
 
 const GoogleContent = () => {
@@ -24,9 +20,12 @@ const GoogleContent = () => {
   const router = useRouter();
 
   useEffect(() => {
+    console.log("Iniciando GoogleContent");
+    console.log("userId:", userId);
+    console.log("userToken:", userToken);
+
     if (userId && userToken) {
-      console.log("userId", userId);
-      console.log("userToken", userToken);
+      console.log("Realizando petición a la API...");
       axios
         .get(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
           headers: {
@@ -34,41 +33,43 @@ const GoogleContent = () => {
           },
         })
         .then((response) => {
+          console.log("Respuesta recibida de la API:", response.data);
           const user = response.data;
           setUserData({ user, token: userToken });
+          console.log("Usuario seteado correctamente");
           router.push("/");
         })
         .catch((error) => {
-          if (error.response) {
-            console.error("Error en la respuesta del servidor:", error.response.data);
-          } else if (error.request) {
-            console.error("No se recibió respuesta del servidor:", error.request);
-          } else {
-            console.error("Error al configurar la solicitud:", error.message);
-          }
+          console.error("Error al obtener los datos del usuario:", error);
         })
         .finally(() => {
-          setTimeout(() => setIsLoading(false), 500); // Pequeño delay para suavizar la transición
+          console.log("Finalizando carga");
+          setTimeout(() => setIsLoading(false), 500);
         });
     } else {
+      console.log("Faltan userId o userToken, no se hace la petición");
       setIsLoading(false);
     }
   }, [userId, userToken, setUserData, router]);
 
   if (isLoading) {
+    console.log("Mostrando spinner");
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <ClipLoader color="#36D7B7" size={50} />
       </div>
     );
   }
 
-  return (
-    <div>
-      <p>Token: {userToken}</p>
-      <p>ID: {userId}</p>
-    </div>
-  );
+  console.log("Finalizado GoogleContent, sin contenido visible");
+  return null;
 };
 
 export default Google;
