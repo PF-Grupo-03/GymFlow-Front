@@ -6,10 +6,13 @@ import { NEXT_PUBLIC_API_URL } from "../config/envs";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const CompleteProfileContent = () => {
-  const { userData, setUserData } = useAuth();
+  const { setUserData } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("id"); // Se obtiene el id desde la URL
+  const userToken = searchParams.get("token");
+  console.log("userId:", userId);
+  console.log("userToken:", userToken);
 
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -28,11 +31,16 @@ const CompleteProfileContent = () => {
 
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`);
+        const res = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
         if (!res.ok) throw new Error("Error al obtener los datos del usuario");
         const data = await res.json();
 
-        setUserData({ user: data, token: userData?.token || "" });
+        setUserData({ user: data, token: userToken! });
 
         setFormData({
           dni: data.dni || "",
@@ -48,7 +56,7 @@ const CompleteProfileContent = () => {
     };
 
     fetchUserData();
-  }, [userId, setUserData, userData?.token]);
+  }, [userId, setUserData, userToken]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -73,7 +81,10 @@ const CompleteProfileContent = () => {
         `${NEXT_PUBLIC_API_URL}/users/update-google/${userId}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
           body: JSON.stringify(updatedFormData),
         }
       );
@@ -84,17 +95,9 @@ const CompleteProfileContent = () => {
       console.log("📩 Respuesta del servidor (body):", data);
 
       if (!response.ok)
-        throw new Error(data.message || "Error al actualizar el perfil");
-
-      const resUser = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`);
-      if (!resUser.ok)
-        throw new Error("Error al obtener el usuario actualizado");
-      const updatedUser = await resUser.json();
-
-      console.log("✅ Usuario actualizado correctamente:", updatedUser);
-
-      setUserData({ user: updatedUser, token: userData?.token || "" });
-
+      console.log("Usuario actualizado:", data.userWithoutPassword);
+      console.log("Token actualizado:", data.token);
+      setUserData({ user: data.userWithoutPassword, token: data.token });
       router.push("/");
     } catch (error) {
       console.error(
