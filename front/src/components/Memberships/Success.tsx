@@ -5,6 +5,10 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { sendEmail } from '@/Utils/services/apiServices';
+import { getPaymentSuccessEmailTemplate } from '@/Utils/TemplatesEmail/paymentSuccess';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const getPlanName = (amount: number): string => {
   switch (amount) {
@@ -40,7 +44,7 @@ export default function Success() {
       console.log('📦 Estado:', status);
 
       // Obtener la información actualizada del usuario desde el backend
-      fetch(`http://localhost:3001/users/email/${userEmail}`)
+      fetch(`${API_URL}/users/email/${userEmail}`)
         .then((res) => res.json())
         .then((userData) => {
           if (userData) {
@@ -51,6 +55,12 @@ export default function Success() {
         .catch((error) =>
           console.error('Error al obtener la información del usuario:', error)
         );
+
+      // Enviar correo de confirmación de pago
+      const emailContent = getPaymentSuccessEmailTemplate(userEmail);
+      sendEmail(userEmail, 'GYMFLOW / Pago Exitoso 🎉', emailContent, 'PAYMENT_SUCCESS')
+        .then(() => console.log('✅ Correo de pago exitoso enviado'))
+        .catch((error) => console.error('❌ Error enviando el correo:', error));
     }
   }, [paymentId, status, userEmail, setUserData]);
 
