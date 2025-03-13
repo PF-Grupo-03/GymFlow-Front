@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
-import { useState, useEffect, Suspense } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { NEXT_PUBLIC_API_URL } from "../config/envs";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { NEXT_PUBLIC_API_URL } from '../config/envs';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const CompleteProfileContent = () => {
   const { setUserData } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const userId = searchParams.get("id"); // Se obtiene el id desde la URL
-  const userToken = searchParams.get("token");
-  console.log("userId:", userId);
-  console.log("userToken:", userToken);
+  const userId = searchParams.get('id'); // Se obtiene el id desde la URL
+  const userToken = searchParams.get('token');
+  console.log('userId:', userId);
+  console.log('userToken:', userToken);
 
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    dni: "",
-    phone: "",
-    address: "",
-    role: "",
+    dni: '',
+    phone: '',
+    address: '',
+    role: '',
   });
 
   useEffect(() => {
     if (!userId) {
-      console.error("No se encontró el id en la URL.");
+      console.error('No se encontró el id en la URL.');
       setLoading(false);
       return;
     }
@@ -32,24 +32,30 @@ const CompleteProfileContent = () => {
     const fetchUserData = async () => {
       try {
         const res = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
-          method: "GET",
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
         });
-        if (!res.ok) throw new Error("Error al obtener los datos del usuario");
+        if (!res.ok) throw new Error('Error al obtener los datos del usuario');
         const data = await res.json();
 
-        setUserData({ user: data, token: userToken! });
+        setUserData({
+          user: data,
+          token: {
+            withoutPasswordAndRole: data,
+            token: userToken!,
+          },
+        });
 
         setFormData({
-          dni: data.dni || "",
-          phone: data.phone || "",
-          address: data.address || "",
-          role: data.role || "",
+          dni: data.dni || '',
+          phone: data.phone || '',
+          address: data.address || '',
+          role: data.role || '',
         });
       } catch (error) {
-        console.error(error instanceof Error ? error.message : "Unknown error");
+        console.error(error instanceof Error ? error.message : 'Unknown error');
       } finally {
         setLoading(false);
       }
@@ -68,40 +74,40 @@ const CompleteProfileContent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!userId) {
-      console.error("No se ha encontrado el ID del usuario en la URL.");
+      console.error('No se ha encontrado el ID del usuario en la URL.');
       return;
     }
 
     const updatedFormData = { ...formData };
 
-    console.log("📤 Enviando datos:", JSON.stringify(updatedFormData));
+    console.log('📤 Enviando datos:', JSON.stringify(updatedFormData));
 
     try {
       const response = await fetch(
         `${NEXT_PUBLIC_API_URL}/users/update-google/${userId}`,
         {
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${userToken}`,
           },
           body: JSON.stringify(updatedFormData),
         }
       );
 
-      console.log("🔍 Respuesta del servidor (status):", response.status);
+      console.log('🔍 Respuesta del servidor (status):', response.status);
 
       const data = await response.json();
-      console.log("📩 Respuesta del servidor (body):", data);
+      console.log('📩 Respuesta del servidor (body):', data);
 
       if (!response.ok)
-      console.log("Usuario actualizado:", data.userWithoutPassword);
-      console.log("Token actualizado:", data.token);
+        console.log('Usuario actualizado:', data.userWithoutPassword);
+      console.log('Token actualizado:', data.token);
       setUserData({ user: data.userWithoutPassword, token: data.token });
-      router.push("/");
+      router.push('/');
     } catch (error) {
       console.error(
-        "❌ Error en handleSubmit:",
+        '❌ Error en handleSubmit:',
         error instanceof Error ? error.message : error
       );
     }
