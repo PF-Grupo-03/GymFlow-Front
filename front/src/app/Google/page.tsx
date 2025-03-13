@@ -37,7 +37,24 @@ const GoogleContent = () => {
           router.push("/");
         })
         .catch((error) => {
-          console.error("Error al obtener usuario:", error);
+          if (error.response) {
+            // El servidor respondió con un código de estado fuera del rango 2xx
+            console.error(
+              "Error en la respuesta del servidor:",
+              error.response.data
+            );
+            console.error("Código de estado:", error.response.status);
+            console.error("Encabezados:", error.response.headers);
+          } else if (error.request) {
+            // La solicitud fue hecha pero no se recibió respuesta
+            console.error(
+              "No se recibió respuesta del servidor:",
+              error.request
+            );
+          } else {
+            // Algo más causó el error
+            console.error("Error al configurar la solicitud:", error.message);
+          }
         })
         .finally(() => {
           setIsLoading(false);
