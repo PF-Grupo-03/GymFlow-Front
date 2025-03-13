@@ -46,7 +46,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setToken(parsedUserData.token);
           setIsAuthenticated(true);
         } else {
-          console.error('Estructura inválida en localStorage:', parsedUserData);
+          console.error(
+            'Estructura invÃ¡lida en localStorage:',
+            parsedUserData
+          );
           localStorage.removeItem('userSession');
         }
       } catch (error) {
