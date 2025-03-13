@@ -69,7 +69,7 @@ const AdminUsersTable = () => {
         accessorKey: 'address',
       },
       {
-        header: '¿Membresía activa?',
+        header: 'Membresía activa',
         accessorKey: 'member',
         cell: ({ getValue }) => {
           const member = getValue() as Membership | null;
@@ -116,7 +116,7 @@ const AdminUsersTable = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg whiteShadow">
-      <h2 className="text-2xl text-primary font-bold mb-4 text-center">
+      <h2 className="text-2xl text-primary font-holtwood font-bold mb-4 text-center">
         Usuarios Registrados
       </h2>
 
@@ -126,18 +126,18 @@ const AdminUsersTable = () => {
         placeholder="Buscar usuario..."
         value={globalFilter ?? ''}
         onChange={(e) => setGlobalFilter(e.target.value)}
-        className="mb-4 px-4 py-2 border rounded-md w-full"
+        className="mb-4 px-4 text-primary py-2 border border-tertiary rounded-md w-full"
       />
 
       {/* Tabla */}
       <table className="min-w-full divide-y divide-tertiary border">
-        <thead className="bg-gray-100">
+        <thead className="bg-tertiary">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-4 py-2 text-left text-xs font-medium text-primary font-odor uppercase tracking-wider"
                 >
                   {header.isPlaceholder
                     ? null
