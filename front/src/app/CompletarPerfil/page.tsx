@@ -10,6 +10,9 @@ const CompleteProfileContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("id"); // Se obtiene el id desde la URL
+  const userToken = searchParams.get("token");
+  console.log("userId:", userId);
+  console.log("userToken:", userToken);
 
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -73,7 +76,10 @@ const CompleteProfileContent = () => {
         `${NEXT_PUBLIC_API_URL}/users/update-google/${userId}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
           body: JSON.stringify(updatedFormData),
         }
       );
