@@ -6,7 +6,7 @@ import { NEXT_PUBLIC_API_URL } from "../config/envs";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const CompleteProfileContent = () => {
-  const { userData, setUserData } = useAuth();
+  const { setUserData } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("id"); // Se obtiene el id desde la URL
@@ -95,17 +95,7 @@ const CompleteProfileContent = () => {
       console.log("📩 Respuesta del servidor (body):", data);
 
       if (!response.ok)
-        throw new Error(data.message || "Error al actualizar el perfil");
-
-      const resUser = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`);
-      if (!resUser.ok)
-        throw new Error("Error al obtener el usuario actualizado");
-      const updatedUser = await resUser.json();
-
-      console.log("✅ Usuario actualizado correctamente:", updatedUser);
-
-      setUserData({ user: updatedUser, token: userData?.token || "" });
-
+      setUserData({ user: data.userWithoutPassword , token: data.token });
       router.push("/");
     } catch (error) {
       console.error(
