@@ -54,7 +54,7 @@ const AdminUsersTable = () => {
       }
     };
     fetchUsers();
-  }, [userData]); // Ejecutar la solicitud solo cuando los datos de usuario estén disponibles
+  }, [userData, token]); // Ejecutar la solicitud solo cuando los datos de usuario estén disponibles
 
   const columns = useMemo<ColumnDef<User>[]>(
     () => [
