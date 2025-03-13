@@ -41,7 +41,7 @@ const MyProfile = () => {
   return (
     <>
       <div className="flex justify-center items-center mt-5 font-odor mb-1">
-        <h2 className="inline-block bg-white text-3xl rounded-[10px] text-primary px-4 py-2 mx-2 whiteShadow">
+        <h2 className="inline-block bg-white text-3xl rounded-[10px] text-primary px-4 py-2 mb-4 mx-2 whiteShadow">
           Mi Perfil
         </h2>
       </div>
