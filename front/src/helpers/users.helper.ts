@@ -47,7 +47,7 @@ const useUserData = () => {
           },
         });
 
-        console.log(response);
+        console.log('Esta es la response que tira el back:', response);
         if (!response.ok)
           throw new Error('Error al obtener los datos del usuario.');
 
