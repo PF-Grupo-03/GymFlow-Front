@@ -45,7 +45,7 @@ const CompleteProfileContent = () => {
             headers: { Authorization: `Bearer ${userToken}` },
           }
         );
-
+        console.log("Esta es la respuesta del back:", data);
         setUserData({
           user: data,
           token: {
