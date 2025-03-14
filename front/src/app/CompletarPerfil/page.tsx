@@ -45,7 +45,10 @@ const CompleteProfileContent = () => {
             headers: { Authorization: `Bearer ${userToken}` },
           }
         );
-        console.log("Esta es la respuesta del back:", data);
+        console.log(
+          "Esta es la respuesta del back para setear el usuario:",
+          data
+        );
         setUserData({
           user: data,
           token: {
@@ -82,7 +85,9 @@ const CompleteProfileContent = () => {
       const dniValid = /^[0-9]{7,8}$/.test(value);
       setErrors((prev) => ({
         ...prev,
-        dniError: dniValid ? "" : "El DNI debe contener entre 7 y 8 dígitos numéricos.",
+        dniError: dniValid
+          ? ""
+          : "El DNI debe contener entre 7 y 8 dígitos numéricos.",
       }));
     }
 
@@ -90,14 +95,17 @@ const CompleteProfileContent = () => {
       const phoneValid = /^\+?\d{7,15}$/.test(value);
       setErrors((prev) => ({
         ...prev,
-        phoneError: phoneValid ? "" : "El teléfono debe contener solo números y puede incluir un prefijo internacional.",
+        phoneError: phoneValid
+          ? ""
+          : "El teléfono debe contener solo números y puede incluir un prefijo internacional.",
       }));
     }
 
     if (name === "address") {
       setErrors((prev) => ({
         ...prev,
-        addressError: value.trim() === "" ? "La dirección no puede estar vacía." : "",
+        addressError:
+          value.trim() === "" ? "La dirección no puede estar vacía." : "",
       }));
     }
 
@@ -110,7 +118,12 @@ const CompleteProfileContent = () => {
   };
 
   const validateForm = () => {
-    if (errors.dniError || errors.phoneError || errors.addressError || errors.roleError) {
+    if (
+      errors.dniError ||
+      errors.phoneError ||
+      errors.addressError ||
+      errors.roleError
+    ) {
       return "Por favor, corrige los errores antes de enviar el formulario.";
     }
     return "";
@@ -122,11 +135,13 @@ const CompleteProfileContent = () => {
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
+      alert(validationError); // Mostrar alerta con el error de validación
       return;
     }
 
     if (!userId) {
       setError("ID de usuario no encontrado en la URL.");
+      alert("ID de usuario no encontrado en la URL."); // Mostrar alerta con el error
       return;
     }
 
@@ -155,19 +170,22 @@ const CompleteProfileContent = () => {
       router.push("/");
     } catch (error: any) {
       if (error.response && error.response.data) {
-        setError(
-          error.response.data.message || "Error en la actualización del perfil."
-        );
+        const errorMessage =
+          error.response.data.message ||
+          "Error en la actualización del perfil.";
+        setError(errorMessage);
+        alert(errorMessage); // Mostrar alerta con el mensaje de error del backend
       } else {
-        setError("Error en la actualización del perfil. Inténtalo nuevamente.");
+        const errorMessage =
+          "Error en la actualización del perfil. Inténtalo nuevamente.";
+        setError(errorMessage);
+        alert(errorMessage); // Mostrar alerta con un mensaje genérico
       }
     } finally {
       setLoading(false);
     }
-  };
-
+  }; 
   if (loading) return <ClipLoader color="#36D7B7" size={50} />;
-  if (error) return <div className="text-red-500 text-center">{error}</div>;
 
   return (
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
@@ -189,7 +207,9 @@ const CompleteProfileContent = () => {
               placeholder="Ej: 12345678"
               className="border-2 border-tertiary p-2 rounded-md"
             />
-            {errors.dniError && <div className="text-red-500 text-xs">{errors.dniError}</div>}
+            {errors.dniError && (
+              <div className="text-red-500 text-xs">{errors.dniError}</div>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -204,7 +224,9 @@ const CompleteProfileContent = () => {
               placeholder="+54 XXX XXX XXXX"
               className="border-2 border-tertiary p-2 rounded-md"
             />
-            {errors.phoneError && <div className="text-red-500 text-xs">{errors.phoneError}</div>}
+            {errors.phoneError && (
+              <div className="text-red-500 text-xs">{errors.phoneError}</div>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -219,7 +241,9 @@ const CompleteProfileContent = () => {
               placeholder="Dirección"
               className="border-2 border-tertiary p-2 rounded-md"
             />
-            {errors.addressError && <div className="text-red-500 text-xs">{errors.addressError}</div>}
+            {errors.addressError && (
+              <div className="text-red-500 text-xs">{errors.addressError}</div>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -234,7 +258,9 @@ const CompleteProfileContent = () => {
               <option value="USER_MEMBER">Cliente</option>
               <option value="USER_TRAINING">Entrenador</option>
             </select>
-            {errors.roleError && <div className="text-red-500 text-xs">{errors.roleError}</div>}
+            {errors.roleError && (
+              <div className="text-red-500 text-xs">{errors.roleError}</div>
+            )}
           </div>
 
           {error && <div className="text-red-500 text-center">{error}</div>}
