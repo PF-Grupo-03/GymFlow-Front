@@ -159,7 +159,7 @@ const CompleteProfileContent = () => {
           },
         }
       );
-
+      console.log("Esta es la respuesta del patch del back para setear el usuario:", data);
       setUserData({
         user: data.userWithoutPassword,
         token: {
