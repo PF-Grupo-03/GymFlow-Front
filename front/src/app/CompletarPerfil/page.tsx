@@ -145,7 +145,13 @@ const CompleteProfileContent = () => {
         }
       );
 
-      setUserData({ user: data.userWithoutPassword, token: data.token });
+      setUserData({
+        user: data.userWithoutPassword,
+        token: {
+          withoutPasswordAndRole: data.userWithoutPassword,
+          token: userToken!,
+        },
+      });
       router.push("/");
     } catch (error: any) {
       if (error.response && error.response.data) {
