@@ -165,7 +165,7 @@ const CompleteProfileContent = () => {
             type="submit"
             className="col-span-2 bg-tertiary text-primary font-holtwood py-2 px-4 rounded-md hover:shadow-md transition mx-auto"
           >
-            Guardar perfil
+            Actualizar Perfil
           </button>
         </form>
       </div>
