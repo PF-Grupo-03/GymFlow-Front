@@ -92,7 +92,7 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
             : 'Sala creada con éxito',
         });
 
-        router.push('/admin/rooms');
+        router.push('/Trainingrooms');
       } catch (error) {
         console.error('Error al guardar la sala:', error);
         Toast.fire({ icon: 'error', title: 'Error al guardar la sala' });
