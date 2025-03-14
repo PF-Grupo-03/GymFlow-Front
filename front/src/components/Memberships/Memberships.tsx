@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import TitleBox from '../TitleBox/TitleBox';
@@ -60,7 +59,7 @@ export default function Memberships() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
-  const { isAuthenticated, userId, userEmail, userData } = useAuth(); // Obtén el estado de autenticación y los datos del usuario
+  const { isAuthenticated, userId, userEmail, userData, token } = useAuth(); // Ahora obtienes el token también
   const router = useRouter();
 
   const paymentButtonRef = useRef<HTMLDivElement>(null);
@@ -121,6 +120,7 @@ export default function Memberships() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // Aquí agregamos el token en el encabezado
           },
           body: JSON.stringify({
             title: plan.title,
