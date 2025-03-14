@@ -38,41 +38,8 @@ const CompleteProfileContent = () => {
       setLoading(false);
       return;
     }
-
-    const fetchUserData = async () => {
-      try {
-        const { data } = await axios.get(
-          `${NEXT_PUBLIC_API_URL}/users/${userId}`,
-          {
-            headers: { Authorization: `Bearer ${userToken}` },
-          }
-        );
-        console.log("Respuesta del backend al obtener el usuario:", data);
-        setUserData({
-          user: data,
-          token: {
-            withoutPasswordAndRole: data,
-            token: userToken,
-          },
-        });
-
-        setFormData({
-          dni: data.dni || "",
-          phone: data.phone || "",
-          address: data.address || "",
-          role: data.role || "",
-        });
-      } catch (error) {
-        setError("Error al obtener datos del usuario.");
-        alert("Error al obtener datos del usuario. Por favor, recarga la página."); // Mostrar alerta
-        console.error("Error al obtener datos del usuario:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [userId, userToken, setUserData]);
+    setLoading(false); // Ya no necesitamos cargar datos iniciales
+  }, [userId, userToken]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -154,7 +121,7 @@ const CompleteProfileContent = () => {
       );
       console.log("Respuesta del backend después del PATCH:", data);
 
-      // Asegúrate de que la respuesta del backend tenga la estructura correcta
+      // Setear los datos del usuario después de un PATCH exitoso
       setUserData({
         user: data.userWithoutPassword || data, // Ajusta según la respuesta del backend
         token: {
