@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
@@ -124,23 +123,23 @@ const CompleteProfileContent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
       alert(validationError); // Mostrar alerta con el error de validación
       return;
     }
-  
+
     if (!userId) {
       setError("ID de usuario no encontrado en la URL.");
       alert("ID de usuario no encontrado en la URL."); // Mostrar alerta con el error
       return;
     }
-  
+
     setLoading(true);
     setError("");
-  
+
     try {
       const { data } = await axios.patch(
         `${NEXT_PUBLIC_API_URL}/users/update-google/${userId}`,
@@ -153,7 +152,7 @@ const CompleteProfileContent = () => {
         }
       );
       console.log("Respuesta del backend después del PATCH:", data);
-  
+
       // Asegúrate de que la respuesta del backend tenga la estructura correcta
       setUserData({
         user: data.userWithoutPassword || data, // Ajusta según la respuesta del backend
@@ -165,7 +164,7 @@ const CompleteProfileContent = () => {
       router.push("/");
     } catch (error: any) {
       console.error("Error completo del backend:", error); // Muestra el error completo en la consola
-  
+
       if (error.response) {
         // Si el backend devuelve una respuesta con un mensaje de error
         console.error("Respuesta del backend:", error.response.data); // Muestra la respuesta del backend
@@ -202,7 +201,6 @@ const CompleteProfileContent = () => {
           COMPLETAR PERFIL
         </h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-x-6 gap-y-4">
-          {/* Campos del formulario */}
           <div className="flex flex-col">
             <label className="text-primary font-holtwood text-sm">DNI:</label>
             <input
@@ -218,7 +216,52 @@ const CompleteProfileContent = () => {
             )}
           </div>
 
-          {/* Resto de los campos... */}
+          <div className="flex flex-col">
+            <label className="text-primary font-holtwood text-sm">Teléfono:</label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              placeholder="+54 XXX XXX XXXX"
+              className="border-2 border-tertiary p-2 rounded-md"
+            />
+            {errors.phoneError && (
+              <div className="text-red-500 text-xs">{errors.phoneError}</div>
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-primary font-holtwood text-sm">Dirección:</label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              placeholder="Dirección"
+              className="border-2 border-tertiary p-2 rounded-md"
+            />
+            {errors.addressError && (
+              <div className="text-red-500 text-xs">{errors.addressError}</div>
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-primary font-holtwood text-sm">Rol:</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleInputChange}
+              className="border-2 border-tertiary p-2 rounded-md"
+            >
+              <option value="">Elige tu rol</option>
+              <option value="USER_MEMBER">Cliente</option>
+              <option value="USER_TRAINING">Entrenador</option>
+            </select>
+            {errors.roleError && (
+              <div className="text-red-500 text-xs">{errors.roleError}</div>
+            )}
+          </div>
 
           <button
             type="submit"
