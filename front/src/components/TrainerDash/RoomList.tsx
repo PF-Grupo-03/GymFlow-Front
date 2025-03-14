@@ -11,7 +11,7 @@ import { Toast } from '../Toast/Toast';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Room } from '@/interfaces/IRoomList';
-import { fetchRooms, deleteRoom } from '@/helpers/room.helper';
+import { deleteRoom, fetchRooms } from '@/helpers/room.helper';
 
 const RoomList: React.FC = () => {
   const { userData } = useAuth();
@@ -57,11 +57,10 @@ const RoomList: React.FC = () => {
       { header: 'Día', accessorKey: 'day' },
       {
         header: 'Horario',
-        accessorKey: 'startTime',
-        cell: ({ getValue, row }) => {
-          const start = new Date(getValue() as string);
-          const end = new Date(row.original.endTime);
-          return `${start.getHours()}:${start.getMinutes()} - ${end.getHours()}:${end.getMinutes()}`;
+        accessorKey: 'time',
+        cell: ({ getValue }) => {
+          const time = getValue() as string;
+          return time; // solo mostramos el horario (ej. "08:00")
         },
       },
       {
