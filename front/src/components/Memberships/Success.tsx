@@ -29,7 +29,7 @@ export default function Success() {
   const status = searchParams.get('status');
   const paymentType = searchParams.get('payment_type');
 
-  const { userEmail, setUserData } = useAuth();
+  const { userEmail, setUserData, userData } = useAuth(); // Obtén el token y la información del usuario
   const [amount, setAmount] = useState<number>(0);
 
   useEffect(() => {
@@ -43,18 +43,26 @@ export default function Success() {
       console.log('📦 ID de Pago:', paymentId);
       console.log('📦 Estado:', status);
 
-      // Obtener la información actualizada del usuario desde el backend
-      fetch(`${API_URL}/users/email/${userEmail}`)
-        .then((res) => res.json())
-        .then((userData) => {
-          if (userData) {
-            localStorage.setItem('userSession', JSON.stringify(userData));
-            setUserData(userData);
-          }
+      // Obtener la información actualizada del usuario desde el backend con el token
+      if (userData?.token?.token) {
+        fetch(`${API_URL}/users/email/${userEmail}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userData.token.token}`,
+          },
         })
-        .catch((error) =>
-          console.error('Error al obtener la información del usuario:', error)
-        );
+          .then((res) => res.json())
+          .then((userData) => {
+            if (userData) {
+              localStorage.setItem('userSession', JSON.stringify(userData));
+              setUserData(userData);
+            }
+          })
+          .catch((error) =>
+            console.error('Error al obtener la información del usuario:', error)
+          );
+      }
 
       // Enviar correo de confirmación de pago
       const emailContent = getPaymentSuccessEmailTemplate(userEmail);
@@ -67,7 +75,7 @@ export default function Success() {
         .then(() => console.log('✅ Correo de pago exitoso enviado'))
         .catch((error) => console.error('❌ Error enviando el correo:', error));
     }
-  }, [paymentId, status, userEmail, setUserData]);
+  }, [paymentId, status, userEmail, setUserData, userData]);
 
   const planName = getPlanName(amount);
 

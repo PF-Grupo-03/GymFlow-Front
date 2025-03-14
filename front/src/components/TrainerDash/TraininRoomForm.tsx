@@ -70,7 +70,7 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           day: values.day.toUpperCase(),
           time: values.scheduleFrom,
           type: values.type === 'Funcional' ? 'FUNCIONAL' : 'MUSCULACION',
-          teacherId: isFunctional ? values.trainer : null,
+          userId: isFunctional ? values.trainer : null,
           id: roomToEdit?.id,
         };
 
