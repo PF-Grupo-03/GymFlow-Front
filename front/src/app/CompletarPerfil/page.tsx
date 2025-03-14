@@ -15,6 +15,7 @@ const CompleteProfileContent = () => {
   const userId = searchParams.get("id");
   const userToken = searchParams.get("token");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     dni: "",
     phone: "",
@@ -24,7 +25,7 @@ const CompleteProfileContent = () => {
 
   useEffect(() => {
     if (!userId || !userToken) {
-      console.error("Faltan parámetros en la URL.");
+      setError("Faltan parámetros en la URL.");
       setLoading(false);
       return;
     }
@@ -53,6 +54,7 @@ const CompleteProfileContent = () => {
           role: data.role || "",
         });
       } catch (error) {
+        setError("Error al obtener datos del usuario.");
         console.error("Error al obtener datos del usuario:", error);
       } finally {
         setLoading(false);
@@ -69,12 +71,38 @@ const CompleteProfileContent = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateForm = () => {
+    if (!/^[0-9]{7,8}$/.test(formData.dni)) {
+      return "El DNI debe contener entre 7 y 8 dígitos numéricos.";
+    }
+    if (!/^\+?\d{7,15}$/.test(formData.phone)) {
+      return "El teléfono debe contener solo números y puede incluir un prefijo internacional.";
+    }
+    if (formData.address.trim() === "") {
+      return "La dirección no puede estar vacía.";
+    }
+    if (!formData.role) {
+      return "Debe seleccionar un rol.";
+    }
+    return "";
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!userId) {
-      console.error("ID de usuario no encontrado en la URL.");
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
+
+    if (!userId) {
+      setError("ID de usuario no encontrado en la URL.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
 
     try {
       const { data } = await axios.patch(
@@ -90,12 +118,21 @@ const CompleteProfileContent = () => {
 
       setUserData({ user: data.userWithoutPassword, token: data.token });
       router.push("/");
-    } catch (error) {
-      console.error("Error en la actualización del perfil:", error);
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        setError(
+          error.response.data.message || "Error en la actualización del perfil."
+        );
+      } else {
+        setError("Error en la actualización del perfil. Inténtalo nuevamente.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   if (loading) return <ClipLoader color="#36D7B7" size={50} />;
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
 
   return (
     <div className="relative flex justify-center items-center min-h-screen h-[90vh] -mt-5 pb-8">
@@ -160,6 +197,7 @@ const CompleteProfileContent = () => {
               <option value="USER_TRAINING">Entrenador</option>
             </select>
           </div>
+          {error && <div className="text-red-500 text-center">{error}</div>}
 
           <button
             type="submit"
@@ -173,12 +211,10 @@ const CompleteProfileContent = () => {
   );
 };
 
-const CompleteProfile = () => {
+export default function CompleteProfile() {
   return (
     <Suspense fallback={<ClipLoader color="#36D7B7" size={50} />}>
       <CompleteProfileContent />
     </Suspense>
   );
-};
-
-export default CompleteProfile;
+}
