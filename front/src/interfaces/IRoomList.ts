@@ -3,10 +3,17 @@ export interface Room {
   id: string;
   name: string;
   capacity: number;
-  day: string;
-  type: string;
-  startTime: string;
-  endTime: string;
+  type: 'MUSCULACION' | 'FUNCIONAL';
+  day:
+    | 'LUNES'
+    | 'MARTES'
+    | 'MIERCOLES'
+    | 'JUEVES'
+    | 'VIERNES'
+    | 'SABADO'
+    | 'DOMINGO';
+  time: string; // Ej: '08:00'
+  userId?: string | null; // opcional, porque musculación puede no tener profesor
 }
 
 export interface RoomListProps {
