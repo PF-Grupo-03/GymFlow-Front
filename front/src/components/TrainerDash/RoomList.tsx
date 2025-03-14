@@ -10,49 +10,39 @@ import {
 import { Toast } from '../Toast/Toast';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Room, RoomListProps } from '@/interfaces/IRoomList'; // Importar la interfaz RoomListProps
+import { Room } from '@/interfaces/IRoomList';
+import { fetchRooms, deleteRoom } from '@/helpers/room.helper';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
+const RoomList: React.FC = () => {
   const { userData } = useAuth();
   const router = useRouter();
+
+  const [roomList, setRoomList] = useState<Room[]>([]);
   const [globalFilter, setGlobalFilter] = useState('');
-  // Cambiar el estado a `Room[]` explícitamente
-  const [roomList, setRoomList] = useState<Room[]>(rooms); // Usa rooms como inicialización
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch inicial de salas
   useEffect(() => {
-    setRoomList(rooms); // Asegúrate de que las salas se actualicen al recibir la prop rooms
-  }, [rooms]);
+    if (userData?.token?.token) {
+      fetchRooms(userData.token.token)
+        .then((data) => setRoomList(data))
+        .catch((err) => setError(err.message))
+        .finally(() => setLoading(false));
+    }
+  }, [userData]);
 
+  // Eliminar sala
   const handleDeleteRoom = useCallback(
     async (id: string) => {
       if (window.confirm('¿Estás seguro de que deseas eliminar esta sala?')) {
         try {
-          const response = await fetch(`${API_URL}/rooms/delete/${id}`, {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${userData?.token.token}`,
-            },
-          });
-
-          if (!response.ok) throw new Error('Error al eliminar la sala');
-
-          Toast.fire({
-            icon: 'success',
-            title: 'Sala eliminada con éxito.',
-          });
-
-          // Actualiza las salas
-          setRoomList((prevRooms) =>
-            prevRooms.filter((room) => room.id !== id)
-          );
+          await deleteRoom(id, userData?.token.token as string);
+          Toast.fire({ icon: 'success', title: 'Sala eliminada con éxito.' });
+          setRoomList((prev) => prev.filter((room) => room.id !== id));
         } catch (error) {
           console.error(error);
-          Toast.fire({
-            icon: 'error',
-            title: 'Error al eliminar la sala.',
-          });
+          Toast.fire({ icon: 'error', title: 'Error al eliminar la sala.' });
         }
       }
     },
@@ -61,22 +51,10 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
 
   const columns = useMemo<ColumnDef<Room>[]>(
     () => [
-      {
-        header: 'Nombre',
-        accessorKey: 'name',
-      },
-      {
-        header: 'Capacidad',
-        accessorKey: 'capacity',
-      },
-      {
-        header: 'Tipo',
-        accessorKey: 'type',
-      },
-      {
-        header: 'Día',
-        accessorKey: 'day',
-      },
+      { header: 'Nombre', accessorKey: 'name' },
+      { header: 'Capacidad', accessorKey: 'capacity' },
+      { header: 'Tipo', accessorKey: 'type' },
+      { header: 'Día', accessorKey: 'day' },
       {
         header: 'Horario',
         accessorKey: 'startTime',
@@ -92,13 +70,13 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
         cell: ({ row }) => (
           <div className="flex space-x-2">
             <button
-              onClick={() => router.push(`/rooms/update/${row.original.id}`)} // Ruta actualizada para editar
+              onClick={() => router.push(`/rooms/update/${row.original.id}`)}
               className="text-blue-500 hover:text-blue-700"
             >
               Editar
             </button>
             <button
-              onClick={() => handleDeleteRoom(row.original.id)} // Ruta actualizada para eliminar
+              onClick={() => handleDeleteRoom(row.original.id)}
               className="text-red-500 hover:text-red-700"
             >
               Eliminar
@@ -111,12 +89,15 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
   );
 
   const table = useReactTable({
-    data: roomList, // Usa roomList en lugar de rooms
+    data: roomList,
     columns,
     state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  if (loading) return <div>Cargando salas...</div>;
+  if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
     <div className="p-6 bg-white rounded-lg whiteShadow">
@@ -124,7 +105,6 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
         Lista de Salas de Entrenamiento
       </h2>
 
-      {/* Filtro global */}
       <input
         type="text"
         placeholder="Buscar sala..."
@@ -133,7 +113,6 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
         className="mb-4 px-4 text-primary py-2 border border-tertiary rounded-md w-full"
       />
 
-      {/* Tabla */}
       <table className="min-w-full divide-y divide-tertiary border">
         <thead className="bg-tertiary">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -143,12 +122,10 @@ const RoomList: React.FC<RoomListProps> = ({ rooms }) => {
                   key={header.id}
                   className="px-4 py-2 text-left text-xs font-medium text-primary font-odor uppercase tracking-wider"
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
                 </th>
               ))}
             </tr>
