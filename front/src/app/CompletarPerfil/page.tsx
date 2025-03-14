@@ -41,21 +41,56 @@ const CompleteProfileContent = () => {
     setLoading(false); // Ya no necesitamos cargar datos iniciales
   }, [userId, userToken]);
 
-  const handleInputChange = (
+  const handleInputChange = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
+  
     // Validaciones en tiempo real
     if (name === "dni") {
       const dniValid = /^[0-9]{7,8}$/.test(value);
-      setErrors((prev) => ({
-        ...prev,
-        dniError: dniValid ? "" : "El DNI debe contener entre 7 y 8 dígitos numéricos.",
-      }));
+      if (!dniValid) {
+        setErrors((prev) => ({
+          ...prev,
+          dniError: "El DNI debe contener entre 7 y 8 dígitos numéricos.",
+        }));
+        return;
+      }
+  
+      // Verificar si el DNI ya está registrado
+      try {
+        const response = await fetch(
+          `https://gymflow-back.onrender.com/users/dni/${value}`,
+          {
+            headers: {
+              Authorization: `Bearer ${userToken}`, // Incluir el token en la solicitud
+            },
+          }
+        );
+  
+        if (response.ok) {
+          // Si el DNI ya está registrado
+          setErrors((prev) => ({
+            ...prev,
+            dniError: "El DNI ya está registrado.",
+          }));
+        } else if (response.status === 404) {
+          // Si el DNI no está registrado
+          setErrors((prev) => ({
+            ...prev,
+            dniError: "",
+          }));
+        }
+      } catch (error) {
+        console.error("Error al verificar el DNI:", error);
+        setErrors((prev) => ({
+          ...prev,
+          dniError: "Error al verificar el DNI. Intente más tarde.",
+        }));
+      }
     }
-
+  
     if (name === "phone") {
       const phoneValid = /^\+?\d{7,15}$/.test(value);
       setErrors((prev) => ({
@@ -63,14 +98,14 @@ const CompleteProfileContent = () => {
         phoneError: phoneValid ? "" : "El teléfono debe contener solo números y puede incluir un prefijo internacional.",
       }));
     }
-
+  
     if (name === "address") {
       setErrors((prev) => ({
         ...prev,
         addressError: value.trim() === "" ? "La dirección no puede estar vacía." : "",
       }));
     }
-
+  
     if (name === "role") {
       setErrors((prev) => ({
         ...prev,
