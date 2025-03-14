@@ -34,11 +34,7 @@ const FormRutina = () => {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        if (!token) {
-          throw new Error("No hay un token de autenticación disponible.");
-        }
-
-        const usuarios = await getUsers(token);
+        const usuarios = await getUsers(token!);
         setUsuarios(usuarios);
       } catch (error) {
         setError((error as Error).message);
