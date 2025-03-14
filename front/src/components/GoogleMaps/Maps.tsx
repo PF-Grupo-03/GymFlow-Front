@@ -9,14 +9,14 @@ interface Location {
 
 const MapComponent = () => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!, // Usa una variable de entorno
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
   });
 
-  const defaultLocation: Location = { lat: -34.603722, lng: -58.381592 };
+  const defaultLocation: Location = { lat: -34.587994, lng: -58.410568 };
   const [currentLocation] = useState<Location>(defaultLocation);
   const [showInfoWindow, setShowInfoWindow] = useState<boolean>(false);
 
-  if (!isLoaded) return <p>Cargando mapa...</p>; // Evita renderizar hasta que la API esté cargada
+  if (!isLoaded) return <p>Cargando mapa...</p>;
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%" }}>
