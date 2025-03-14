@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
@@ -20,7 +19,7 @@ const muscleMap = muscles.reduce((acc, muscle) => {
 const FormRutina = () => {
   const [usuarios, setUsuarios] = useState<IUser[]>([]);
   const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [selectedMuscle, setSelectedMuscle] = useState<string | null>(null);
   const [exercises, setExercises] = useState<any[]>([]);
@@ -30,54 +29,72 @@ const FormRutina = () => {
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
+  const { token } = useAuth();
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        if (!token) {
+          throw new Error("No hay un token de autenticación disponible.");
+        }
+
+        const usuarios = await getUsers(token);
+        setUsuarios(usuarios);
+      } catch (error) {
+        setError((error as Error).message);
+        console.error(error);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    fetchUsuarios();
+  }, [token]);
+
   const handleMuscleSelect = async (formattedMuscle: string) => {
     const originalMuscle = muscleMap[formattedMuscle];
     setSelectedMuscle(formattedMuscle);
 
     try {
-      const userLocal = localStorage.getItem("userSession");
-      if (!userLocal) throw new Error("No hay sesión activa.");
-      const userParsed = JSON.parse(userLocal);
-
-      const userToken = userParsed.token.token;
-      console.log("Token del usuario:", userToken);
-      if (userToken) {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/exercise/muscle/${originalMuscle}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          }
-        );
-        console.log("Esta es la response que tira el back:", response);
-        if (!response.ok) throw new Error("Error al obtener los ejercicios");
-        const data = await response.json();
-        setExercises(data);
+      if (!token) {
+        throw new Error("No hay un token de autenticación disponible.");
       }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/exercise/muscle/${originalMuscle}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al obtener los ejercicios");
+      }
+
+      const data = await response.json();
+      setExercises(data);
     } catch (error) {
       console.error("Error al obtener ejercicios:", error);
+      setError((error as Error).message);
     }
   };
 
   const handleSaveRoutine = async () => {
     try {
-      const userLocal = localStorage.getItem("userSession");
-      if (!userLocal) throw new Error("No hay sesión activa.");
-      const userParsed = JSON.parse(userLocal);
+      if (!token) {
+        throw new Error("No hay un token de autenticación disponible.");
+      }
 
-      const userToken = userParsed.token.token;
-      const userId = userParsed.user.id;
-      console.log("Token del usuario:", userToken);
-      console.log("ID del usuario:", userId);
-      if (!selectedDay || !selectedExercise || !series || !repetitions) {
+      if (!selectedDay || !selectedExercise || !series || !repetitions || !selectedUserId) {
         throw new Error("Por favor, complete todos los campos.");
       }
 
       const routineData = {
         day: selectedDay.toUpperCase(),
-        userId: userId,
+        userId: selectedUserId,
         exercises: [
           {
             exerciseId: selectedExercise,
@@ -91,37 +108,24 @@ const FormRutina = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(routineData),
       });
-      console.log(response)
-      if (!response.ok) throw new Error("Error al guardar la rutina");
+
+      if (!response.ok) {
+        throw new Error("Error al guardar la rutina");
+      }
 
       const result = await response.json();
       console.log("Rutina guardada:", result);
       alert("Rutina guardada con éxito!");
     } catch (error) {
       console.error("Error al guardar la rutina:", error);
+      setError((error as Error).message);
       alert((error as Error).message);
     }
   };
-  const {token} = useAuth();
-  useEffect(() => {
-    const fetchUsuarios = async () => {
-      try {
-
-        const usuarios = await getUsers(token!);
-        setUsuarios(usuarios);
-      } catch (error) {
-        setError((error as any).message);
-        console.log(error);
-      } finally {
-        setCargando(false);
-      }
-    };
-    fetchUsuarios();
-  }, [token]);
 
   return (
     <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">

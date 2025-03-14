@@ -4,6 +4,10 @@ import axios from "axios";
 
 export const getUsers = async (token: string): Promise<IUser[]> => {
   try {
+    if (!token) {
+      throw new Error("No se proporcionó un token de autenticación.");
+    }
+
     console.log("Token del usuario:", token);
 
     const respuesta = await axios.get(`${NEXT_PUBLIC_API_URL}/users`, {
@@ -26,7 +30,11 @@ export const getUsers = async (token: string): Promise<IUser[]> => {
     console.error("Error fetching users:", error);
     if ((error as any).response) {
       console.error("Detalles del error:", (error as any).response.data);
+      throw new Error(
+        (error as any).response.data.message || "Error al obtener los usuarios"
+      );
+    } else {
+      throw new Error("Error de conexión con el servidor.");
     }
-    return [];
   }
 };
