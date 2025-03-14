@@ -36,9 +36,9 @@ const RegisterValidates = Yup.object().shape({
     .oneOf(['USER_MEMBER', 'USER_TRAINING'], 'Rol inválido')
     .required('Rol obligatorio'),
 
-  // dni: Yup.string()
-  //   .matches(/^\d{7,8}$/, 'DNI inválido')
-  //   .required('DNI obligatorio'),
+  dni: Yup.string()
+    .matches(/^\d{7,8}$/, 'DNI inválido')
+    .required('DNI obligatorio'),
 });
 
 export default RegisterValidates;
