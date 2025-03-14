@@ -33,18 +33,16 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
   const formik = useFormik<TrainingRoomFormValues>({
     initialValues: {
       name: roomToEdit?.name || '',
-      capacity: roomToEdit?.capacity || '',
+      capacity: roomToEdit?.capacity?.toString() || '',
       scheduleFrom: roomToEdit?.scheduleFrom || '',
-      scheduleTo: roomToEdit?.scheduleTo || '',
-      days: roomToEdit?.days || [], // Asignación corregida
       type: roomToEdit?.type || '',
       trainer: roomToEdit?.trainer || '',
+      day: roomToEdit?.day || '', // solo un día
     },
     validationSchema: roomValidationSchema,
     onSubmit: async (values) => {
       try {
-        // Validación de roles (Descomentar cuando los roles estén activos)
-
+        // ✅ Verificación de roles
         if (
           userData?.user.role !== 'USER_ADMIN' &&
           userData?.user.role !== 'USER_TRAINER'
@@ -56,22 +54,33 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           return;
         }
 
-        // Preparar días como string separados por coma antes de enviar
-        const body = {
-          ...values,
-          days: values.days.join(', '), // Convertimos array a string
-          id: roomToEdit?.id, // Solo en modo edición
+        // ✅ Preparar objeto final
+        const roomData = {
+          name: values.name,
+          capacity: parseInt(values.capacity, 10), // transformar a número
+          day: values.day.toUpperCase(), // ej: LUNES
+          time: values.scheduleFrom, // único horario
+          type: values.type.toUpperCase(), // MUSCULACION o FUNCIONAL
+          teacherId: isFunctional ? values.trainer : null, // solo si funcional
+          id: roomToEdit?.id, // para edición
         };
 
+        console.log('Payload enviado:', roomData);
+
+        // ✅ Definir método y URL
         const method = roomToEdit ? 'PUT' : 'POST';
         const url = roomToEdit
           ? `${API_URL}/rooms/updateRoom`
           : `${API_URL}/rooms/register`;
 
+        // ✅ Enviar solicitud
         const response = await fetch(url, {
           method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userData?.token.token}`, // token
+          },
+          body: JSON.stringify(roomData),
         });
 
         if (!response.ok) throw new Error('Error al guardar la sala');
@@ -98,18 +107,6 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
     if (value !== 'Funcional') formik.setFieldValue('trainer', '');
   };
 
-  const handleDayChange = (day: string) => {
-    const currentDays = formik.values.days;
-    if (currentDays.includes(day)) {
-      formik.setFieldValue(
-        'days',
-        currentDays.filter((d) => d !== day)
-      );
-    } else {
-      formik.setFieldValue('days', [...currentDays, day]);
-    }
-  };
-
   return (
     <div className="bg-white p-8 rounded-lg whiteShadow max-w-lg mx-auto mt-6">
       <h2 className="text-2xl font-holtwood text-primary text-center mb-4">
@@ -122,7 +119,7 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           label="Nombre de la Sala"
           name="name"
           formik={formik}
-          className="border-tertiary  border-2 font-holtwood"
+          className="border-tertiary border-2 font-holtwood"
         />
 
         {/* Capacidad */}
@@ -134,45 +131,33 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           className="border-tertiary border-2 font-holtwood"
         />
 
-        {/* Horarios */}
+        {/* Horario */}
         <InputField
-          label="Horario Desde (HH:mm)"
+          label="Horario (HH:mm)"
           name="scheduleFrom"
           type="time"
           formik={formik}
           className="border-tertiary border-2 font-holtwood"
         />
-        <InputField
-          label="Horario Hasta (HH:mm)"
-          name="scheduleTo"
-          type="time"
-          formik={formik}
-          className="border-tertiary border-2 font-holtwood"
-        />
 
-        {/* Días */}
+        {/* Día de la semana */}
         <div>
           <label className="block mb-1 font-bold font-holtwood">
-            Días de la semana
+            Día de la semana
           </label>
-          <div className="grid grid-cols-2 gap-2 ">
+          <select
+            {...formik.getFieldProps('day')}
+            className="w-full p-2 rounded font-ibm"
+          >
+            <option value="">Seleccione un día</option>
             {daysOfWeek.map((day) => (
-              <label key={day} className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  value={day}
-                  checked={formik.values.days.includes(day)}
-                  onChange={() => handleDayChange(day)}
-                  className="h-4 w-4"
-                />
+              <option key={day} value={day}>
                 {day}
-              </label>
+              </option>
             ))}
-          </div>
-          {formik.touched.days && formik.errors.days && (
-            <p className="text-red-500 font-holtwood">
-              {formik.errors.days as string}
-            </p>
+          </select>
+          {formik.touched.day && formik.errors.day && (
+            <p className="text-red-500">{formik.errors.day}</p>
           )}
         </div>
 
@@ -182,21 +167,18 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           <select
             {...formik.getFieldProps('type')}
             onChange={handleTypeChange}
-            className="w-full  p-2 rounded font-ibm"
+            className="w-full p-2 rounded font-ibm"
           >
             <option value="">Seleccione un tipo</option>
             <option value="Musculación">Musculación</option>
             <option value="Funcional">Funcional</option>
           </select>
-          {formik.touched.type && formik.errors.type && (
-            <p className="text-red-500">{formik.errors.type}</p>
-          )}
         </div>
 
         {/* Entrenador */}
         {isFunctional && (
           <InputField
-            label="Entrenador"
+            label="Entrenador (ID)"
             name="trainer"
             formik={formik}
             className="border-tertiary border-2 font-holtwood"
