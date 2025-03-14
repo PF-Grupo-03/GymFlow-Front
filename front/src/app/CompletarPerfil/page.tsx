@@ -23,6 +23,13 @@ const CompleteProfileContent = () => {
     role: "",
   });
 
+  const [errors, setErrors] = useState({
+    dniError: "",
+    phoneError: "",
+    addressError: "",
+    roleError: "",
+  });
+
   useEffect(() => {
     if (!userId || !userToken) {
       setError("Faltan parámetros en la URL.");
@@ -69,20 +76,42 @@ const CompleteProfileContent = () => {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Realizar validaciones en tiempo real
+    if (name === "dni") {
+      const dniValid = /^[0-9]{7,8}$/.test(value);
+      setErrors((prev) => ({
+        ...prev,
+        dniError: dniValid ? "" : "El DNI debe contener entre 7 y 8 dígitos numéricos.",
+      }));
+    }
+
+    if (name === "phone") {
+      const phoneValid = /^\+?\d{7,15}$/.test(value);
+      setErrors((prev) => ({
+        ...prev,
+        phoneError: phoneValid ? "" : "El teléfono debe contener solo números y puede incluir un prefijo internacional.",
+      }));
+    }
+
+    if (name === "address") {
+      setErrors((prev) => ({
+        ...prev,
+        addressError: value.trim() === "" ? "La dirección no puede estar vacía." : "",
+      }));
+    }
+
+    if (name === "role") {
+      setErrors((prev) => ({
+        ...prev,
+        roleError: value ? "" : "Debe seleccionar un rol.",
+      }));
+    }
   };
 
   const validateForm = () => {
-    if (!/^[0-9]{7,8}$/.test(formData.dni)) {
-      return "El DNI debe contener entre 7 y 8 dígitos numéricos.";
-    }
-    if (!/^\+?\d{7,15}$/.test(formData.phone)) {
-      return "El teléfono debe contener solo números y puede incluir un prefijo internacional.";
-    }
-    if (formData.address.trim() === "") {
-      return "La dirección no puede estar vacía.";
-    }
-    if (!formData.role) {
-      return "Debe seleccionar un rol.";
+    if (errors.dniError || errors.phoneError || errors.addressError || errors.roleError) {
+      return "Por favor, corrige los errores antes de enviar el formulario.";
     }
     return "";
   };
@@ -154,6 +183,7 @@ const CompleteProfileContent = () => {
               placeholder="Ej: 12345678"
               className="border-2 border-tertiary p-2 rounded-md"
             />
+            {errors.dniError && <div className="text-red-500 text-xs">{errors.dniError}</div>}
           </div>
 
           <div className="flex flex-col">
@@ -168,6 +198,7 @@ const CompleteProfileContent = () => {
               placeholder="+54 XXX XXX XXXX"
               className="border-2 border-tertiary p-2 rounded-md"
             />
+            {errors.phoneError && <div className="text-red-500 text-xs">{errors.phoneError}</div>}
           </div>
 
           <div className="flex flex-col">
@@ -182,6 +213,7 @@ const CompleteProfileContent = () => {
               placeholder="Dirección"
               className="border-2 border-tertiary p-2 rounded-md"
             />
+            {errors.addressError && <div className="text-red-500 text-xs">{errors.addressError}</div>}
           </div>
 
           <div className="flex flex-col">
@@ -196,7 +228,9 @@ const CompleteProfileContent = () => {
               <option value="USER_MEMBER">Cliente</option>
               <option value="USER_TRAINING">Entrenador</option>
             </select>
+            {errors.roleError && <div className="text-red-500 text-xs">{errors.roleError}</div>}
           </div>
+
           {error && <div className="text-red-500 text-center">{error}</div>}
 
           <button
