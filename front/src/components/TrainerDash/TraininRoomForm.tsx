@@ -47,7 +47,10 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
     },
     validationSchema: roomValidationSchema,
     onSubmit: async (values) => {
+      console.log('Formulario enviado con los valores:', values);
+
       try {
+        // Verificar roles
         if (
           userData?.user.role !== 'USER_ADMIN' &&
           userData?.user.role !== 'USER_TRAINER'
@@ -56,9 +59,11 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
             icon: 'error',
             title: 'No tienes permisos para esta acción.',
           });
+          console.log('Acción denegada: El usuario no tiene permisos');
           return;
         }
 
+        // Preparar datos para enviar
         const roomData = {
           name: values.name,
           capacity: parseInt(values.capacity, 10),
@@ -69,10 +74,14 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           id: roomToEdit?.id,
         };
 
+        console.log('Datos de la sala enviados:', roomData);
+
         const method = roomToEdit ? 'PUT' : 'POST';
         const url = roomToEdit
           ? `${API_URL}/rooms/updateRoom`
           : `${API_URL}/rooms/register`;
+
+        console.log('URL de la API:', url);
 
         const response = await fetch(url, {
           method,
@@ -83,7 +92,13 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           body: JSON.stringify(roomData),
         });
 
-        if (!response.ok) throw new Error('Error al guardar la sala');
+        console.log('Respuesta del servidor:', response);
+
+        if (!response.ok) {
+          const errorResponse = await response.json(); // Obtener los detalles del error
+          console.error('Error al guardar la sala:', errorResponse);
+          throw new Error('Error al guardar la sala');
+        }
 
         Toast.fire({
           icon: 'success',
@@ -92,6 +107,7 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
             : 'Sala creada con éxito',
         });
 
+        console.log('Redirigiendo a la lista de salas');
         router.push('/Trainingrooms');
       } catch (error) {
         console.error('Error al guardar la sala:', error);
@@ -102,6 +118,7 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
 
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value as 'Musculación' | 'Funcional' | '';
+    console.log('Tipo cambiado:', value);
     setIsFunctional(value === 'Funcional');
     formik.setFieldValue('type', value);
     if (value !== 'Funcional') formik.setFieldValue('trainer', '');
