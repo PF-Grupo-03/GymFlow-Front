@@ -2,15 +2,8 @@ import { NEXT_PUBLIC_API_URL } from "@/app/config/envs";
 import { IUser } from "@/interfaces/IUserSession";
 import axios from "axios";
 
-export const getUsers = async (): Promise<IUser[]> => {
+export const getUsers = async (token: string): Promise<IUser[]> => {
   try {
-    const localStorageUser = localStorage.getItem("userSession");
-    if (!localStorageUser) {
-      console.error("No se encontró userSession en localStorage");
-      return [];
-    }
-
-    const token = JSON.parse(localStorageUser).token.token;
     console.log("Token del usuario:", token);
 
     const respuesta = await axios.get(`${NEXT_PUBLIC_API_URL}/users`, {
