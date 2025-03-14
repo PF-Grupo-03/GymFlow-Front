@@ -13,6 +13,7 @@ import {
 import { roomValidationSchema } from '@/helpers/RommsValidates';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const daysOfWeek = [
   'Lunes',
   'Martes',
@@ -27,7 +28,7 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
   const { userData } = useAuth();
   const router = useRouter();
   const [isFunctional, setIsFunctional] = useState<boolean>(
-    roomToEdit?.type === 'Funcional' || false
+    roomToEdit?.type === 'FUNCIONAL' || false
   );
 
   const formik = useFormik<TrainingRoomFormValues>({
@@ -35,14 +36,18 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
       name: roomToEdit?.name || '',
       capacity: roomToEdit?.capacity?.toString() || '',
       scheduleFrom: roomToEdit?.scheduleFrom || '',
-      type: roomToEdit?.type || '',
+      type:
+        roomToEdit?.type === 'FUNCIONAL'
+          ? 'Funcional'
+          : roomToEdit?.type === 'MUSCULACION'
+          ? 'Musculación'
+          : '',
       trainer: roomToEdit?.trainer || '',
-      day: roomToEdit?.day || '', // solo un día
+      day: roomToEdit?.day || '',
     },
     validationSchema: roomValidationSchema,
     onSubmit: async (values) => {
       try {
-        // ✅ Verificación de roles
         if (
           userData?.user.role !== 'USER_ADMIN' &&
           userData?.user.role !== 'USER_TRAINER'
@@ -54,31 +59,26 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           return;
         }
 
-        // ✅ Preparar objeto final
         const roomData = {
           name: values.name,
-          capacity: parseInt(values.capacity, 10), // transformar a número
-          day: values.day.toUpperCase(), // ej: LUNES
-          time: values.scheduleFrom, // único horario
-          type: values.type.toUpperCase(), // MUSCULACION o FUNCIONAL
-          teacherId: isFunctional ? values.trainer : null, // solo si funcional
-          id: roomToEdit?.id, // para edición
+          capacity: parseInt(values.capacity, 10),
+          day: values.day.toUpperCase(),
+          time: values.scheduleFrom,
+          type: values.type === 'Funcional' ? 'FUNCIONAL' : 'MUSCULACION',
+          teacherId: isFunctional ? values.trainer : null,
+          id: roomToEdit?.id,
         };
 
-        console.log('Payload enviado:', roomData);
-
-        // ✅ Definir método y URL
         const method = roomToEdit ? 'PUT' : 'POST';
         const url = roomToEdit
           ? `${API_URL}/rooms/updateRoom`
           : `${API_URL}/rooms/register`;
 
-        // ✅ Enviar solicitud
         const response = await fetch(url, {
           method,
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${userData?.token.token}`, // token
+            Authorization: `Bearer ${userData?.token.token}`,
           },
           body: JSON.stringify(roomData),
         });
@@ -114,15 +114,12 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
       </h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4 text-primary">
-        {/* Nombre */}
         <InputField
           label="Nombre de la Sala"
           name="name"
           formik={formik}
           className="border-tertiary border-2 font-holtwood"
         />
-
-        {/* Capacidad */}
         <InputField
           label="Capacidad (1-20 personas)"
           name="capacity"
@@ -130,8 +127,6 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           formik={formik}
           className="border-tertiary border-2 font-holtwood"
         />
-
-        {/* Horario */}
         <InputField
           label="Horario (HH:mm)"
           name="scheduleFrom"
@@ -140,7 +135,6 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           className="border-tertiary border-2 font-holtwood"
         />
 
-        {/* Día de la semana */}
         <div>
           <label className="block mb-1 font-bold font-holtwood">
             Día de la semana
@@ -161,7 +155,6 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           )}
         </div>
 
-        {/* Tipo */}
         <div>
           <label className="block mb-1 font-bold font-holtwood">Tipo</label>
           <select
@@ -173,9 +166,11 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
             <option value="Musculación">Musculación</option>
             <option value="Funcional">Funcional</option>
           </select>
+          {formik.touched.type && formik.errors.type && (
+            <p className="text-red-500">{formik.errors.type}</p>
+          )}
         </div>
 
-        {/* Entrenador */}
         {isFunctional && (
           <InputField
             label="Entrenador (ID)"
@@ -185,7 +180,6 @@ const TrainingRoomForm: React.FC<TrainingRoomFormProps> = ({ roomToEdit }) => {
           />
         )}
 
-        {/* Botón */}
         <button
           type="submit"
           className="w-full bg-tertiary border-2 text-white font-holtwood py-2 rounded hover:bg-orange-700 transition"
