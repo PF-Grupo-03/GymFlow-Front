@@ -1,9 +1,8 @@
 export interface TrainingRoomFormValues {
   name: string;
-  capacity: number | string;
+  capacity: string;
   scheduleFrom: string;
-  scheduleTo: string;
-  days: string[]; // Array de días seleccionados
+  day: string; // Array de días seleccionados
   type: 'Musculación' | 'Funcional' | '';
   trainer?: string;
 }
