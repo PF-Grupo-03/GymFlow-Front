@@ -1,19 +1,18 @@
-'use client';
+"use client"
 
-import axios from 'axios';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
-import { NEXT_PUBLIC_API_URL } from '../config/envs';
-import { useAuth } from '@/context/AuthContext';
-import { ClipLoader } from 'react-spinners';
+import { ClipLoader } from "react-spinners";
+import { NEXT_PUBLIC_API_URL } from "../config/envs";
+import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import { Suspense, useEffect, useState } from "react";
 
-const Google = () => {
-  return (
-    <Suspense fallback={<div>Cargando...</div>}>
-      <GoogleContent />
-    </Suspense>
-  );
-};
+const Google = () => (
+  <Suspense fallback={<ClipLoader color="#36D7B7" size={50} />}>
+    <GoogleContent />
+  </Suspense>
+);
 
 const GoogleContent = () => {
   const searchParams = useSearchParams();
@@ -31,26 +30,20 @@ const GoogleContent = () => {
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(
-          `${NEXT_PUBLIC_API_URL}/users/${userId}`,
-          {
-            headers: { Authorization: `Bearer ${userToken}` },
-          }
-        );
+        const { data } = await axios.get(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
 
-        const user = response.data;
-        const formattedUserData = {
-          user,
+        setUserData({
+          user: data,
           token: {
-            withoutPasswordAndRole: user, // Ajuste a la estructura de IUserSession
+            withoutPasswordAndRole: data,
             token: userToken,
           },
-        };
-
-        setUserData(formattedUserData);
+        });
         router.push('/');
       } catch (error) {
-        console.error('❌ Error al obtener usuario:', error);
+        console.error('Error al obtener usuario:', error);
       } finally {
         setIsLoading(false);
       }
@@ -59,9 +52,7 @@ const GoogleContent = () => {
     fetchUserData();
   }, [userId, userToken, setUserData, router]);
 
-  if (isLoading) {
-    return <ClipLoader color="#36D7B7" size={50} />;
-  }
+  if (isLoading) return <ClipLoader color="#36D7B7" size={50} />;
 
   return (
     <div>

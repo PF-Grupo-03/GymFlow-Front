@@ -1,68 +1,65 @@
-'use client';
+"use client";
 
-import { useState, useEffect, Suspense } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { NEXT_PUBLIC_API_URL } from '../config/envs';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, Suspense } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { NEXT_PUBLIC_API_URL } from "../config/envs";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ClipLoader } from "react-spinners";
+import axios from "axios";
 
 const CompleteProfileContent = () => {
   const { setUserData } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const userId = searchParams.get('id'); // Se obtiene el id desde la URL
-  const userToken = searchParams.get('token');
-  console.log('userId:', userId);
-  console.log('userToken:', userToken);
-
+  const userId = searchParams.get("id");
+  const userToken = searchParams.get("token");
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    dni: '',
-    phone: '',
-    address: '',
-    role: '',
+    dni: "",
+    phone: "",
+    address: "",
+    role: "",
   });
 
   useEffect(() => {
-    if (!userId) {
-      console.error('No se encontró el id en la URL.');
+    if (!userId || !userToken) {
+      console.error("Faltan parámetros en la URL.");
       setLoading(false);
       return;
     }
 
     const fetchUserData = async () => {
       try {
-        const res = await fetch(`${NEXT_PUBLIC_API_URL}/users/${userId}`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
-        if (!res.ok) throw new Error('Error al obtener los datos del usuario');
-        const data = await res.json();
+        const { data } = await axios.get(
+          `${NEXT_PUBLIC_API_URL}/users/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${userToken}` },
+          }
+        );
 
         setUserData({
           user: data,
           token: {
             withoutPasswordAndRole: data,
-            token: userToken!,
+            token: userToken,
           },
         });
 
         setFormData({
-          dni: data.dni || '',
-          phone: data.phone || '',
-          address: data.address || '',
-          role: data.role || '',
+          dni: data.dni || "",
+          phone: data.phone || "",
+          address: data.address || "",
+          role: data.role || "",
         });
       } catch (error) {
-        console.error(error instanceof Error ? error.message : 'Unknown error');
+        console.error("Error al obtener datos del usuario:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUserData();
-  }, [userId, setUserData, userToken]);
+  }, [userId, userToken, setUserData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -74,46 +71,30 @@ const CompleteProfileContent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!userId) {
-      console.error('No se ha encontrado el ID del usuario en la URL.');
+      console.error("ID de usuario no encontrado en la URL.");
       return;
     }
 
-    const updatedFormData = { ...formData };
-
-    console.log('📤 Enviando datos:', JSON.stringify(updatedFormData));
-
     try {
-      const response = await fetch(
+      const { data } = await axios.patch(
         `${NEXT_PUBLIC_API_URL}/users/update-google/${userId}`,
+        formData,
         {
-          method: 'PATCH',
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${userToken}`,
           },
-          body: JSON.stringify(updatedFormData),
         }
       );
 
-      console.log('🔍 Respuesta del servidor (status):', response.status);
-
-      const data = await response.json();
-      console.log('📩 Respuesta del servidor (body):', data);
-
-      if (!response.ok)
-        console.log('Usuario actualizado:', data.userWithoutPassword);
-      console.log('Token actualizado:', data.token);
       setUserData({ user: data.userWithoutPassword, token: data.token });
-      router.push('/');
+      router.push("/");
     } catch (error) {
-      console.error(
-        '❌ Error en handleSubmit:',
-        error instanceof Error ? error.message : error
-      );
+      console.error("Error en la actualización del perfil:", error);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <ClipLoader color="#36D7B7" size={50} />;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -138,24 +119,20 @@ const CompleteProfileContent = () => {
         onChange={handleInputChange}
         placeholder="Address"
       />
-
       <select name="role" value={formData.role} onChange={handleInputChange}>
         <option value="">Elige tu rol</option>
         <option value="USER_MEMBER">Cliente</option>
         <option value="USER_TRAINING">Entrenador</option>
       </select>
-
       <button type="submit">Guardar perfil</button>
     </form>
   );
 };
 
-const CompleteProfile = () => {
-  return (
-    <Suspense fallback={<div>Loading profile...</div>}>
-      <CompleteProfileContent />
-    </Suspense>
-  );
-};
+const CompleteProfile = () => (
+  <Suspense fallback={<ClipLoader color="#36D7B7" size={50} />}>
+    <CompleteProfileContent />
+  </Suspense>
+);
 
 export default CompleteProfile;
