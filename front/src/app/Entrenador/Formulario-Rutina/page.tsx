@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
 import { muscles } from "@/data/muscles";
 import { getUsers } from "@/helpers/getUsers";
 import { IUser } from "@/interfaces/IUserSession";
@@ -105,11 +106,12 @@ const FormRutina = () => {
       alert((error as Error).message);
     }
   };
-
+  const {token} = useAuth();
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const usuarios = await getUsers();
+
+        const usuarios = await getUsers(token!);
         setUsuarios(usuarios);
       } catch (error) {
         setError((error as any).message);
@@ -119,7 +121,7 @@ const FormRutina = () => {
       }
     };
     fetchUsuarios();
-  }, []);
+  }, [token]);
 
   return (
     <div className="relative flex justify-center items-center min-h-screen -mt-5 pb-8">
