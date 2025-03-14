@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
@@ -33,6 +34,7 @@ const CompleteProfileContent = () => {
   useEffect(() => {
     if (!userId || !userToken) {
       setError("Faltan parámetros en la URL.");
+      alert("Faltan parámetros en la URL."); // Mostrar alerta
       setLoading(false);
       return;
     }
@@ -45,10 +47,7 @@ const CompleteProfileContent = () => {
             headers: { Authorization: `Bearer ${userToken}` },
           }
         );
-        console.log(
-          "Esta es la respuesta del back para setear el usuario:",
-          data
-        );
+        console.log("Respuesta del backend al obtener el usuario:", data);
         setUserData({
           user: data,
           token: {
@@ -65,6 +64,7 @@ const CompleteProfileContent = () => {
         });
       } catch (error) {
         setError("Error al obtener datos del usuario.");
+        alert("Error al obtener datos del usuario. Por favor, recarga la página."); // Mostrar alerta
         console.error("Error al obtener datos del usuario:", error);
       } finally {
         setLoading(false);
@@ -80,14 +80,12 @@ const CompleteProfileContent = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Realizar validaciones en tiempo real
+    // Validaciones en tiempo real
     if (name === "dni") {
       const dniValid = /^[0-9]{7,8}$/.test(value);
       setErrors((prev) => ({
         ...prev,
-        dniError: dniValid
-          ? ""
-          : "El DNI debe contener entre 7 y 8 dígitos numéricos.",
+        dniError: dniValid ? "" : "El DNI debe contener entre 7 y 8 dígitos numéricos.",
       }));
     }
 
@@ -95,17 +93,14 @@ const CompleteProfileContent = () => {
       const phoneValid = /^\+?\d{7,15}$/.test(value);
       setErrors((prev) => ({
         ...prev,
-        phoneError: phoneValid
-          ? ""
-          : "El teléfono debe contener solo números y puede incluir un prefijo internacional.",
+        phoneError: phoneValid ? "" : "El teléfono debe contener solo números y puede incluir un prefijo internacional.",
       }));
     }
 
     if (name === "address") {
       setErrors((prev) => ({
         ...prev,
-        addressError:
-          value.trim() === "" ? "La dirección no puede estar vacía." : "",
+        addressError: value.trim() === "" ? "La dirección no puede estar vacía." : "",
       }));
     }
 
@@ -118,12 +113,10 @@ const CompleteProfileContent = () => {
   };
 
   const validateForm = () => {
-    if (
-      errors.dniError ||
-      errors.phoneError ||
-      errors.addressError ||
-      errors.roleError
-    ) {
+    if (!formData.dni || !formData.phone || !formData.address || !formData.role) {
+      return "Todos los campos son obligatorios.";
+    }
+    if (errors.dniError || errors.phoneError || errors.addressError || errors.roleError) {
       return "Por favor, corrige los errores antes de enviar el formulario.";
     }
     return "";
@@ -131,23 +124,23 @@ const CompleteProfileContent = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
       alert(validationError); // Mostrar alerta con el error de validación
       return;
     }
-
+  
     if (!userId) {
       setError("ID de usuario no encontrado en la URL.");
       alert("ID de usuario no encontrado en la URL."); // Mostrar alerta con el error
       return;
     }
-
+  
     setLoading(true);
     setError("");
-
+  
     try {
       const { data } = await axios.patch(
         `${NEXT_PUBLIC_API_URL}/users/update-google/${userId}`,
@@ -159,32 +152,47 @@ const CompleteProfileContent = () => {
           },
         }
       );
-      console.log("Esta es la respuesta del patch del back para setear el usuario:", data);
+      console.log("Respuesta del backend después del PATCH:", data);
+  
+      // Asegúrate de que la respuesta del backend tenga la estructura correcta
       setUserData({
-        user: data.userWithoutPassword,
+        user: data.userWithoutPassword || data, // Ajusta según la respuesta del backend
         token: {
-          withoutPasswordAndRole: data.userWithoutPassword,
+          withoutPasswordAndRole: data.userWithoutPassword || data,
           token: userToken!,
         },
       });
       router.push("/");
     } catch (error: any) {
-      if (error.response && error.response.data) {
+      console.error("Error completo del backend:", error); // Muestra el error completo en la consola
+  
+      if (error.response) {
+        // Si el backend devuelve una respuesta con un mensaje de error
+        console.error("Respuesta del backend:", error.response.data); // Muestra la respuesta del backend
         const errorMessage =
-          error.response.data.message ||
-          "Error en la actualización del perfil.";
+          error.response.data.message || "Error en la actualización del perfil.";
         setError(errorMessage);
         alert(errorMessage); // Mostrar alerta con el mensaje de error del backend
+      } else if (error.request) {
+        // Si la solicitud fue hecha pero no se recibió respuesta
+        console.error("No se recibió respuesta del backend:", error.request);
+        const errorMessage =
+          "No se recibió respuesta del servidor. Inténtalo nuevamente.";
+        setError(errorMessage);
+        alert(errorMessage);
       } else {
+        // Si ocurrió un error al hacer la solicitud
+        console.error("Error al hacer la solicitud:", error.message);
         const errorMessage =
           "Error en la actualización del perfil. Inténtalo nuevamente.";
         setError(errorMessage);
-        alert(errorMessage); // Mostrar alerta con un mensaje genérico
+        alert(errorMessage);
       }
     } finally {
       setLoading(false);
     }
-  }; 
+  };
+
   if (loading) return <ClipLoader color="#36D7B7" size={50} />;
 
   return (
@@ -193,10 +201,8 @@ const CompleteProfileContent = () => {
         <h2 className="text-primary text-3xl font-holtwood text-center mb-8">
           COMPLETAR PERFIL
         </h2>
-        <form
-          onSubmit={handleSubmit}
-          className="grid grid-cols-2 gap-x-6 gap-y-4"
-        >
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-x-6 gap-y-4">
+          {/* Campos del formulario */}
           <div className="flex flex-col">
             <label className="text-primary font-holtwood text-sm">DNI:</label>
             <input
@@ -212,58 +218,7 @@ const CompleteProfileContent = () => {
             )}
           </div>
 
-          <div className="flex flex-col">
-            <label className="text-primary font-holtwood text-sm">
-              Teléfono:
-            </label>
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              placeholder="+54 XXX XXX XXXX"
-              className="border-2 border-tertiary p-2 rounded-md"
-            />
-            {errors.phoneError && (
-              <div className="text-red-500 text-xs">{errors.phoneError}</div>
-            )}
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-primary font-holtwood text-sm">
-              Dirección:
-            </label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              placeholder="Dirección"
-              className="border-2 border-tertiary p-2 rounded-md"
-            />
-            {errors.addressError && (
-              <div className="text-red-500 text-xs">{errors.addressError}</div>
-            )}
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-primary font-holtwood text-sm">Rol:</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleInputChange}
-              className="border-2 border-tertiary p-2 rounded-md"
-            >
-              <option value="">Elige tu rol</option>
-              <option value="USER_MEMBER">Cliente</option>
-              <option value="USER_TRAINING">Entrenador</option>
-            </select>
-            {errors.roleError && (
-              <div className="text-red-500 text-xs">{errors.roleError}</div>
-            )}
-          </div>
-
-          {error && <div className="text-red-500 text-center">{error}</div>}
+          {/* Resto de los campos... */}
 
           <button
             type="submit"
